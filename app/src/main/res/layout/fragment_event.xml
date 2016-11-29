@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="5dp"
+        android:gravity="start"
+
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:tint="@color/cor_preto"
+            android:src="@drawable/ic_profile"/>
+
+        <TextView
+            android:id="@+id/criadorEvento"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jean Carlo criou esse evento"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center"
+            android:textSize="15dp"/>
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="Confirmar presença"
+        android:textColor="@color/cor_branco"
+        android:background="@color/colorPrimary"
+        android:layout_gravity="center"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Descrição"
+        android:layout_margin="5dp"
+        android:textSize="15dp"/>
+
+    <TextView
+        android:id="@+id/descricaoEvento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Vamos nos divertir nesse momento com a família! Traga todo mundo e vamos ser felizes! :)"
+        android:layout_marginLeft="10dp"
+        android:textSize="15dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Local"
+        android:layout_margin="10dp"
+        android:textSize="15dp"/>
+
+    <TextView
+        android:id="@+id/localEvento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rua dos Bobos, numero 0"
+        android:layout_marginLeft="10dp"
+        android:textSize="15dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Itens"
+        android:layout_margin="10dp"
+        android:textSize="15dp"/>
+
+    <ListView
+        android:id="@+id/list_itens"
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+    </ListView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Comentários"
+        android:layout_margin="10dp"
+        android:textSize="15dp"/>
+
+    <ListView
+        android:id="@+id/list_comentarios"
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+    </ListView>
+
+</LinearLayout>
