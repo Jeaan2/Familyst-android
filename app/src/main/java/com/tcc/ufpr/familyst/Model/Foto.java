@@ -2,21 +2,22 @@ package com.tcc.ufpr.familyst.Model;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by jeaan_000 on 02/11/2016.
  */
-public class Foto {
+public class Foto implements Serializable {
 
     private int idImagem;
-    private Bitmap imagem;
+    private String dados;
     private String descricao;
     private Date dataCriacao;
 
-    public Foto(int idImagem, Bitmap imagem, String descricao, Date dataCriacao) {
+    public Foto(int idImagem, String dados, String descricao, Date dataCriacao) {
         this.idImagem = idImagem;
-        this.imagem = imagem;
+        this.dados = dados;
         this.descricao = descricao;
         this.dataCriacao = dataCriacao;
     }
@@ -29,12 +30,12 @@ public class Foto {
         this.idImagem = idImagem;
     }
 
-    public Bitmap getImagem() {
-        return imagem;
+    public String getDados() {
+        return dados;
     }
 
-    public void setImagem(Bitmap imagem) {
-        this.imagem = imagem;
+    public void setDados(String dados) {
+        this.dados = dados;
     }
 
     public String getDescricao() {

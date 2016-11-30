@@ -17,6 +17,7 @@ import com.tcc.ufpr.familyst.Activities.CadastroAlbumActivity;
 import com.tcc.ufpr.familyst.Adapters.AlbumAdapter;
 import com.tcc.ufpr.familyst.FamilystApplication;
 import com.tcc.ufpr.familyst.Model.Album;
+import com.tcc.ufpr.familyst.Model.Evento;
 import com.tcc.ufpr.familyst.R;
 
 import java.sql.Date;
@@ -72,7 +73,10 @@ public class AlbumsFragment extends Fragment {
 //                        .addToBackStack(null)
 //                        .commit();
 
-                Intent intent = new Intent(getContext(), AlbumActivity.class);
+                Album album = (Album)parent.getAdapter().getItem(position);
+
+                Intent intent = new Intent(getActivity(), AlbumActivity.class);
+                intent.putExtra("idAlbum", album.getIdAlbum()); // nao estou conseguindo passar o album pq as fotos tao pesadas..
                 startActivity(intent);
             }
         });

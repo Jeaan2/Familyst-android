@@ -2,6 +2,9 @@ package com.tcc.ufpr.familyst.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +51,17 @@ public class GridViewAdapter extends ArrayAdapter<Foto> {
         }
 
         Foto foto = dados.get(position);
-        holder.imagem.setImageBitmap(foto.getImagem());
+
+        //recuperando foto
+        Bitmap fotoBytes = null;
+        try {
+            String fotoEncoded = foto.getDados();
+            byte[] decodedString = Base64.decode(fotoEncoded, Base64.DEFAULT);
+            fotoBytes = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        }
+        catch (Exception ex){}
+
+        holder.imagem.setImageBitmap(fotoBytes);
 
         return row;
     }

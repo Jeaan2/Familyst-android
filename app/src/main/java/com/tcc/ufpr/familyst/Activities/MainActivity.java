@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity
         ArrayList<Familia> familias = ((FamilystApplication)getApplication()).get_usuarioLogado().getFamilias();
         if (familias.isEmpty())
         {
-            Familia familiaNenhuma = new Familia(-1,"Nenhuma Familia");
+            Familia familiaNenhuma = new Familia(-1,"Nenhuma Familia", -1);
             ArrayList<Familia> familiasVazio = new ArrayList<>();
             familiasVazio.add(familiaNenhuma);
             FamiliaAdapter adapter = new FamiliaAdapter(this,

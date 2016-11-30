@@ -1,8 +1,11 @@
 package com.tcc.ufpr.familyst.Activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
+import android.util.Base64;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -12,11 +15,13 @@ import com.tcc.ufpr.familyst.Model.Album;
 import com.tcc.ufpr.familyst.Model.Comentario;
 import com.tcc.ufpr.familyst.Model.Evento;
 import com.tcc.ufpr.familyst.Model.Familia;
+import com.tcc.ufpr.familyst.Model.Foto;
 import com.tcc.ufpr.familyst.Model.Item;
 import com.tcc.ufpr.familyst.Model.Noticia;
 import com.tcc.ufpr.familyst.Model.TipoEvento;
 import com.tcc.ufpr.familyst.Model.TipoItem;
 import com.tcc.ufpr.familyst.Model.Usuario;
+import com.tcc.ufpr.familyst.Model.Video;
 import com.tcc.ufpr.familyst.R;
 import com.tcc.ufpr.familyst.Services.JsonRestRequest;
 import com.tcc.ufpr.familyst.Services.RestService;
@@ -47,7 +52,10 @@ public class LoadingDataActivity extends BaseActivity {
     boolean _tiposItemCarregados = false;
     boolean _usuariosCarregados = false;
     boolean _noticiasCarregadas = false;
+    boolean _comentariosNoticiasCarregados = false;
+    boolean _videosCarregados = false;
     boolean _albunsCarregados = false;
+    boolean _fotosAlbunsCarregadas = false;
     int contadorSincronizacao = 0;
 
     @Override
@@ -73,6 +81,9 @@ public class LoadingDataActivity extends BaseActivity {
         else if (!_usuariosCarregados) CarregarUsuariosFamiliasAsync();
         else if (!_noticiasCarregadas) CarregarNoticiasFamiliasAsync();
         else if (!_albunsCarregados) CarregarAlbunsFamiliasAsync();
+        else if (!_comentariosNoticiasCarregados) CarregarComentariosNoticiasFamiliasAsync();
+        else if (!_videosCarregados) CarregarVideosFamiliasAsync();
+        else if (!_fotosAlbunsCarregadas) CarregarFotosAlbunsFamiliasAsync();
         else AbrirTelaPrincipal();
     }
 
@@ -126,7 +137,7 @@ public class LoadingDataActivity extends BaseActivity {
                 JSONArray familias = bodyRetorno.getJSONArray("familia");
                 for (int i = 0 ; i < familias.length() ; i++) {
                     JSONObject familiaJson = familias.getJSONObject(i);
-                    Familia familia = new Familia(familiaJson.getInt("idFamilia"), familiaJson.getString("nome"));
+                    Familia familia = new Familia(familiaJson.getInt("idFamilia"), familiaJson.getString("nome"), familiaJson.getInt("idGaleria"));
                     _familias.add(familia);
                 }
             }
@@ -894,6 +905,230 @@ public class LoadingDataActivity extends BaseActivity {
         }
     }
 
+    private void CarregarComentariosNoticiasFamiliasAsync() {
+        for (int i = 0 ; i < _familias.size() ; i++)
+        {
+            Familia familia = _familias.get(i);
+            contadorSincronizacao = contadorSincronizacao + familia.getNoticias().size();
+            for (int j = 0 ; j < familia.getNoticias().size() ; j++) {
+                Noticia noticia = familia.getNoticias().get(j);
+                CarregarComentariosNoticiaAsync(noticia);
+            }
+        }
+    }
+
+    private void CarregarComentariosNoticiaAsync(Noticia noticia) {
+        try {
+            //monta url requisicao
+            String url = "noticias/" + noticia.getIdNoticia() + "/comentarios";
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(getApplication(), Request.Method.GET, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 200) //ok
+                            {
+                                JSONObject bodyRetorno = jsonRestResponse.get_bodyResponse();
+                                onSucessoComentariosNoticiaFamilia(noticia, bodyRetorno);
+                            }
+                            else //erros
+                            {
+                                onFalhaComentariosNoticiaFamilia("Retorno HTTP não esperado.");
+                            }
+                        }
+                    },
+                    error -> onFalhaComentariosEventoFamilia(error.getMessage())
+            );
+
+            //envia requisicao
+            RestService.getInstance(this).addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao requisitar Comentarios de Notica de familia: " + ex.getLocalizedMessage());
+        }
+    }
+
+    private void onFalhaComentariosNoticiaFamilia(String message) {
+        Log.d("Error", "Erro ao requisitar Comentarios de Notica de familia: " + message);
+    }
+
+    private void onSucessoComentariosNoticiaFamilia(Noticia noticia, JSONObject bodyRetorno) {
+        try {
+            contadorSincronizacao--;
+
+            if (bodyRetorno != null)
+            {
+                ArrayList<Comentario> comentarios = new ArrayList<>();
+
+                Object jsonBody = bodyRetorno.get("comentario");
+                if (jsonBody instanceof JSONArray) {
+                    // se for um vetor de elementos
+                    JSONArray itensJson = (JSONArray)jsonBody;
+
+                    for (int i = 0 ; i < itensJson.length() ; i++) {
+                        JSONObject comentarioJson = itensJson.getJSONObject(i);
+
+                        //recuperando data do comentario
+                        String dateStr = comentarioJson.getString("dataCriacao");
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                        Date dataCriacao = sdf.parse(dateStr);
+
+                        //criando comentario
+                        Comentario comentario = new Comentario(comentarioJson.getInt("idComentario"), comentarioJson.getString("descricao"), dataCriacao);
+                        comentarios.add(comentario);
+                    }
+                }
+                else if (jsonBody instanceof JSONObject) {
+                    //se for so um elemento
+                    JSONObject comentarioJson = (JSONObject)jsonBody;
+
+                    //recuperando data do comentario
+                    String dateStr = comentarioJson.getString("dataCriacao");
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                    Date dataCriacao = sdf.parse(dateStr);
+
+                    //criando comentario
+                    Comentario comentario = new Comentario(comentarioJson.getInt("idComentario"), comentarioJson.getString("descricao"), dataCriacao);
+                    comentarios.add(comentario);
+                }
+
+                noticia.setComentarios(comentarios);
+            }
+            else
+            {
+                ArrayList<Comentario> comentarios = new ArrayList<>();
+                noticia.setComentarios(comentarios);
+            }
+
+            //se todos os requests foram executados
+            if (contadorSincronizacao == 0)
+            {
+                _comentariosNoticiasCarregados = true;
+                CarregarFamiliasUsuarioAsync();
+            }
+        } catch (JSONException e) {
+            Log.d("Error", "Erro ao requisitar Comentarios de Notica de familia: " + e.getMessage());
+        } catch (ParseException e) {
+            Log.d("Error", "Erro ao requisitar Comentarios de Notica de familia: " + e.getMessage());
+        }
+    }
+
+    private void CarregarVideosFamiliasAsync() {
+        contadorSincronizacao = _familias.size();
+        for (int i = 0 ; i < _familias.size() ; i++)
+        {
+            CarregarVideosFamiliaAsync(_familias.get(i));
+        }
+    }
+
+    private void CarregarVideosFamiliaAsync(Familia familia) {
+        try {
+            //monta url requisicao
+            String url = "galerias/" + familia.getIdGaleria() + "/videos";
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(getApplication(), Request.Method.GET, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 200) //ok
+                            {
+                                JSONObject bodyRetorno = jsonRestResponse.get_bodyResponse();
+                                onSucessoVideosFamilia(familia, bodyRetorno);
+                            }
+                            else //erros
+                            {
+                                onFalhaVideosFamilia("Retorno HTTP não esperado.");
+                            }
+                        }
+                    },
+                    error -> onFalhaVideosFamilia(error.getMessage())
+            );
+
+            //envia requisicao
+            RestService.getInstance(this).addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao requisitar Videos de familia: " + ex.getLocalizedMessage());
+        }
+    }
+
+    private void onFalhaVideosFamilia(String message) {
+        Log.d("Error", "Erro ao requisitar Videos de familia: " + message);
+    }
+
+    private void onSucessoVideosFamilia(Familia familia, JSONObject bodyRetorno) {
+        try {
+            contadorSincronizacao--;
+
+            if (bodyRetorno != null)
+            {
+                ArrayList<Video> videos = new ArrayList<>();
+
+                Object jsonBody = bodyRetorno.get("video");
+                if (jsonBody instanceof JSONArray) {
+                    // se for um vetor de elementos
+                    JSONArray videosJson = (JSONArray)jsonBody;
+
+                    for (int i = 0 ; i < videosJson.length() ; i++) {
+                        JSONObject videoJson = videosJson.getJSONObject(i);
+
+                        //recuperando data do video
+                        String dateStr = videoJson.getString("dataCriacao");
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                        Date dataVideo = sdf.parse(dateStr);
+
+                        Video video = new Video(videoJson.getInt("idVideo"), videoJson.getString("descricao"), dataVideo, videoJson.getString("link"));
+                        videos.add(video);
+                    }
+                }
+                else if (jsonBody instanceof JSONObject) {
+                    //se for so um elemento
+                    JSONObject videoJson = (JSONObject)jsonBody;
+
+                    //recuperando data do video
+                    String dateStr = videoJson.getString("dataCriacao");
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                    Date dataVideo = sdf.parse(dateStr);
+
+                    Video video = new Video(videoJson.getInt("idVideo"), videoJson.getString("descricao"), dataVideo, videoJson.getString("link"));
+                    videos.add(video);
+                }
+
+                familia.setVideos(videos);
+            }
+            else
+            {
+                ArrayList<Video> videos = new ArrayList<>();
+                familia.setVideos(videos);
+            }
+
+            //se todos os requests foram executados
+            if (contadorSincronizacao == 0)
+            {
+                _videosCarregados = true;
+                CarregarFamiliasUsuarioAsync();
+            }
+        } catch (JSONException e) {
+            Log.d("Error", "Erro ao requisitar Videos de familia: " + e.getMessage());
+        } catch (ParseException e) {
+            Log.d("Error", "Erro ao requisitar Videos de familia: " + e.getMessage());
+        }
+    }
+
     private void CarregarAlbunsFamiliasAsync() {
         contadorSincronizacao = _familias.size();
         for (int i = 0 ; i < _familias.size() ; i++)
@@ -1000,6 +1235,121 @@ public class LoadingDataActivity extends BaseActivity {
             Log.d("Error", "Erro ao requisitar Noticias de familia: " + e.getMessage());
         } catch (ParseException e) {
             Log.d("Error", "Erro ao requisitar Noticias de familia: " + e.getMessage());
+        }
+    }
+
+    private void CarregarFotosAlbunsFamiliasAsync() {
+        for (int i = 0 ; i < _familias.size() ; i++)
+        {
+            Familia familia = _familias.get(i);
+            contadorSincronizacao = contadorSincronizacao + familia.getAlbuns().size();
+            for (int j = 0 ; j < familia.getAlbuns().size() ; j++) {
+                Album album = familia.getAlbuns().get(j);
+                CarregarFotosAlbumAsync(album);
+            }
+        }
+    }
+
+    private void CarregarFotosAlbumAsync(Album album) {
+        try {
+            //monta url requisicao
+            String url = "albuns/" + album.getIdAlbum() + "/fotos";
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(getApplication(), Request.Method.GET, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 200) //ok
+                            {
+                                JSONObject bodyRetorno = jsonRestResponse.get_bodyResponse();
+                                onSucessoFotosAlbumFamilia(album, bodyRetorno);
+                            }
+                            else //erros
+                            {
+                                onFalhaFotosAlbumFamilia("Retorno HTTP não esperado.");
+                            }
+                        }
+                    },
+                    error -> onFalhaFotosAlbumFamilia(error.getMessage())
+            );
+
+            //envia requisicao
+            RestService.getInstance(this).addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao requisitar Fotos de Album de familia: " + ex.getLocalizedMessage());
+        }
+    }
+
+    private void onFalhaFotosAlbumFamilia(String message) {
+        Log.d("Error", "Erro ao requisitar Fotos de Album de familia: " + message);
+    }
+
+    private void onSucessoFotosAlbumFamilia(Album album, JSONObject bodyRetorno) {
+        try {
+            contadorSincronizacao--;
+
+            if (bodyRetorno != null)
+            {
+                ArrayList<Foto> fotos = new ArrayList<>();
+
+                Object jsonBody = bodyRetorno.get("foto");
+                if (jsonBody instanceof JSONArray) {
+                    // se for um vetor de elementos
+                    JSONArray fotosJson = (JSONArray)jsonBody;
+
+                    for (int i = 0 ; i < fotosJson.length() ; i++) {
+                        JSONObject fotoJson = fotosJson.getJSONObject(i);
+
+                        //recuperando data da foto
+                        String dateStr = fotoJson.getString("dataCriacao");
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                        Date dataCriacao = sdf.parse(dateStr);
+
+                        //criando foto
+                        Foto foto = new Foto(fotoJson.getInt("idFoto"), fotoJson.getString("dados"), fotoJson.getString("descricao"), dataCriacao);
+                        fotos.add(foto);
+                    }
+                }
+                else if (jsonBody instanceof JSONObject) {
+                    //se for so um elemento
+                    JSONObject fotoJson = (JSONObject)jsonBody;
+
+                    //recuperando data da foto
+                    String dateStr = fotoJson.getString("dataCriacao");
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                    Date dataCriacao = sdf.parse(dateStr);
+
+                    //criando foto
+                    Foto foto = new Foto(fotoJson.getInt("idFoto"), fotoJson.getString("dados"), fotoJson.getString("descricao"), dataCriacao);
+                    fotos.add(foto);
+                }
+
+                album.setFotos(fotos);
+            }
+            else
+            {
+                ArrayList<Foto> fotos = new ArrayList<>();
+                album.setFotos(fotos);
+            }
+
+            //se todos os requests foram executados
+            if (contadorSincronizacao == 0)
+            {
+                _fotosAlbunsCarregadas = true;
+                CarregarFamiliasUsuarioAsync();
+            }
+        } catch (JSONException e) {
+            Log.d("Error", "Erro ao requisitar Fotos de Album de familia: " + e.getMessage());
+        } catch (ParseException e) {
+            Log.d("Error", "Erro ao requisitar Fotos de Album de familia: " + e.getMessage());
         }
     }
 

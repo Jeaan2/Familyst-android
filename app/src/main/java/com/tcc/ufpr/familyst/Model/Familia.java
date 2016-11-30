@@ -13,17 +13,29 @@ public class Familia {
     private String descricao;
     private Date dataCriacao;
     private String local;
+    int idGaleria;
+
 
     //propriedades exclusivas do client
     private ArrayList<Evento> eventos;
     private ArrayList<Usuario> usuarios;
     private ArrayList<Noticia> noticias;
     private ArrayList<Album> albuns;
+    private ArrayList<Video> videos;
 
-    public Familia (int idFamilia, String nome)
+    public Familia (int idFamilia, String nome, int idGaleria)
     {
         this.idFamilia = idFamilia;
         this.nome = nome;
+        this.idGaleria = idGaleria;
+    }
+
+    public int getIdGaleria() {
+        return idGaleria;
+    }
+
+    public void setIdGaleria(int idGaleria) {
+        this.idGaleria = idGaleria;
     }
 
     public int getIdFamilia() {
@@ -85,5 +97,13 @@ public class Familia {
 
     public void setAlbuns(ArrayList<Album> albuns) {
         this.albuns = albuns;
+    }
+
+    public ArrayList<Video> getVideos() {
+        return videos;
+    }
+
+    public void setVideos(ArrayList<Video> videos) {
+        this.videos = videos;
     }
 }
