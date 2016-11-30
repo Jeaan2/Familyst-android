@@ -1,6 +1,7 @@
 package com.tcc.ufpr.familyst.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tcc.ufpr.familyst.Activities.NoticiaActivity;
 import com.tcc.ufpr.familyst.Model.Noticia;
 import com.tcc.ufpr.familyst.R;
 
@@ -58,15 +60,21 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
 
         protected TextView vDescricao;
         protected View view;
+        private Context contexto;
+
+
 
         public NewsViewHolder(View itemView, final Context context) {
             super(itemView);
             view = itemView;
+            contexto = context;
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(context.getApplicationContext(), "Clicou no cardview", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(context.getApplicationContext(), NoticiaActivity.class);
+                    context.startActivity(intent);
                 }
             });
 

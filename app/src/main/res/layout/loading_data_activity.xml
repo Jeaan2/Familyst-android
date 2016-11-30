@@ -14,13 +14,14 @@
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:text="Carregando dados.. Por favor aguarde"
+        android:text="Carregando dados. Por favor, aguarde."
         android:textStyle="bold"
         android:textSize="25sp"
         android:textColor="@color/cor_branco"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_above="@+id/progressBar"
+        android:gravity="center_horizontal"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="22dp"
         android:id="@+id/textView" />

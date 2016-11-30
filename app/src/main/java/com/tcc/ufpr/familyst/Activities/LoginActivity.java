@@ -1,5 +1,9 @@
 package com.tcc.ufpr.familyst.Activities;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
@@ -37,7 +41,7 @@ public class LoginActivity extends BaseActivity{
     private TextView btnEsqueceuSenha;
     private String accessToken;
     private int idUsuario;
-    private final String baseURI = "http://192.168.15.53:8084/Familyst";
+    private final String baseURI = "http://192.168.1.7:8084/Familyst";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +57,8 @@ public class LoginActivity extends BaseActivity{
         btnEntrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                efetuarLogin();
+
+                    efetuarLogin();
             }
         });
 
@@ -81,10 +86,15 @@ public class LoginActivity extends BaseActivity{
             //monta headers adicionais
             Map headers = new ArrayMap();
 
+            //ABRE DIALOG DE PROGRESSO
+            final ProgressDialog dialogProgresso = ProgressDialog.show(LoginActivity.this, "Aguarde", "Conectando ao servidor.");
+            dialogProgresso.setCancelable(true);
+
             //monta body
             JSONObject postBody = new JSONObject();
             postBody.put("email", txtEmail.getText());
             postBody.put("senha", txtSenha.getText());
+
 
             //monta requisicao
             JsonRestRequest jsonRequest = new JsonRestRequest(getApplication(), Request.Method.POST, false, url, headers, postBody,
@@ -100,16 +110,19 @@ public class LoginActivity extends BaseActivity{
                                     ((FamilystApplication)getApplication()).set_accessToken(accessToken);
                                     onSucessoAccessToken();
                                 } catch (JSONException e) {
+                                    dialogProgresso.dismiss();
                                     onFalhaAccessToken(e.getMessage());
                                 }
                             }
                             else //erros
                             {
+                                dialogProgresso.dismiss();
                                 onFalhaAccessToken("Retorno HTTP não esperado.");
                             }
                         }
                     },
                     error -> onFalhaAccessToken(error.getMessage())
+
             );
 
             RestService.getInstance(this).addToRequestQueue(jsonRequest);
@@ -151,6 +164,10 @@ public class LoginActivity extends BaseActivity{
             //monta body
             JSONObject postBody = new JSONObject();
 
+            //chama progressDialog
+            final ProgressDialog dialogProgressoDadosUsuario = ProgressDialog.show(LoginActivity.this, "Aguarde", "Recebendo seus dados.");
+            dialogProgressoDadosUsuario.setCancelable(true);
+
             //monta requisicao
             JsonRestRequest jsonRequest = new JsonRestRequest(getApplication(), Request.Method.GET, true, url, headers, postBody,
                     new Response.Listener<JsonRestRequest.JsonRestResponse>() {
@@ -164,12 +181,14 @@ public class LoginActivity extends BaseActivity{
                                     Usuario usuario = new Usuario(idUsuario, nome, txtEmail.getText().toString());
                                     ((FamilystApplication)getApplication()).set_usuarioLogado(usuario);
                                     abrirTelaCarregarDados();
+                                    dialogProgressoDadosUsuario.dismiss();
                                 } catch (JSONException e) {
                                     onFalhaUsuario(e.getMessage());
                                 }
                             }
                             else //erros
                             {
+                                dialogProgressoDadosUsuario.dismiss();
                                 onFalhaUsuario("Retorno HTTP não esperado.");
                             }
                         }
@@ -181,6 +200,7 @@ public class LoginActivity extends BaseActivity{
             RestService.getInstance(this).addToRequestQueue(jsonRequest);
         }
         catch (Exception ex){
+
             Log.d("Error", "Erro ao efetuar login: " + ex.getLocalizedMessage());
         }
     }
@@ -194,7 +214,9 @@ public class LoginActivity extends BaseActivity{
             //TODO fechar essa activity.
             finish();
         });
+
     }
+
 
     private void onFalhaUsuario(String msgError) {
         runOnUiThread(()->{

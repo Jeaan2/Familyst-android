@@ -13,6 +13,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.tcc.ufpr.familyst.Activities.CadastroEventoActivity;
+import com.tcc.ufpr.familyst.Activities.ItensCadastroEventoActivity;
+import com.tcc.ufpr.familyst.Activities.TabHostEventosActivity;
 import com.tcc.ufpr.familyst.Adapters.EventoAdapter;
 import com.tcc.ufpr.familyst.FamilystApplication;
 import com.tcc.ufpr.familyst.Model.Evento;
@@ -46,7 +48,7 @@ public class EventosFragment extends Fragment {
                 Snackbar.make(view, "Chama cadastro de Eventos", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
-                Intent intent = new Intent(getContext(), CadastroEventoActivity.class);
+                Intent intent = new Intent(getContext(), TabHostEventosActivity.class);
                 startActivity(intent);
             }
         });

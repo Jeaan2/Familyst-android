@@ -11,7 +11,7 @@ import android.widget.TabHost;
 import com.tcc.ufpr.familyst.R;
 
 @SuppressWarnings("deprecation")
-public class CadastroEventoActivity extends TabActivity {
+public class CadastroEventoActivity extends BaseActivity {
 
     private EditText nomeEvento;
     private EditText localEvento;
@@ -23,17 +23,7 @@ public class CadastroEventoActivity extends TabActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro_evento);
 
-        TabHost tabHost = (TabHost) findViewById(R.id.tabHost);
 
-        TabHost.TabSpec tab1 = tabHost.newTabSpec("Evento");
-        TabHost.TabSpec tab2 = tabHost.newTabSpec("Itens");
-
-        tab1.setIndicator("Evento");
-        tab2.setIndicator("Itens");
-
-        tab1.setContent(new Intent(this, CadastroVideoActivity.class));
-        tabHost.addTab(tab1);
-        tabHost.addTab(tab2);
 
         nomeEvento = (EditText) findViewById(R.id.txt_nome_evento_cadastro);
         localEvento = (EditText) findViewById(R.id.txt_local_evento_cadastro);
