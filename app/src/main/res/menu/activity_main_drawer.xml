@@ -4,7 +4,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_events"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_evento"
             android:title="Eventos" />
         <item
             android:id="@+id/nav_members"
@@ -20,14 +20,14 @@
             android:title="Galeria" />
         <item
             android:id="@+id/nav_news"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_news"
             android:title="Notícias" />
     </group>
 
     <item >
             <item
                 android:id="@+id/nav_logout"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/ic_exit"
                 android:title="Sair" />
     </item>
 

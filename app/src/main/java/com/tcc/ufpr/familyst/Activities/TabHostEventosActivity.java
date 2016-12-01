@@ -1,37 +1,37 @@
 package com.tcc.ufpr.familyst.Activities;
 
 import android.content.Intent;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TabHost;
 
+import com.tcc.ufpr.familyst.Adapters.ViewPagerAdapter;
+import com.tcc.ufpr.familyst.Fragments.CadastroEventoFragment;
+import com.tcc.ufpr.familyst.Fragments.ItensCadastroEventoFragment;
+import com.tcc.ufpr.familyst.Fragments.MembrosFragment;
 import com.tcc.ufpr.familyst.R;
 
 public class TabHostEventosActivity extends AppCompatActivity {
+
+    TabLayout tabLayout;
+    ViewPager viewPager;
+    ViewPagerAdapter viewPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_host_eventos);
 
-        TabHost tabHost = (TabHost) findViewById(R.id.tabHost);
-        tabHost.setup();
+        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
 
-        //Define nomes e activities de cada tab.
-        TabHost.TabSpec tab1 = tabHost.newTabSpec("tab1");
-        TabHost.TabSpec tab2 = tabHost.newTabSpec("tab2");
+        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter.addFragments(new CadastroEventoFragment(), "Evento");
+        viewPagerAdapter.addFragments(new ItensCadastroEventoFragment(), "Itens");
 
-        tab1.setIndicator("Evento");
-        Intent intentEvento = new Intent(this, CadastroEventoActivity.class);
-        tab1.setContent(intentEvento);
-
-        tab2.setIndicator("Itens");
-        Intent intentItens = new Intent(this, ItensCadastroEventoActivity.class);
-        tab2.setContent(intentItens);
-
-
-        //Adiciona as tabs ao TabHost
-        tabHost.addTab(tab1);
-        tabHost.addTab(tab2);
+        viewPager.setAdapter(viewPagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
     }
 }

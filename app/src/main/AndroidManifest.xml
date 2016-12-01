@@ -25,7 +25,6 @@
         <activity android:name=".Activities.CadastroActivity" />
         <activity android:name=".Activities.CadastroFamiliaActivity" />
         <activity android:name=".Activities.CadastroNoticiaActivity" />
-        <activity android:name=".Activities.CadastroEventoActivity" />
         <activity android:name=".Activities.CadastroAlbumActivity" />
         <activity android:name=".Activities.CadastroGaleriaActivity" />
         <activity android:name=".Activities.AlbumActivity" />
@@ -41,7 +40,6 @@
         </activity>
         <activity android:name=".Activities.PerfilActivity" />
         <activity android:name=".Activities.RedefinirSenhaActivity" />
-        <activity android:name=".Activities.ItensCadastroEventoActivity" />
         <activity android:name=".Activities.TabHostEventosActivity" />
         <activity android:name=".Activities.NoticiaActivity"></activity>
     </application>
