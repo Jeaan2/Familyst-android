@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.tcc.ufpr.familyst.Activities.TabHostEventosActivity;
 import com.tcc.ufpr.familyst.Adapters.EventoAdapter;
@@ -77,6 +78,15 @@ public class EventosFragment extends Fragment {
                         .replace(R.id.fragment_container, fragment)
                         .addToBackStack(null)
                         .commit();
+            }
+        });
+
+        listViewProximosEventos.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(getContext(), "Long click!", Toast.LENGTH_LONG).show();
+
+                return true;
             }
         });
 
