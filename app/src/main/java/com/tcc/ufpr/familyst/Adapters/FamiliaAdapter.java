@@ -54,6 +54,12 @@ public class FamiliaAdapter extends ArrayAdapter<Familia> {
         return holder.txtNome;
     }
 
+    @Override
+    public Familia getItem(int position)
+    {
+        return dados.get(position);
+    }
+
     static class FamiliaHolder
     {
         TextView txtNome;

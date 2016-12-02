@@ -47,7 +47,7 @@ public class AlbumActivity extends BaseActivity{
 
         int idAlbum = (int) getIntent().getExtras().getSerializable("idAlbum");
         FamilystApplication familystApplication = ((FamilystApplication)getApplication());
-        Familia familiaSelecionada = familystApplication.get_usuarioLogado().getFamilias().get(familystApplication.getIdFamiliaSelecionada());
+        Familia familiaSelecionada = familystApplication.getFamiliaAtual();
 
         //acha album por id (Melhor implementacao seria Map<Int,Album> ao inves de Arraylist... para todas as nossas listas)
         for (int i = 0 ; i < familiaSelecionada.getAlbuns().size() ; i++) {
@@ -103,7 +103,7 @@ public class AlbumActivity extends BaseActivity{
         return imagemItens;*/
 
         FamilystApplication familystApplication = (FamilystApplication)getApplication();
-        Familia familiaSelecionada = familystApplication.get_usuarioLogado().getFamilias().get(familystApplication.getIdFamiliaSelecionada());
+        Familia familiaSelecionada = familystApplication.getFamiliaAtual();
 
         //preciso resolver o bug do id do album x posicao no arraylist - mocado 1 no get
         return familiaSelecionada.getAlbuns().get(0).getFotos();

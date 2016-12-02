@@ -180,6 +180,8 @@ public class LoginActivity extends BaseActivity{
                                     String nome = bodyRetorno.getString("nome");
                                     Usuario usuario = new Usuario(idUsuario, nome, txtEmail.getText().toString());
                                     ((FamilystApplication)getApplication()).set_usuarioLogado(usuario);
+                                    ((FamilystApplication)getApplication()).setLoginAutomatico(true);
+
                                     abrirTelaCarregarDados();
                                     dialogProgressoDadosUsuario.dismiss();
                                 } catch (JSONException e) {

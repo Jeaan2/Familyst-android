@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity
 
         FamilystApplication familystApplication = (FamilystApplication)getApplication();
         String user = familystApplication.get_usuarioLogado().getNome();
-        String familia = familystApplication.get_usuarioLogado().getFamilias().get(familystApplication.getIdFamiliaSelecionada()).getNome();
+        String familia = familystApplication.getFamiliaAtual().getNome();
 
         txtFamilia.setText(familia);
         txtUser.setText(user);
@@ -140,7 +141,17 @@ public class MainActivity extends AppCompatActivity
             MenuItem item = _menu.findItem(R.id.spinner);
             Spinner spinner = (Spinner) MenuItemCompat.getActionView(item);
             spinner.setAdapter(adapter); // set the adapter to provide layout of rows and content
-            //s.setOnItemSelectedListener(onItemSelectedListener);
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    Familia familiaSelecionada = (Familia) parent.getItemAtPosition(position);
+                    ((FamilystApplication)getApplication()).setIdFamiliaSelecionada(familiaSelecionada.getIdFamilia());
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
         }
     }
 
@@ -221,7 +232,12 @@ public class MainActivity extends AppCompatActivity
             fragmentTransaction.commit();
 
         } else if (id == R.id.nav_logout) {
-
+            ((FamilystApplication)getApplication()).setLoginAutomatico(false);
+            ((FamilystApplication)getApplication()).clearData();
+            Intent intent = new Intent();
+            intent.setClass(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

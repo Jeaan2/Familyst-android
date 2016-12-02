@@ -56,7 +56,7 @@ public class AlbumsFragment extends Fragment {
         FamilystApplication familystApplication = ((FamilystApplication)getActivity().getApplication());
 
         AlbumAdapter adapter = new AlbumAdapter(getContext(),
-                R.layout.item_lista_albuns, familystApplication.get_usuarioLogado().getFamilias().get(familystApplication.getIdFamiliaSelecionada()).getAlbuns());
+                R.layout.item_lista_albuns, familystApplication.getFamiliaAtual().getAlbuns());
 
         final ListView listViewAlbums = (ListView) rootView.findViewById(R.id.listview_albuns);
 
