@@ -3,6 +3,7 @@ package com.tcc.ufpr.familyst.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.tcc.ufpr.familyst.FamilystApplication;
 import com.tcc.ufpr.familyst.R;
 
 import java.util.Timer;
@@ -19,12 +20,19 @@ public class SplashScreen extends BaseActivity {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                finish();
 
-                //TODO se usuario logado, vai direto pra MainActivity, se não, vai para login
-                Intent intent = new Intent();
-                intent.setClass(SplashScreen.this, LoginActivity.class);
-                startActivity(intent);
+                if (((FamilystApplication)getApplication()).getLoginAutomatico()) {
+                    Intent intent = new Intent(getApplicationContext(), LoadingDataActivity.class);
+                    startActivity(intent);
+                }
+                else
+                {
+                    Intent intent = new Intent();
+                    intent.setClass(SplashScreen.this, LoginActivity.class);
+                    startActivity(intent);
+                }
+
+                finish();
             }
         }, 600);
     }

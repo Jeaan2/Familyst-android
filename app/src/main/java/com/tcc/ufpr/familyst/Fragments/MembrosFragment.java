@@ -35,7 +35,7 @@ public class MembrosFragment extends Fragment {
         FamilystApplication familystApplication = ((FamilystApplication)getActivity().getApplication());
 
         UsuarioAdapter adapter = new UsuarioAdapter(getContext(),
-                R.layout.item_lista_membros, familystApplication.get_usuarioLogado().getFamilias().get(familystApplication.getIdFamiliaSelecionada()).getUsuarios());
+                R.layout.item_lista_membros, familystApplication.getFamiliaAtual().getUsuarios());
 
         final ListView listViewMembros = (ListView) rootView.findViewById(R.id.listview_membros);
 

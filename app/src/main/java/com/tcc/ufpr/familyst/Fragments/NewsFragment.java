@@ -11,12 +11,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.tcc.ufpr.familyst.Activities.CadastroNoticiaActivity;
 import com.tcc.ufpr.familyst.Adapters.NewsAdapter;
 import com.tcc.ufpr.familyst.FamilystApplication;
+import com.tcc.ufpr.familyst.Interfaces.RestCallback;
 import com.tcc.ufpr.familyst.Model.Noticia;
 import com.tcc.ufpr.familyst.R;
+import com.tcc.ufpr.familyst.Services.RestService;
 
 import java.util.ArrayList;
 
@@ -65,9 +68,31 @@ public class NewsFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onStart(){
+        super.onStart();
+
+        //TODO chamar progressdialog
+        RestService.getInstance(getActivity()).CarregarNoticiasFamiliasAsync(new RestCallback(){
+            @Override
+            public void onRestResult(boolean success) {
+                if (success){
+                    Toast.makeText(getActivity(),"Notícias atualizadas.", Toast.LENGTH_SHORT).show();
+                    listaNoticiasCardView = carregarNoticias();
+                    noticiasAdapter.setListaNoticia(listaNoticiasCardView);
+                }
+                else
+                {
+                    Toast.makeText(getActivity(),"Falha ao atualizar notícias.", Toast.LENGTH_SHORT).show();
+                }
+                //TODO dismiss progressdialog
+            }
+        });
+    }
+
     private ArrayList<Noticia> carregarNoticias() {
         FamilystApplication familystApplication = ((FamilystApplication)getActivity().getApplication());
-        return familystApplication.get_usuarioLogado().getFamilias().get(familystApplication.getIdFamiliaSelecionada()).getNoticias();
+        return familystApplication.getFamiliaAtual().getNoticias();
     }
 
 }

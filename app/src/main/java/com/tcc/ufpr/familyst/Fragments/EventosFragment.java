@@ -52,7 +52,7 @@ public class EventosFragment extends Fragment {
         FamilystApplication familystApplication = ((FamilystApplication)getActivity().getApplication());
 
         EventoAdapter adapter = new EventoAdapter(getContext(),
-                R.layout.item_lista_eventos, familystApplication.get_usuarioLogado().getFamilias().get(familystApplication.getIdFamiliaSelecionada()).getEventos());
+                R.layout.item_lista_eventos, familystApplication.getFamiliaAtual().getEventos());
 
         final ListView listViewProximosEventos = (ListView) rootView.findViewById(R.id.list_proximos_eventos);
 
