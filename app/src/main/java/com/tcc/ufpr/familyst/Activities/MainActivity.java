@@ -29,6 +29,7 @@ import com.tcc.ufpr.familyst.Adapters.FamiliaAdapter;
 import com.tcc.ufpr.familyst.FamilystApplication;
 import com.tcc.ufpr.familyst.Fragments.AlbumsFragment;
 import com.tcc.ufpr.familyst.Fragments.EventosFragment;
+import com.tcc.ufpr.familyst.Fragments.GaleriaFragment;
 import com.tcc.ufpr.familyst.Fragments.GaleriasFragment;
 import com.tcc.ufpr.familyst.Fragments.MembrosFragment;
 import com.tcc.ufpr.familyst.Fragments.NewsFragment;
@@ -218,7 +219,7 @@ public class MainActivity extends AppCompatActivity
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
         } else if (id == R.id.nav_gallery) {
-            GaleriasFragment fragment = new GaleriasFragment();
+            GaleriaFragment fragment = new GaleriaFragment();
             FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);

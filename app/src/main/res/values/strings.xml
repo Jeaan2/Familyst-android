@@ -20,4 +20,20 @@
     </string-array>
     <string name="title_activity_tab_host_eventos">TabHostEventosActivity</string>
     <string name="section_format">Hello World from section: %1$d</string>
+
+    <!-- strings de output Noticias -->
+    <string name="sucesso_cadastro_noticia">Notícia enviada com sucesso!</string>
+    <string name="falha_cadastro_noticia">Falha ao enviar notícia!</string>
+    <string name="sucesso_atualizar_noticias">Notícias atualizadas.</string>
+    <string name="falha_atualizar_noticias">Falha ao atualizar notícias.</string>
+    <!-- strings de output Videos -->
+    <string name="sucesso_cadastro_video">Vídeo enviado com sucesso!</string>
+    <string name="falha_cadastro_video">Falha ao enviar vídeo!</string>
+    <string name="sucesso_atualizar_videos">Vídeos atualizados.</string>
+    <string name="falha_atualizar_videos">Falha ao atualizar vídeos.</string>
+    <!-- strings de output Albuns -->
+    <string name="sucesso_cadastro_album">Álbum enviado com sucesso!</string>
+    <string name="falha_cadastro_album">Falha ao enviar álbum!</string>
+    <string name="sucesso_atualizar_albums">Álbuns atualizados.</string>
+    <string name="falha_atualizar_albums">Falha ao atualizar álbum.</string>
 </resources>

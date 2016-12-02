@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.tcc.ufpr.familyst.Model.Video;
 import com.tcc.ufpr.familyst.R;
 
+import java.util.ArrayList;
+
 /**
  * Created by jeaan_000 on 02/11/2016.
  */
@@ -18,9 +20,9 @@ public class VideoAdapter extends ArrayAdapter<Video> {
 
     private Context context;
     int layoutResourceId;
-    Video dados[] = null;
+    ArrayList<Video> dados = null;
 
-    public VideoAdapter(Context context, int layoutResourceId, Video[] dados ) {
+    public VideoAdapter(Context context, int layoutResourceId, ArrayList<Video> dados ) {
         super(context, layoutResourceId, dados);
         this.context = context;
         this.layoutResourceId = layoutResourceId;
@@ -47,7 +49,7 @@ public class VideoAdapter extends ArrayAdapter<Video> {
             holder = (VideoHolder) row.getTag();
         }
 
-        Video video = dados[position];
+        Video video = dados.get(position);
         holder.txtDescricao.setText(video.getDescricao());
         holder.txtData.setText(video.getDataCriacao().toString());
 

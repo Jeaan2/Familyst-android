@@ -1427,5 +1427,91 @@ public class RestService {
             Log.d("Error", "Erro ao enviar noticia: " + ex.getLocalizedMessage());
         }
     }
+
+    public void EnviarVideo(String descricao, String link, RestCallback restCallback) {
+        try {
+            //seta retorno
+            _restCallback = restCallback;
+
+            //monta url requisicao
+            String url = "videos";
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+            postBody.put("descricao", descricao);
+            postBody.put("link", link);
+            postBody.put("idGaleria", getFamiliaAtual().getIdGaleria());
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(((Activity)mCtx).getApplication(), Request.Method.POST, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 201) //created
+                            {
+                                _restCallback.onRestResult(true);
+                            }
+                            else //erros
+                            {
+                                _restCallback.onRestResult(false);
+                            }
+                        }
+                    },
+                    error ->  _restCallback.onRestResult(false)
+            );
+
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao enviar video: " + ex.getLocalizedMessage());
+        }
+    }
+
+    public void EnviarAlbum(String nome, String descricao, RestCallback restCallback) {
+        try {
+            //seta retorno
+            _restCallback = restCallback;
+
+            //monta url requisicao
+            String url = "albuns";
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+            postBody.put("nome", nome);
+            postBody.put("descricao", descricao);
+            postBody.put("idFamilia", getFamiliaAtual().getIdFamilia());
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(((Activity)mCtx).getApplication(), Request.Method.POST, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 201) //created
+                            {
+                                _restCallback.onRestResult(true);
+                            }
+                            else //erros
+                            {
+                                _restCallback.onRestResult(false);
+                            }
+                        }
+                    },
+                    error ->  _restCallback.onRestResult(false)
+            );
+
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao enviar album: " + ex.getLocalizedMessage());
+        }
+    }
 }
 

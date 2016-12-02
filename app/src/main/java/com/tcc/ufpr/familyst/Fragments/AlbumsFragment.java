@@ -11,16 +11,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.tcc.ufpr.familyst.Activities.AlbumActivity;
 import com.tcc.ufpr.familyst.Activities.CadastroAlbumActivity;
 import com.tcc.ufpr.familyst.Adapters.AlbumAdapter;
 import com.tcc.ufpr.familyst.FamilystApplication;
+import com.tcc.ufpr.familyst.Interfaces.RestCallback;
 import com.tcc.ufpr.familyst.Model.Album;
 import com.tcc.ufpr.familyst.Model.Evento;
+import com.tcc.ufpr.familyst.Model.Video;
 import com.tcc.ufpr.familyst.R;
+import com.tcc.ufpr.familyst.Services.RestService;
 
 import java.sql.Date;
+import java.util.ArrayList;
 
 
 /**
@@ -28,6 +33,7 @@ import java.sql.Date;
  */
 public class AlbumsFragment extends Fragment {
 
+    ListView listViewAlbums;
 
     public AlbumsFragment() {
         // Required empty public constructor
@@ -39,6 +45,7 @@ public class AlbumsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_albums, container, false);
+        listViewAlbums = (ListView) rootView.findViewById(R.id.listview_albuns);
 
 
         FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
@@ -53,16 +60,37 @@ public class AlbumsFragment extends Fragment {
             }
         });
 
-        FamilystApplication familystApplication = ((FamilystApplication)getActivity().getApplication());
+        CarregarListaAlbuns();
+
+        return rootView;
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+
+        //TODO chamar progressdialog
+        RestService.getInstance(getActivity()).CarregarAlbunsFamiliasAsync(new RestCallback(){
+            @Override
+            public void onRestResult(boolean success) {
+                if (success){
+                    Toast.makeText(getActivity(),getResources().getText(R.string.sucesso_atualizar_albums), Toast.LENGTH_SHORT).show();
+                    CarregarListaAlbuns();
+                }
+                else
+                {
+                    Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_albums), Toast.LENGTH_SHORT).show();
+                }
+                //TODO dismiss progressdialog
+            }
+        });
+    }
+
+    private void CarregarListaAlbuns() {
 
         AlbumAdapter adapter = new AlbumAdapter(getContext(),
-                R.layout.item_lista_albuns, familystApplication.getFamiliaAtual().getAlbuns());
-
-        final ListView listViewAlbums = (ListView) rootView.findViewById(R.id.listview_albuns);
-
+                R.layout.item_lista_albuns, carregarAlbuns());
         listViewAlbums.setAdapter(adapter);
-
-
         listViewAlbums.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -81,7 +109,10 @@ public class AlbumsFragment extends Fragment {
             }
         });
 
-        return rootView;
     }
 
+    private ArrayList<Album> carregarAlbuns() {
+        FamilystApplication familystApplication = ((FamilystApplication)getActivity().getApplication());
+        return familystApplication.getFamiliaAtual().getAlbuns();
+    }
 }
