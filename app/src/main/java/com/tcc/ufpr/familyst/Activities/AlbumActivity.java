@@ -42,10 +42,11 @@ public class AlbumActivity extends BaseActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_album);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_album);
 
-        int idAlbum = (int) getIntent().getExtras().getSerializable("idAlbum");
+        int idAlbum = getIntent().getExtras().getInt("idAlbum");
+
         FamilystApplication familystApplication = ((FamilystApplication)getApplication());
         Familia familiaSelecionada = familystApplication.getFamiliaAtual();
 
@@ -67,11 +68,9 @@ public class AlbumActivity extends BaseActivity{
             }
         });
 
-            gridView = (GridView) findViewById(R.id.gridView);
-            gridAdapter = new GridViewAdapter(this, R.layout.item_gridview_album, getDados());
-            gridView.setAdapter(gridAdapter);
-
-
+        gridView = (GridView) findViewById(R.id.gridView);
+        gridAdapter = new GridViewAdapter(this, R.layout.item_gridview_album, getDados());
+        gridView.setAdapter(gridAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -85,8 +84,7 @@ public class AlbumActivity extends BaseActivity{
                 startActivity(intent);
             }
         });
-
-}
+    }
 
     //preparando dados escrotos para a gridView
     private ArrayList<Foto> getDados(){
@@ -102,11 +100,11 @@ public class AlbumActivity extends BaseActivity{
 
         return imagemItens;*/
 
-        FamilystApplication familystApplication = (FamilystApplication)getApplication();
-        Familia familiaSelecionada = familystApplication.getFamiliaAtual();
+        ArrayList<Foto> fotos = album.getFotos();
+        if (fotos == null)
+            return new ArrayList<>();
 
-        //preciso resolver o bug do id do album x posicao no arraylist - mocado 1 no get
-        return familiaSelecionada.getAlbuns().get(0).getFotos();
+        return fotos;
     }
 
     private void enviarfoto(Bitmap bitmap)

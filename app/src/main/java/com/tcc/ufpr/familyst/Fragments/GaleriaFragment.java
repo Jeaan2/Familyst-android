@@ -2,6 +2,7 @@ package com.tcc.ufpr.familyst.Fragments;
 
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,13 +12,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.tcc.ufpr.familyst.Activities.CadastroVideoActivity;
 import com.tcc.ufpr.familyst.Adapters.VideoAdapter;
+import com.tcc.ufpr.familyst.FamilystApplication;
+import com.tcc.ufpr.familyst.Interfaces.RestCallback;
+import com.tcc.ufpr.familyst.Model.Noticia;
 import com.tcc.ufpr.familyst.Model.Video;
 import com.tcc.ufpr.familyst.R;
+import com.tcc.ufpr.familyst.Services.RestService;
 
 import java.sql.Date;
+import java.util.ArrayList;
 
 
 /**
@@ -25,6 +32,7 @@ import java.sql.Date;
  */
 public class GaleriaFragment extends Fragment {
 
+    ListView listViewVideos;
 
     public GaleriaFragment() {
         // Required empty public constructor
@@ -35,7 +43,8 @@ public class GaleriaFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       View rootView = inflater.inflate(R.layout.fragment_galeria, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_galeria, container, false);
+        listViewVideos = (ListView) rootView.findViewById(R.id.listview_galeria_videos);
 
         FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -50,29 +59,50 @@ public class GaleriaFragment extends Fragment {
             }
         });
 
-        Video dados_video[] = new Video[]
+        CarregarListaVideos();
+
+        return rootView;
+
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+
+        //TODO chamar progressdialog
+        RestService.getInstance(getActivity()).CarregarVideosFamiliasAsync(new RestCallback(){
+            @Override
+            public void onRestResult(boolean success) {
+                if (success){
+                    Toast.makeText(getActivity(),getResources().getText(R.string.sucesso_atualizar_videos), Toast.LENGTH_SHORT).show();
+                    CarregarListaVideos();
+                }
+                else
                 {
-                     new Video(1, "Joãozinho jogando bola", new Date(1, 1, 1), "https://www.youtube.com/watch?v=J---aiyznGQ"),
-                     new Video(1, "Moda de Viola no domingo", new Date(1, 1, 1), "https://www.youtube.com/watch?v=J---aiyznGQ"),
-                     new Video(1, "Festa Junina tranquila", new Date(1, 1, 1), "https://www.youtube.com/watch?v=J---aiyznGQ"),
-                };
+                    Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_videos), Toast.LENGTH_SHORT).show();
+                }
+                //TODO dismiss progressdialog
+            }
+        });
+    }
 
+    private void CarregarListaVideos() {
         VideoAdapter adapter = new VideoAdapter(getContext(),
-                R.layout.item_lista_video, dados_video);
-
-        final ListView listViewVideos = (ListView) rootView.findViewById(R.id.listview_galeria_videos);
-
+                R.layout.item_lista_video, carregarVideos());
         listViewVideos.setAdapter(adapter);
-
         listViewVideos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //TODO bindar link do video para abrir no youtube
+                Video video = (Video) parent.getItemAtPosition(position);
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(video.getLink())));
             }
         });
+    }
 
-        return rootView;
-
+    private ArrayList<Video> carregarVideos() {
+        FamilystApplication familystApplication = ((FamilystApplication)getActivity().getApplication());
+        return familystApplication.getFamiliaAtual().getVideos();
     }
 
 }

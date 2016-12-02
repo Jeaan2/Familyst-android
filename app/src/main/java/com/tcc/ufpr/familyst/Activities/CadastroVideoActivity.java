@@ -4,8 +4,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.tcc.ufpr.familyst.Interfaces.RestCallback;
 import com.tcc.ufpr.familyst.R;
+import com.tcc.ufpr.familyst.Services.RestService;
 
 public class CadastroVideoActivity extends BaseActivity {
 
@@ -24,8 +27,19 @@ public class CadastroVideoActivity extends BaseActivity {
         btnCadastrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //ENVIAR cadastro ao servidor
-                //Fechar essa activity
+                RestService.getInstance(CadastroVideoActivity.this).EnviarVideo( txtDescricao.getText().toString(), txtLink.getText().toString(), new RestCallback(){
+                    @Override
+                    public void onRestResult(boolean success) {
+                        if (success){
+                            Toast.makeText(getApplicationContext(),getResources().getText(R.string.sucesso_cadastro_video), Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                        else
+                        {
+                            Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_cadastro_video), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
     }

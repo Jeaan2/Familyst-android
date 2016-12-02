@@ -32,12 +32,12 @@ public class CadastroNoticiaActivity extends BaseActivity {
                     @Override
                     public void onRestResult(boolean success) {
                         if (success){
-                            Toast.makeText(getApplicationContext(),"Notícia enviada com sucesso!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),getResources().getText(R.string.sucesso_cadastro_noticia), Toast.LENGTH_SHORT).show();
                             finish();
                         }
                         else
                         {
-                            Toast.makeText(getApplicationContext(),"Falha ao enviar notícia!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_cadastro_noticia), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

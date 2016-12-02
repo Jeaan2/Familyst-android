@@ -4,8 +4,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.tcc.ufpr.familyst.Interfaces.RestCallback;
 import com.tcc.ufpr.familyst.R;
+import com.tcc.ufpr.familyst.Services.RestService;
 
 public class CadastroAlbumActivity extends BaseActivity {
 
@@ -25,8 +28,19 @@ public class CadastroAlbumActivity extends BaseActivity {
         btnCadastrarAlbum.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Enviar album cadastrado
-                //fechar esta activity
+                RestService.getInstance(CadastroAlbumActivity.this).EnviarAlbum( nomeAlbum.getText().toString(), descricaoAlbum.getText().toString(), new RestCallback(){
+                    @Override
+                    public void onRestResult(boolean success) {
+                        if (success){
+                            Toast.makeText(getApplicationContext(),getResources().getText(R.string.sucesso_cadastro_album), Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                        else
+                        {
+                            Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_cadastro_album), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
     }
