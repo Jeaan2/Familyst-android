@@ -41,7 +41,8 @@
         <activity android:name=".Activities.PerfilActivity" />
         <activity android:name=".Activities.RedefinirSenhaActivity" />
         <activity android:name=".Activities.TabHostEventosActivity" />
-        <activity android:name=".Activities.NoticiaActivity"></activity>
+        <activity android:name=".Activities.NoticiaActivity" />
+        <activity android:name=".Activities.CadastroMembroActivity"></activity>
     </application>
 
 </manifest>

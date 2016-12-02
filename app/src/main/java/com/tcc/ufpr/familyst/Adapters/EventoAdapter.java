@@ -50,9 +50,12 @@ public class EventoAdapter extends ArrayAdapter<Evento> {
             holder = (EventoHolder)row.getTag();
         }
 
+        android.text.format.DateFormat df = new android.text.format.DateFormat();
         Evento evento = dados.get(position);
+
+        String dataFormatada =  df.format("dd-MM-yyyy", evento.getDataCriacao()).toString();
         holder.txtNome.setText(evento.getNome());
-        holder.txtData.setText(evento.getDataCriacao().toString());
+        holder.txtData.setText(dataFormatada);
 
         return row;
     }
