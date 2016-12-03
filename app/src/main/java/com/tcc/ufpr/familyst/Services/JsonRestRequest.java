@@ -41,6 +41,7 @@ public class JsonRestRequest extends JsonRequest<JsonRestRequest.JsonRestRespons
 
         if (headers == null) headers = new ArrayMap<>();
         headers.put("Accept", "application/json");
+        headers.put("Content-Type", "application/json");
 
         if (authenticated)
             headers.put("Authorization", "Basic " + ((FamilystApplication)app).get_accessToken());

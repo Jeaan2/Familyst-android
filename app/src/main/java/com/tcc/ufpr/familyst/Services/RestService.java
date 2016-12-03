@@ -5,12 +5,14 @@ import android.content.Context;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 import com.tcc.ufpr.familyst.FamilystApplication;
 import com.tcc.ufpr.familyst.Interfaces.RestCallback;
+import com.tcc.ufpr.familyst.Interfaces.RestObjectReceiveCallback;
 import com.tcc.ufpr.familyst.Model.Album;
 import com.tcc.ufpr.familyst.Model.Comentario;
 import com.tcc.ufpr.familyst.Model.Evento;
@@ -1786,6 +1788,148 @@ public class RestService {
         }
         catch (Exception ex){
             Log.d("Error", "Erro ao enviar item: " + ex.getLocalizedMessage());
+        }
+    }
+
+    public void ReceberUsuario(String emailUsuario, RestObjectReceiveCallback restObjectReceiveCallback) {
+        try {
+
+            //monta url requisicao
+            String url = "usuariosporemail/" + emailUsuario;
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest((((Activity)mCtx).getApplication()), Request.Method.GET, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 200) //ok
+                            {
+                                JSONObject usuarioJson = jsonRestResponse.get_bodyResponse();
+                                if (usuarioJson != null)
+                                {
+                                    //criando usuario
+                                    Usuario usuario = null;
+                                    try {
+
+                                        usuario = new Usuario(usuarioJson.getInt("idUsuario"), usuarioJson.getString("nome"), usuarioJson.getString("email"));
+                                        restObjectReceiveCallback.onRestResult(usuario);
+
+                                    } catch (JSONException e) {
+                                        restObjectReceiveCallback.onRestResult(null);
+                                    }
+                                }
+                                else
+                                {
+                                    restObjectReceiveCallback.onRestResult(null);
+                                }
+                            }
+                            else //erros
+                            {
+                                restObjectReceiveCallback.onRestResult(null);
+                            }
+                        }
+                    },
+                    error -> restObjectReceiveCallback.onRestResult(null)
+            );
+
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao requisitar usuario por email: " + ex.getLocalizedMessage());
+        }
+    }
+
+    public void RelacionarUsuarioFamilia(Usuario usuario, Familia familiaAtual, RestCallback restCallback) {
+        try {
+
+            //seta retorno
+            _restCallback = restCallback;
+
+            //monta url requisicao
+            String url = "familias/" + familiaAtual.getIdFamilia() + "/usuarios";
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+            postBody.put("idUsuario", usuario.getIdUsuario());
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(((Activity)mCtx).getApplication(), Request.Method.POST, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 201) //created
+                            {
+                                _restCallback.onRestResult(true);
+                            }
+                            else //erros
+                            {
+                                _restCallback.onRestResult(false);
+                            }
+                        }
+                    },
+                    error ->  _restCallback.onRestResult(false)
+            );
+
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao relacionar usuario com familia: " + ex.getLocalizedMessage());
+        }
+    }
+
+    public void EnviarEmailSenha(String emailUsuario, RestCallback restCallback) {
+        try {
+            //seta retorno
+            _restCallback = restCallback;
+
+            //monta url requisicao
+            String url = "usuariosporemail";
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+            postBody.put("email", emailUsuario);
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(((Activity)mCtx).getApplication(), Request.Method.POST, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 201) //created
+                            {
+                                _restCallback.onRestResult(true);
+                            }
+                            else //erros
+                            {
+                                _restCallback.onRestResult(false);
+                            }
+                        }
+                    },
+                    error ->  _restCallback.onRestResult(false)
+            );
+            //requisicao de email demora mais
+            jsonRequest.setRetryPolicy(new DefaultRetryPolicy(
+                    60000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao enviar email de senha: " + ex.getLocalizedMessage());
         }
     }
 }

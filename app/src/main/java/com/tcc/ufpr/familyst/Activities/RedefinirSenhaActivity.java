@@ -5,8 +5,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.tcc.ufpr.familyst.Interfaces.RestCallback;
 import com.tcc.ufpr.familyst.R;
+import com.tcc.ufpr.familyst.Services.RestService;
 
 public class RedefinirSenhaActivity extends AppCompatActivity {
 
@@ -25,8 +28,19 @@ public class RedefinirSenhaActivity extends AppCompatActivity {
         btnRedefinirSenha.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //enviar email para redefinição de senha
-                //fechar essa activity
+                RestService.getInstance(RedefinirSenhaActivity.this).EnviarEmailSenha( emailRedefinir.getText().toString(), new RestCallback(){
+                    @Override
+                    public void onRestResult(boolean success) {
+                        if (success){
+                            Toast.makeText(getApplicationContext(),getResources().getText(R.string.sucesso_envio_email), Toast.LENGTH_LONG).show();
+                            finish();
+                        }
+                        else
+                        {
+                            Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_envio_email), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
     }

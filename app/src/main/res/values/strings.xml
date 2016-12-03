@@ -35,10 +35,23 @@
     <string name="sucesso_cadastro_album">Álbum enviado com sucesso!</string>
     <string name="falha_cadastro_album">Falha ao enviar álbum!</string>
     <string name="sucesso_atualizar_albums">Álbuns atualizados.</string>
-    <string name="falha_atualizar_albums">Falha ao atualizar álbum.</string>
+    <string name="falha_atualizar_albums">Falha ao atualizar álbuns.</string>
     <!-- strings de output Eventos -->
     <string name="sucesso_cadastro_evento">Evento enviado com sucesso!</string>
     <string name="falha_cadastro_evento">Falha ao enviar evento!</string>
     <string name="sucesso_atualizar_eventos">Eventos atualizados.</string>
-    <string name="falha_atualizar_eventos">Falha ao atualizar evento.</string>
+    <string name="falha_atualizar_eventos">Falha ao atualizar eventos.</string>
+    <!-- strings de output Membros -->
+    <string name="sucesso_cadastro_membro">Membro cadastrado com sucesso!</string>
+    <string name="falha_cadastro_membro">Falha ao cadastrado membro!</string>
+    <string name="sucesso_atualizar_membros">Membros atualizados.</string>
+    <string name="falha_atualizar_membros">Falha ao atualizar membros.</string>
+    <!-- strings de output Relacionamento usuario familia -->
+    <string name="sucesso_relacionamento_membro">Membro inserido com sucesso!</string>
+    <string name="falha_relacionamento_membro">Falha ao inserido membro!</string>
+    <string name="falha_relacionamento_membro_inexistente">Usuário não cadastrado na plataforma.</string>
+    <string name="falha_relacionamento_membro_ja_pertencente">Usuário já pertencente à família.</string>
+    <!-- strings de output envio email -->
+    <string name="sucesso_envio_email">Senha enviada com sucesso! Verifique a caixa de entrada do e-mail informado.</string>
+    <string name="falha_envio_email">Falha ao enviar senha!</string>
 </resources>

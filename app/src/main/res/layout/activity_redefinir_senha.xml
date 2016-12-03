@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Informe seu E-mail para redefinir sua senha!"
+        android:text="Informe seu e-mail para receber sua senha!"
         android:textSize="18dp"
         android:textStyle="bold"
         android:id="@+id/txt_redefinir_senha_cabecalho"
