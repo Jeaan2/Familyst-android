@@ -54,4 +54,9 @@
     <!-- strings de output envio email -->
     <string name="sucesso_envio_email">Senha enviada com sucesso! Verifique a caixa de entrada do e-mail informado.</string>
     <string name="falha_envio_email">Falha ao enviar senha!</string>
+    <!-- strings de output Comentarios -->
+    <string name="sucesso_cadastro_comentario">Comentário enviado com sucesso!</string>
+    <string name="falha_cadastro_comentario">Falha ao enviar comentário!</string>
+    <string name="sucesso_atualizar_comentarios">Comentários atualizados.</string>
+    <string name="falha_atualizar_comentarios">Falha ao atualizar comentários.</string>
 </resources>

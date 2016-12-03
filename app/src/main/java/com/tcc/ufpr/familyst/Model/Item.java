@@ -1,9 +1,11 @@
 package com.tcc.ufpr.familyst.Model;
 
+import java.io.Serializable;
+
 /**
  * Created by jeaan_000 on 30/10/2016.
  */
-public class Item {
+public class Item implements Serializable {
 
     private int idItem;
     private int quantidade;

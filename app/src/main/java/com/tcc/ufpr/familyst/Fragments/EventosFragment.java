@@ -71,8 +71,63 @@ public class EventosFragment extends Fragment {
             @Override
             public void onRestResult(boolean success) {
                 if (success){
-                    Toast.makeText(getActivity(),getResources().getText(R.string.sucesso_atualizar_eventos), Toast.LENGTH_SHORT).show();
-                    CarregarListaEventos();
+                    RestService.getInstance(getActivity()).CarregarTiposEventosFamiliasAsync(new RestCallback(){
+                        @Override
+                        public void onRestResult(boolean success) {
+                            if (success){
+                                RestService.getInstance(getActivity()).CarregarUsuarioEventosFamiliasAsync(new RestCallback(){
+                                    @Override
+                                    public void onRestResult(boolean success) {
+                                        if (success){
+                                            RestService.getInstance(getActivity()).CarregarItensEventosFamiliasAsync(new RestCallback(){
+                                                @Override
+                                                public void onRestResult(boolean success) {
+                                                    if (success){
+                                                        RestService.getInstance(getActivity()).CarregarComentariosEventosFamiliasAsync(new RestCallback(){
+                                                            @Override
+                                                            public void onRestResult(boolean success) {
+                                                                if (success){
+                                                                    RestService.getInstance(getActivity()).CarregarTiposItensAsync(new RestCallback(){
+                                                                        @Override
+                                                                        public void onRestResult(boolean success) {
+                                                                            if (success){
+                                                                                Toast.makeText(getActivity(),getResources().getText(R.string.sucesso_atualizar_eventos), Toast.LENGTH_SHORT).show();
+                                                                                CarregarListaEventos();
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_eventos), Toast.LENGTH_SHORT).show();
+                                                                            }
+                                                                        }
+                                                                    });
+                                                                }
+                                                                else
+                                                                {
+                                                                    Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_eventos), Toast.LENGTH_SHORT).show();
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+                                                    else
+                                                    {
+                                                        Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_eventos), Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            });
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_eventos), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_eventos), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
                 else
                 {
@@ -93,12 +148,12 @@ public class EventosFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //TODO abre fragment de Evento, passando o objeto selecionado na lista
 
-                Evento evento = (Evento)parent.getAdapter().getItem(position);
+                int idEvento = ((Evento)parent.getItemAtPosition(position)).getIdEvento();
 
                 EventoFragment fragment = new EventoFragment();
                 Bundle data = new Bundle();
+                data.putInt("idEvento", idEvento);
 
-                data.putSerializable("evento", evento);
                 fragment.setArguments(data);
 
                 getFragmentManager().beginTransaction()

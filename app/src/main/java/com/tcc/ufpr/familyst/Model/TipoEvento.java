@@ -1,10 +1,12 @@
 package com.tcc.ufpr.familyst.Model;
 
+import java.io.Serializable;
+
 /**
  * Created by jdfid on 27/11/2016.
  */
 
-public class TipoEvento {
+public class TipoEvento implements Serializable {
 
     private int idTipoEvento;
     private String nome;

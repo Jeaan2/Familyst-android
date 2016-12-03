@@ -1,11 +1,12 @@
 package com.tcc.ufpr.familyst.Model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by jeaan_000 on 19/10/2016.
  */
-public class Comentario {
+public class Comentario implements Serializable {
 
     private int idComentario;
     private String descricao;
