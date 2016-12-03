@@ -50,8 +50,6 @@ public class GaleriaFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Chama cadastro de notícias", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
 
                 //TODO mudar para CadastroVideo
                 Intent intent = new Intent(getContext(), CadastroVideoActivity.class);
