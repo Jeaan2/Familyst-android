@@ -53,7 +53,9 @@ public class LoadingDataActivity extends BaseActivity {
     boolean _comentariosNoticiasCarregados = false;
     boolean _videosCarregados = false;
     boolean _albunsCarregados = false;
-    boolean _fotosAlbunsCarregadas = false;
+    boolean _fotosAlbunsCarregadas = false;;
+    boolean _tiposEventoCarregados = false;;
+    boolean _tiposItensCarregadas = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,6 +194,26 @@ public class LoadingDataActivity extends BaseActivity {
                 public void onRestResult(boolean success) {
                     if (success){
                         _fotosAlbunsCarregadas = true;
+                        CarregarFamiliasUsuarioAsync();
+                    }
+                }
+            });
+        else if (!_tiposEventoCarregados)
+            RestService.getInstance(this).CarregarTiposEventosAsync(new RestCallback(){
+                @Override
+                public void onRestResult(boolean success) {
+                    if (success){
+                        _tiposEventoCarregados = true;
+                        CarregarFamiliasUsuarioAsync();
+                    }
+                }
+            });
+        else if (!_tiposItensCarregadas)
+            RestService.getInstance(this).CarregarTiposItemAsync(new RestCallback(){
+                @Override
+                public void onRestResult(boolean success) {
+                    if (success){
+                        _tiposItensCarregadas = true;
                         CarregarFamiliasUsuarioAsync();
                     }
                 }

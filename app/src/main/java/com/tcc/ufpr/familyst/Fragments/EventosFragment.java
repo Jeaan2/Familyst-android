@@ -13,11 +13,18 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.tcc.ufpr.familyst.Activities.AlbumActivity;
 import com.tcc.ufpr.familyst.Activities.TabHostEventosActivity;
+import com.tcc.ufpr.familyst.Adapters.AlbumAdapter;
 import com.tcc.ufpr.familyst.Adapters.EventoAdapter;
 import com.tcc.ufpr.familyst.FamilystApplication;
+import com.tcc.ufpr.familyst.Interfaces.RestCallback;
+import com.tcc.ufpr.familyst.Model.Album;
 import com.tcc.ufpr.familyst.Model.Evento;
 import com.tcc.ufpr.familyst.R;
+import com.tcc.ufpr.familyst.Services.RestService;
+
+import java.util.ArrayList;
 
 
 /**
@@ -25,6 +32,7 @@ import com.tcc.ufpr.familyst.R;
  */
 public class EventosFragment extends Fragment {
 
+    ListView listViewProximosEventos;
 
     public EventosFragment() {
         // Required empty public constructor
@@ -36,6 +44,7 @@ public class EventosFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_events, container, false);
+        listViewProximosEventos = (ListView) rootView.findViewById(R.id.list_proximos_eventos);
 
         FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         fab.show();
@@ -50,15 +59,35 @@ public class EventosFragment extends Fragment {
             }
         });
 
-        FamilystApplication familystApplication = ((FamilystApplication)getActivity().getApplication());
+        return rootView;
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+
+        //TODO chamar progressdialog
+        RestService.getInstance(getActivity()).CarregarEventosFamiliasAsync(new RestCallback(){
+            @Override
+            public void onRestResult(boolean success) {
+                if (success){
+                    Toast.makeText(getActivity(),getResources().getText(R.string.sucesso_atualizar_eventos), Toast.LENGTH_SHORT).show();
+                    CarregarListaEventos();
+                }
+                else
+                {
+                    Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_eventos), Toast.LENGTH_SHORT).show();
+                }
+                //TODO dismiss progressdialog
+            }
+        });
+    }
+
+    private void CarregarListaEventos() {
 
         EventoAdapter adapter = new EventoAdapter(getContext(),
-                R.layout.item_lista_eventos, familystApplication.getFamiliaAtual().getEventos());
-
-        final ListView listViewProximosEventos = (ListView) rootView.findViewById(R.id.list_proximos_eventos);
-
+                R.layout.item_lista_eventos, carregarEventos());
         listViewProximosEventos.setAdapter(adapter);
-
         listViewProximosEventos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -69,8 +98,6 @@ public class EventosFragment extends Fragment {
                 EventoFragment fragment = new EventoFragment();
                 Bundle data = new Bundle();
 
-
-
                 data.putSerializable("evento", evento);
                 fragment.setArguments(data);
 
@@ -80,7 +107,6 @@ public class EventosFragment extends Fragment {
                         .commit();
             }
         });
-
         listViewProximosEventos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -89,8 +115,11 @@ public class EventosFragment extends Fragment {
 
             }
         });
+    }
 
-        return rootView;
+    private ArrayList<Evento> carregarEventos() {
+        FamilystApplication familystApplication = ((FamilystApplication)getActivity().getApplication());
+        return familystApplication.getFamiliaAtual().getEventos();
     }
 
 }

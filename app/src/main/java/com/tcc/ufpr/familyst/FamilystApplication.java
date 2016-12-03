@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.tcc.ufpr.familyst.Model.Familia;
+import com.tcc.ufpr.familyst.Model.TipoEvento;
+import com.tcc.ufpr.familyst.Model.TipoItem;
 import com.tcc.ufpr.familyst.Model.Usuario;
 
 import java.util.ArrayList;
@@ -22,6 +24,8 @@ public class FamilystApplication extends Application {
 
     //variaveis de controle de fluxo
     private int idFamiliaAtual = 1;
+    private ArrayList<TipoItem> tiposItens;
+    private ArrayList<TipoEvento> tiposEventos;
 
     //metodos
     public String get_accessToken() {
@@ -99,5 +103,21 @@ public class FamilystApplication extends Application {
     private SharedPreferences getSharedPreferences()
     {
         return getSharedPreferences("ufpr.tcc.familyst", Context.MODE_PRIVATE);
+    }
+
+    public void setTiposItens(ArrayList<TipoItem> tiposItens) {
+        this.tiposItens = tiposItens;
+    }
+
+    public void setTiposEventos(ArrayList<TipoEvento> tiposEventos) {
+        this.tiposEventos = tiposEventos;
+    }
+
+    public ArrayList<TipoItem> getTiposItens() {
+        return tiposItens;
+    }
+
+    public ArrayList<TipoEvento> getTiposEventos() {
+        return tiposEventos;
     }
 }

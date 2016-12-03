@@ -1384,8 +1384,181 @@ public class RestService {
         }
     }
 
-    public void EnviarNoticia(String descricao, RestCallback restCallback)
-    {
+    public  void CarregarTiposEventosAsync(RestCallback restCallback) {
+        try {
+
+            //seta retorno
+            _restCallback = restCallback;
+
+            //monta url requisicao
+            String url = "tiposEvento";
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest((((Activity)mCtx).getApplication()), Request.Method.GET, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 200) //ok
+                            {
+                                JSONObject bodyRetorno = jsonRestResponse.get_bodyResponse();
+                                onSucessoTiposEventos(bodyRetorno);
+                            }
+                            else //erros
+                            {
+                                onFalhaTiposEventos("Retorno HTTP não esperado.");
+                            }
+                        }
+                    },
+                    error -> onFalhaTiposEventos(error.getMessage())
+            );
+
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao requisitar Tipos Eventos: " + ex.getLocalizedMessage());
+        }
+    }
+
+    private void onFalhaTiposEventos(String message) {
+        Log.d("Error", "Erro ao requisitar Tipos Eventos: " + message);
+        _restCallback.onRestResult(false);
+    }
+
+    private void onSucessoTiposEventos(JSONObject bodyRetorno) {
+        try {
+            ArrayList<TipoEvento> tipoEventos = new ArrayList<>();
+
+            if (bodyRetorno != null)
+            {
+
+                Object jsonBody = bodyRetorno.get("tipoEvento");
+                if (jsonBody instanceof JSONArray) {
+                    // se for um vetor de elementos
+                    JSONArray tipoEventosJson = (JSONArray)jsonBody;
+
+                    for (int i = 0 ; i < tipoEventosJson.length() ; i++) {
+                        JSONObject tipoEventoJson = tipoEventosJson.getJSONObject(i);
+
+                        TipoEvento tipoEvento = new TipoEvento(tipoEventoJson.getInt("idTipoEvento"), tipoEventoJson.getString("nome"));
+                        tipoEventos.add(tipoEvento);
+                    }
+                }
+                else if (jsonBody instanceof JSONObject) {
+                    //se for so um elemento
+                    JSONObject tipoEventoJson = (JSONObject)jsonBody;
+
+                    TipoEvento tipoEvento = new TipoEvento(tipoEventoJson.getInt("idTipoEvento"), tipoEventoJson.getString("nome"));
+                    tipoEventos.add(tipoEvento);
+                }
+            }
+            else
+            {
+               tipoEventos = new ArrayList<>();
+            }
+
+            ((FamilystApplication)((Activity)mCtx).getApplication()).setTiposEventos(tipoEventos);
+            _restCallback.onRestResult(true);
+
+        } catch (JSONException e) {
+            Log.d("Error", "Erro ao requisitar Tipos Eventos: " + e.getMessage());
+        }
+    }
+
+    public  void CarregarTiposItemAsync(RestCallback restCallback) {
+        try {
+
+            //seta retorno
+            _restCallback = restCallback;
+
+            //monta url requisicao
+            String url = "tiposItem";
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest((((Activity)mCtx).getApplication()), Request.Method.GET, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 200) //ok
+                            {
+                                JSONObject bodyRetorno = jsonRestResponse.get_bodyResponse();
+                                onSucessoTiposItem(bodyRetorno);
+                            }
+                            else //erros
+                            {
+                                onFalhaTiposItem("Retorno HTTP não esperado.");
+                            }
+                        }
+                    },
+                    error -> onFalhaTiposItem(error.getMessage())
+            );
+
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao requisitar Tipos Itens: " + ex.getLocalizedMessage());
+        }
+    }
+
+    private void onFalhaTiposItem(String message) {
+        Log.d("Error", "Erro ao requisitar Tipos Itens: " + message);
+        _restCallback.onRestResult(false);
+    }
+
+    private void onSucessoTiposItem(JSONObject bodyRetorno) {
+        try {
+            ArrayList<TipoItem> tipoItens = new ArrayList<>();
+
+            if (bodyRetorno != null)
+            {
+
+                Object jsonBody = bodyRetorno.get("tipoItem");
+                if (jsonBody instanceof JSONArray) {
+                    // se for um vetor de elementos
+                    JSONArray tipoItensJson = (JSONArray)jsonBody;
+
+                    for (int i = 0 ; i < tipoItensJson.length() ; i++) {
+                        JSONObject tipoItemJson = tipoItensJson.getJSONObject(i);
+
+                        TipoItem tipoItem = new TipoItem(tipoItemJson.getInt("idTipoItem"), tipoItemJson.getString("nome"));
+                        tipoItens.add(tipoItem);
+                    }
+                }
+                else if (jsonBody instanceof JSONObject) {
+                    //se for so um elemento
+                    JSONObject tipoItemJson = (JSONObject)jsonBody;
+
+                    TipoItem tipoItem = new TipoItem(tipoItemJson.getInt("idTipoItem"), tipoItemJson.getString("nome"));
+                    tipoItens.add(tipoItem);
+                }
+            }
+            else
+            {
+                tipoItens = new ArrayList<>();
+            }
+
+            ((FamilystApplication)((Activity)mCtx).getApplication()).setTiposItens(tipoItens);
+            _restCallback.onRestResult(true);
+
+        } catch (JSONException e) {
+            Log.d("Error", "Erro ao requisitar Tipos Itens: " + e.getMessage());
+        }
+    }
+
+    public void EnviarNoticia(String descricao, RestCallback restCallback)    {
         try {
             //seta retorno
             _restCallback = restCallback;
@@ -1511,6 +1684,108 @@ public class RestService {
         }
         catch (Exception ex){
             Log.d("Error", "Erro ao enviar album: " + ex.getLocalizedMessage());
+        }
+    }
+
+    public void EnviarEvento(String nomeEvento, String descricaoEvento, String localEvento, int idTipoEvento, ArrayList<Item> itensAdicionados, RestCallback restCallback) {
+        try {
+            //seta retorno
+            _restCallback = restCallback;
+
+            //monta url requisicao
+            String url = "eventos";
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+            postBody.put("nome", nomeEvento);
+            postBody.put("descricao", descricaoEvento);
+            postBody.put("local", localEvento);
+            postBody.put("idFamilia", getFamiliaAtual().getIdFamilia());
+            postBody.put("idTipoEvento", idTipoEvento);
+            postBody.put("idUsuario", getUsuarioAtual().getIdUsuario());
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(((Activity)mCtx).getApplication(), Request.Method.POST, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 201) //created
+                            {
+                                //pegando id do evento criado
+                                String localizacaoRecurso = jsonRestResponse.get_headers().get("Location").toString();
+                                int idRecursoCriado = Integer.parseInt(localizacaoRecurso.substring(localizacaoRecurso.lastIndexOf('/') + 1));
+
+                                contadorSincronizacao = itensAdicionados.size();
+                                for (int j = 0 ; j < itensAdicionados.size() ; j++) {
+                                    Item item = itensAdicionados.get(j);
+                                    EnviarItem(item.getQuantidade(), item.getIdTipoItem(),idRecursoCriado);
+                                }
+                            }
+                            else //erros
+                            {
+                                _restCallback.onRestResult(false);
+                            }
+                        }
+                    },
+                    error ->  _restCallback.onRestResult(false)
+            );
+
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao enviar evento: " + ex.getLocalizedMessage());
+        }
+    }
+
+    public void EnviarItem(int quantidade, int idTipoItem, int idEvento) {
+        try {
+
+            //monta url requisicao
+            String url = "itens";
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+            postBody.put("quantidade", quantidade);
+            postBody.put("idTipoItem", idTipoItem);
+            postBody.put("idEvento", idEvento);
+            postBody.put("idUsuario", getUsuarioAtual().getIdUsuario());
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(((Activity)mCtx).getApplication(), Request.Method.POST, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 201) //created
+                            {
+                                contadorSincronizacao--;
+
+                                //se todos os requests foram executados
+                                if (contadorSincronizacao == 0)
+                                {
+                                    _restCallback.onRestResult(true);
+                                }
+                            }
+                            else //erros
+                            {
+                                _restCallback.onRestResult(false);
+                            }
+                        }
+                    },
+                    error ->  _restCallback.onRestResult(false)
+            );
+
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao enviar item: " + ex.getLocalizedMessage());
         }
     }
 }

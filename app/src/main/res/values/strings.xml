@@ -36,4 +36,9 @@
     <string name="falha_cadastro_album">Falha ao enviar álbum!</string>
     <string name="sucesso_atualizar_albums">Álbuns atualizados.</string>
     <string name="falha_atualizar_albums">Falha ao atualizar álbum.</string>
+    <!-- strings de output Eventos -->
+    <string name="sucesso_cadastro_evento">Evento enviado com sucesso!</string>
+    <string name="falha_cadastro_evento">Falha ao enviar evento!</string>
+    <string name="sucesso_atualizar_eventos">Eventos atualizados.</string>
+    <string name="falha_atualizar_eventos">Falha ao atualizar evento.</string>
 </resources>
