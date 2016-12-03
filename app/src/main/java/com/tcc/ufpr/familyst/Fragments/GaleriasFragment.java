@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.tcc.ufpr.familyst.Activities.CadastroGaleriaActivity;
 import com.tcc.ufpr.familyst.Adapters.GaleriaAdapter;
@@ -74,6 +75,15 @@ public class GaleriasFragment extends Fragment {
                         .replace(R.id.fragment_container, fragment)
                         .addToBackStack(null)
                         .commit();
+            }
+        });
+
+        listViewGalerias.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getContext(), "Long click!", Toast.LENGTH_LONG).show();
+                return true;
+
             }
         });
 

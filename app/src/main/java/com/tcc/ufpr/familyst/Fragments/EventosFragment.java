@@ -81,12 +81,12 @@ public class EventosFragment extends Fragment {
             }
         });
 
-        listViewProximosEventos.setOnLongClickListener(new View.OnLongClickListener() {
+        listViewProximosEventos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onLongClick(View v) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(getContext(), "Long click!", Toast.LENGTH_LONG).show();
-
                 return true;
+
             }
         });
 

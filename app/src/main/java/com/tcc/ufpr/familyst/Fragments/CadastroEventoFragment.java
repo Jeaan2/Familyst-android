@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.tcc.ufpr.familyst.R;
 
@@ -16,6 +17,7 @@ import com.tcc.ufpr.familyst.R;
  */
 public class CadastroEventoFragment extends Fragment {
 
+    private Spinner spnTipoEvento;
     private EditText nomeEvento;
     private EditText localEvento;
     private EditText descricaoEvento;
@@ -35,6 +37,7 @@ public class CadastroEventoFragment extends Fragment {
         nomeEvento = (EditText) rootView.findViewById(R.id.txt_nome_evento_cadastro);
         localEvento = (EditText) rootView.findViewById(R.id.txt_local_evento_cadastro);
         descricaoEvento = (EditText) rootView.findViewById(R.id.txt_descricao_evento_cadastro);
+        spnTipoEvento = (Spinner) rootView.findViewById(R.id.spn_tipo_evento);
         btnCadastrarEvento = (Button) rootView.findViewById(R.id.btn_cadastrar_evento);
 
         btnCadastrarEvento.setOnClickListener(new View.OnClickListener() {

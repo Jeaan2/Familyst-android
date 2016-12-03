@@ -16,6 +16,16 @@
         android:layout_marginTop="20dp"
         android:layout_gravity="center_horizontal" />
 
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spn_tipo_evento"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal" />
+
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,7 +50,7 @@
         android:id="@+id/txt_local_evento_cadastro"
         android:hint="Local"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="20dp"
         android:layout_gravity="center_horizontal" />
 
     <Button

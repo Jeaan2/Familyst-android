@@ -45,10 +45,12 @@ public class GaleriaAdapter extends ArrayAdapter<Galeria> {
         else {
             holder = (GaleriaHolder)row.getTag();
         }
-
+        android.text.format.DateFormat df = new android.text.format.DateFormat();
         Galeria galeria = dados[position];
+
+        String dataFormatada =  df.format("dd/MM/yy", galeria.getDataCriacao()).toString();
         holder.txtNome.setText(galeria.getNome());
-        holder.txtData.setText(galeria.getDataCriacao().toString());
+        holder.txtData.setText(dataFormatada);
 
         return row;
     }

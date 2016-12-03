@@ -6,10 +6,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.tcc.ufpr.familyst.R;
 
@@ -39,6 +41,15 @@ public class ItensCadastroEventoFragment extends Fragment {
         txtQuantidadeItem = (EditText) rootView.findViewById(R.id.txt_quantidade_item);
         listItens = (ListView) rootView.findViewById(R.id.list_itens_adicionados);
         addItem = (Button) rootView.findViewById(R.id.btn_add_item);
+
+        listItens.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getContext(), "Long click!", Toast.LENGTH_LONG).show();
+                return true;
+
+            }
+        });
 
         return  rootView;
     }

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.tcc.ufpr.familyst.Adapters.UsuarioAdapter;
 import com.tcc.ufpr.familyst.FamilystApplication;
@@ -45,6 +46,15 @@ public class MembrosFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //Abrir tela de profile com os dados do membro
+            }
+        });
+
+        listViewMembros.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getContext(), "Long click!", Toast.LENGTH_LONG).show();
+                return true;
+
             }
         });
 

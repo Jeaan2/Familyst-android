@@ -48,10 +48,12 @@ public class VideoAdapter extends ArrayAdapter<Video> {
         {
             holder = (VideoHolder) row.getTag();
         }
-
+        android.text.format.DateFormat df = new android.text.format.DateFormat();
         Video video = dados.get(position);
+
+        String dataFormatada =  df.format("dd/MM/yy", video.getDataCriacao()).toString();
         holder.txtDescricao.setText(video.getDescricao());
-        holder.txtData.setText(video.getDataCriacao().toString());
+        holder.txtData.setText(dataFormatada);
 
         return row;
 

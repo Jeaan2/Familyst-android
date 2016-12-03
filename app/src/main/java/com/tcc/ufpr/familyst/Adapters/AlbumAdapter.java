@@ -49,9 +49,12 @@ public class AlbumAdapter extends ArrayAdapter<Album> {
             holder = (AlbumHolder)row.getTag();
         }
 
+        android.text.format.DateFormat df = new android.text.format.DateFormat();
         Album album = dados.get(position);
+
+        String dataFormatada =  df.format("dd/MM", album.getDataCriacao()).toString();
         holder.txtNome.setText(album.getNome());
-        holder.txtData.setText(album.getDataCriacao().toString());
+        holder.txtData.setText(dataFormatada);
 
         return row;
     }

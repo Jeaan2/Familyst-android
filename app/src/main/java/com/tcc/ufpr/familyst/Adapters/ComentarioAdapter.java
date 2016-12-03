@@ -49,11 +49,13 @@ public class ComentarioAdapter extends ArrayAdapter<Comentario> {
         {
             holder = (ComentarioHolder)row.getTag();
         }
-
+        android.text.format.DateFormat df = new android.text.format.DateFormat();
         Comentario comentario = dados.get(position);
         //holder.txtNome.setText(comentario.getNome());
+
+        String dataFormatada =  df.format("dd/MM", comentario.getDataCriacao()).toString();
         holder.txtDescricao.setText(comentario.getDescricao());
-        holder.txtData.setText(comentario.getDataCriacao().toString());
+        holder.txtData.setText(dataFormatada);
 
         return row;
     }
