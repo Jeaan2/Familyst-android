@@ -70,4 +70,5 @@ public class Usuario implements Serializable {
     public void setFamilias(ArrayList<Familia> familias) {
         this.familias = familias;
     }
+
 }
