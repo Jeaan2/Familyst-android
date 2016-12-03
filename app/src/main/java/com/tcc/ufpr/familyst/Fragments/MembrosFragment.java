@@ -1,7 +1,10 @@
 package com.tcc.ufpr.familyst.Fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +13,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.tcc.ufpr.familyst.Activities.CadastroMembroActivity;
+import com.tcc.ufpr.familyst.Activities.TabHostEventosActivity;
 import com.tcc.ufpr.familyst.Adapters.UsuarioAdapter;
 import com.tcc.ufpr.familyst.FamilystApplication;
 import com.tcc.ufpr.familyst.Model.Usuario;
@@ -32,6 +37,17 @@ public class MembrosFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_membros, container, false);
+
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        fab.show();
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(getContext(), CadastroMembroActivity.class);
+                startActivity(intent);
+            }
+        });
 
         FamilystApplication familystApplication = ((FamilystApplication)getActivity().getApplication());
 
