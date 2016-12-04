@@ -1,5 +1,6 @@
 package com.tcc.ufpr.familyst.Activities;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -28,11 +29,15 @@ public class CadastroAlbumActivity extends BaseActivity {
         btnCadastrarAlbum.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroAlbumActivity.this, "Aguarde", "Cadastrando Album.");
+                dialogProgresso.setCancelable(false);
                 RestService.getInstance(CadastroAlbumActivity.this).EnviarAlbum( nomeAlbum.getText().toString(), descricaoAlbum.getText().toString(), new RestCallback(){
                     @Override
                     public void onRestResult(boolean success) {
                         if (success){
-                            Toast.makeText(getApplicationContext(),getResources().getText(R.string.sucesso_cadastro_album), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(),getResources().getText(R.string.sucesso_cadastro_album), Toast.LENGTH_SHORT).show();
+                            dialogProgresso.dismiss();
                             finish();
                         }
                         else
@@ -41,6 +46,8 @@ public class CadastroAlbumActivity extends BaseActivity {
                         }
                     }
                 });
+
+                dialogProgresso.dismiss();
             }
         });
     }

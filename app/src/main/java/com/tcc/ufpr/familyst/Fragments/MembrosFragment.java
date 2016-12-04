@@ -94,7 +94,7 @@ public class MembrosFragment extends Fragment {
     public void onStart(){
         super.onStart();
 
-        //TODO chamar progressdialog
+        // chamar progressdialog
 
         final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Atualizando Membros");
         dialogProgresso.setCancelable(false);
@@ -110,7 +110,7 @@ public class MembrosFragment extends Fragment {
                 {
                     Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_membros), Toast.LENGTH_SHORT).show();
                 }
-                //TODO dismiss progressdialog
+                // dismiss progressdialog
                 dialogProgresso.dismiss();
             }
         });

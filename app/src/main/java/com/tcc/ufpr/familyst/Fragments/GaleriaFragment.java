@@ -1,6 +1,7 @@
 package com.tcc.ufpr.familyst.Fragments;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -67,7 +68,9 @@ public class GaleriaFragment extends Fragment {
     public void onStart(){
         super.onStart();
 
-        //TODO chamar progressdialog
+        // chamar progressdialog
+        final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Atualizando Vídeos.");
+        dialogProgresso.setCancelable(false);
         RestService.getInstance(getActivity()).CarregarVideosFamiliasAsync(new RestCallback(){
             @Override
             public void onRestResult(boolean success) {
@@ -79,7 +82,8 @@ public class GaleriaFragment extends Fragment {
                 {
                     Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_videos), Toast.LENGTH_SHORT).show();
                 }
-                //TODO dismiss progressdialog
+                // dismiss progressdialog
+                dialogProgresso.dismiss();
             }
         });
     }

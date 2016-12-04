@@ -4,16 +4,13 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="20dp"
-    tools:context="com.tcc.ufpr.familyst.Activities.ItensCadastroEventoActivity">
-
+    android:layout_margin="20dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Tipo de Item"
-        android:textColor="@color/cor_preto"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         android:textSize="15dp"/>
     <Spinner
         android:layout_width="match_parent"
@@ -29,11 +26,13 @@
         android:textSize="15dp"/>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:orientation="horizontal">
+
         <EditText
-            android:layout_width="198dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:inputType="number"
             android:layout_weight="3"

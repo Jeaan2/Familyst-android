@@ -1,5 +1,8 @@
 package com.tcc.ufpr.familyst.Activities;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
@@ -52,6 +55,10 @@ public class CadastroActivity extends BaseActivity {
             postBody.put("email", txtEmail.getText());
             postBody.put("senha", txtSenha.getText());
 
+            //abre dialog
+            final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroActivity.this, "Aguarde", "Cadastrando Usuario.");
+            dialogProgresso.setCancelable(false);
+
             //monta requisicao
             JsonRestRequest jsonRequest = new JsonRestRequest(getApplication(), Request.Method.POST, false, url, headers, postBody,
                     new Response.Listener<JsonRestRequest.JsonRestResponse>() {
@@ -62,6 +69,7 @@ public class CadastroActivity extends BaseActivity {
                                 String localizacaoRecurso = jsonRestResponse.get_headers().get("Location").toString();
                                 int idRecursoCriado = Integer.parseInt(localizacaoRecurso.substring(localizacaoRecurso.lastIndexOf('/') + 1));
                                 onSucessoCadastro(idRecursoCriado);
+                                dialogProgresso.dismiss();
                             }
                             else //erros
                             {
@@ -82,7 +90,16 @@ public class CadastroActivity extends BaseActivity {
 
     private void onFalhaCadastro(String msgError) {
         runOnUiThread(()->{
-            Toast.makeText(this, "Falha ao cadastrar usuário: " + msgError, Toast.LENGTH_SHORT).show();
+            new AlertDialog.Builder(this)
+                    .setTitle("Falha")
+                    .setMessage("Falha ao cadastrar usuário. Tente novamente.")
+                    .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+//            Toast.makeText(this, "Falha ao cadastrar usuário: " + msgError, Toast.LENGTH_SHORT).show();
 
             //Falha no cadastro
             setResult(RESULT_CANCELED);
@@ -92,7 +109,7 @@ public class CadastroActivity extends BaseActivity {
 
     private void onSucessoCadastro(int idRecursoCriado) {
         runOnUiThread(()->{
-            Toast.makeText(this, "Usuário cadastrado com sucesso.", Toast.LENGTH_SHORT).show(); //Id: " + idRecursoCriado, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Usuário cadastrado com sucesso.", Toast.LENGTH_SHORT).show(); //Id: " + idRecursoCriado, Toast.LENGTH_SHORT).show();
 
             //Cadastrado com sucesso
             Bundle bundle = new Bundle();

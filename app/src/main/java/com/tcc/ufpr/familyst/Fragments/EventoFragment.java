@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +39,8 @@ public class EventoFragment extends Fragment {
     TextView textViewCriadorEvento;
     TextView textViewDescricaoEvento;
     TextView textViewLocalEvento;
+    Button btnConfirmarPresenca;
+    TextView txtConfirmarPresenca;
     Evento evento;
 
     public EventoFragment() {
@@ -54,6 +57,20 @@ public class EventoFragment extends Fragment {
         textViewCriadorEvento = (TextView) rootView.findViewById(R.id.criadorEvento);
         textViewDescricaoEvento = (TextView) rootView.findViewById(R.id.descricaoEvento);
         textViewLocalEvento = (TextView) rootView.findViewById(R.id.localEvento);
+        btnConfirmarPresenca = (Button) rootView.findViewById(R.id.btn_confirmar_presenca);
+        txtConfirmarPresenca = (TextView) rootView.findViewById(R.id.txt_presenca_confirmada);
+        txtConfirmarPresenca.setVisibility(View.GONE);
+
+
+        btnConfirmarPresenca.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //enviar confirmacao de presenca!
+                btnConfirmarPresenca.setVisibility(View.GONE);
+                txtConfirmarPresenca.setVisibility(View.VISIBLE);
+            }
+        });
 
         int idEvento = getArguments().getInt("idEvento");
         evento = carregarEvento(idEvento);
@@ -104,7 +121,7 @@ public class EventoFragment extends Fragment {
     public void onStart(){
         super.onStart();
 
-        //TODO chamar progressdialog
+        // chamar progressdialog
         final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Atualizando comentários.");
         dialogProgresso.setCancelable(false);
         RestService.getInstance(getActivity()).CarregarComentariosEventosFamiliasAsync(new RestCallback(){
@@ -118,7 +135,7 @@ public class EventoFragment extends Fragment {
                 {
                     Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_comentarios), Toast.LENGTH_SHORT).show();
                 }
-                //TODO dismiss progressdialog
+                // dismiss progressdialog
                 dialogProgresso.dismiss();
             }
         });

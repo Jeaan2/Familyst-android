@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -29,14 +33,37 @@
 
     </LinearLayout>
 
-    <Button
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:text="Confirmar presença"
-        android:textColor="@color/cor_branco"
-        android:background="@color/colorPrimary"
-        android:layout_gravity="center"/>
-    <TextView
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:id="@+id/btn_confirmar_presenca"
+                android:text="Confirmar presença"
+                android:textColor="@color/cor_branco"
+                android:background="@color/colorPrimary"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:id="@+id/txt_presenca_confirmada"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:text="Sua presença foi confirmada."
+                android:textColor="@color/colorPrimary"
+                android:textSize="20dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="38dp"
+                android:layout_marginStart="38dp" />
+
+        </RelativeLayout>
+
+        <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Descrição"
@@ -78,7 +105,7 @@
     <ListView
         android:id="@+id/list_itens"
         android:layout_width="match_parent"
-        android:layout_height="300dp">
+        android:layout_height="wrap_content">
     </ListView>
 
     <TextView
@@ -94,4 +121,28 @@
         android:layout_height="300dp">
     </ListView>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/scroll_view"
+            android:orientation="horizontal">
+
+            <EditText
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:hint="Escreva um comentário..."
+                android:id="@+id/txt_comentario_enviar"
+                android:layout_weight="5"
+                />
+
+            <ImageButton
+                android:layout_width="60dp"
+                android:layout_height="50dp"
+                android:layout_gravity="end"
+                android:layout_weight="0.95"
+                android:id="@+id/btn_enviar_comentario"
+                android:src="@drawable/ic_enviar"/>
+        </LinearLayout>
+
 </LinearLayout>
+    </ScrollView>

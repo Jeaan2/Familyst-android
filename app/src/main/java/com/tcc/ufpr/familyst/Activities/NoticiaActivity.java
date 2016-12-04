@@ -1,5 +1,6 @@
 package com.tcc.ufpr.familyst.Activities;
 
+import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -55,7 +56,11 @@ public class NoticiaActivity extends AppCompatActivity {
                     public void onRestResult(boolean success) {
                         if (success){
                             Toast.makeText(getApplicationContext(),getResources().getText(R.string.sucesso_cadastro_comentario), Toast.LENGTH_SHORT).show();
-                            //TODO chamar progressdialog
+
+                            // chamar progressdialog
+                            final ProgressDialog dialogProgresso = ProgressDialog.show(NoticiaActivity.this, "Aguarde", "Atualizando Comentários");
+                            dialogProgresso.setCancelable(false);
+
                             RestService.getInstance(NoticiaActivity.this).CarregarComentariosNoticiasFamiliasAsync(new RestCallback(){
                                 @Override
                                 public void onRestResult(boolean success) {
@@ -63,12 +68,14 @@ public class NoticiaActivity extends AppCompatActivity {
                                         Toast.makeText(NoticiaActivity.this,getResources().getText(R.string.sucesso_atualizar_comentarios), Toast.LENGTH_SHORT).show();
                                         CarregarListaComentarios();
                                         edtComentarioEnviar.setText("");
+
                                     }
                                     else
                                     {
                                         Toast.makeText(NoticiaActivity.this,getResources().getText(R.string.falha_atualizar_comentarios), Toast.LENGTH_SHORT).show();
                                     }
-                                    //TODO dismiss progressdialog
+                                    // dismiss progressdialog
+                                    dialogProgresso.dismiss();
                                 }
                             });
                         }
@@ -118,7 +125,10 @@ public class NoticiaActivity extends AppCompatActivity {
     public void onStart(){
         super.onStart();
 
-        //TODO chamar progressdialog
+        // chamar progressdialog
+        final ProgressDialog dialogProgresso = ProgressDialog.show(NoticiaActivity.this, "Aguarde", "Atualizando Comentarios");
+        dialogProgresso.setCancelable(false);
+
         RestService.getInstance(this).CarregarComentariosNoticiasFamiliasAsync(new RestCallback(){
             @Override
             public void onRestResult(boolean success) {
@@ -130,7 +140,8 @@ public class NoticiaActivity extends AppCompatActivity {
                 {
                     Toast.makeText(NoticiaActivity.this,getResources().getText(R.string.falha_atualizar_comentarios), Toast.LENGTH_SHORT).show();
                 }
-                //TODO dismiss progressdialog
+                // dismiss progressdialog
+                dialogProgresso.dismiss();
             }
         });
     }

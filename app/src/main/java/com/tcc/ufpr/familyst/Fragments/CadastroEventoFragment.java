@@ -72,7 +72,7 @@ public class CadastroEventoFragment extends Fragment {
                 ArrayList<Item> itensAdicionados = f._itensAdicionados;
                 String hahahahaha = "aff"; //so pra debug
 
-                final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Enviando evento.");
+                final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Cadastrando evento.");
                 dialogProgresso.setCancelable(false);
 
                 RestService.getInstance(getActivity()).EnviarEvento(
@@ -86,11 +86,13 @@ public class CadastroEventoFragment extends Fragment {
                     public void onRestResult(boolean success) {
                         if (success){
                             Toast.makeText(getContext(),getResources().getText(R.string.sucesso_cadastro_evento), Toast.LENGTH_SHORT).show();
+                            dialogProgresso.dismiss();
                             getActivity().finish();
                         }
                         else
                         {
                             Toast.makeText(getContext(),getResources().getText(R.string.falha_cadastro_evento), Toast.LENGTH_SHORT).show();
+                            dialogProgresso.dismiss();
                         }
                     }
                 });

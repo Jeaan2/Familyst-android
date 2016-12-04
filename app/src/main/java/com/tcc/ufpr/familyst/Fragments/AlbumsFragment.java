@@ -54,8 +54,6 @@ public class AlbumsFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Chama cadastro de notícias", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
 
                 Intent intent = new Intent(getContext(), CadastroAlbumActivity.class);
                 startActivity(intent);
@@ -74,7 +72,7 @@ public class AlbumsFragment extends Fragment {
         final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Carregando Albuns...");
         dialogProgresso.setCancelable(false);
 
-        //TODO chamar progressdialog
+        // chamar progressdialog
         RestService.getInstance(getActivity()).CarregarAlbunsFamiliasAsync(new RestCallback(){
             @Override
             public void onRestResult(boolean success) {
@@ -85,7 +83,8 @@ public class AlbumsFragment extends Fragment {
                 {
                     Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_albums), Toast.LENGTH_SHORT).show();
                 }
-                //TODO dismiss progressdialog
+                //
+                // dismiss progressdialog
                 dialogProgresso.dismiss();
             }
         });

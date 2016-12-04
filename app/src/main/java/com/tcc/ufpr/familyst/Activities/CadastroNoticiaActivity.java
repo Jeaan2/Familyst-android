@@ -1,5 +1,6 @@
 package com.tcc.ufpr.familyst.Activities;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -28,16 +29,20 @@ public class CadastroNoticiaActivity extends BaseActivity {
             public void onClick(View v) {
                 //Envia notícia para o servido
                 //retorna para a NewsFragment.
+                final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroNoticiaActivity.this, "Aguarde", "Cadastrando Noticia.");
+                dialogProgresso.setCancelable(false);
                 RestService.getInstance(CadastroNoticiaActivity.this).EnviarNoticia( descricao.getText().toString(), new RestCallback(){
                     @Override
                     public void onRestResult(boolean success) {
                         if (success){
                             Toast.makeText(getApplicationContext(),getResources().getText(R.string.sucesso_cadastro_noticia), Toast.LENGTH_SHORT).show();
+                            dialogProgresso.dismiss();
                             finish();
                         }
                         else
                         {
                             Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_cadastro_noticia), Toast.LENGTH_SHORT).show();
+                            dialogProgresso.dismiss();
                         }
                     }
                 });

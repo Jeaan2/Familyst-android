@@ -75,7 +75,7 @@ public class NewsFragment extends Fragment {
         super.onStart();
 
         //TODO chamar progressdialog
-        final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Atualizando Notícias");
+        final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Atualizando Noticias");
         dialogProgresso.setCancelable(false);
 
         RestService.getInstance(getActivity()).CarregarNoticiasFamiliasAsync(new RestCallback(){

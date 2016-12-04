@@ -68,7 +68,7 @@ public class EventosFragment extends Fragment {
     public void onStart(){
         super.onStart();
 
-        //TODO chamar progressdialog
+        //chamar progressdialog
 
         final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Atualizando Eventos");
         dialogProgresso.setCancelable(false);
@@ -145,7 +145,7 @@ public class EventosFragment extends Fragment {
                 {
                     Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_eventos), Toast.LENGTH_SHORT).show();
                 }
-                //TODO dismiss progressdialog
+                // dismiss progressdialog
 
             }
         });

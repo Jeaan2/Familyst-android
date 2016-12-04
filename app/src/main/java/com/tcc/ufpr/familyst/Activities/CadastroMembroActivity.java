@@ -1,5 +1,6 @@
 package com.tcc.ufpr.familyst.Activities;
 
+import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -70,16 +71,21 @@ public class CadastroMembroActivity extends AppCompatActivity {
     }
 
     private void relacionarUsuarioFamilia(Usuario usuario, Familia familiaAtual) {
+        final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroMembroActivity.this, "Aguarde", "Cadastrando Membro.");
+        dialogProgresso.setCancelable(false);
+
         RestService.getInstance(CadastroMembroActivity.this).RelacionarUsuarioFamilia( usuario, familiaAtual, new RestCallback(){
             @Override
             public void onRestResult(boolean success) {
                 if (success){
                     Toast.makeText(CadastroMembroActivity.this,getResources().getText(R.string.sucesso_relacionamento_membro), Toast.LENGTH_SHORT).show();
+                    dialogProgresso.dismiss();
                     CadastroMembroActivity.this.finish();
                 }
                 else
                 {
                     Toast.makeText(CadastroMembroActivity.this,getResources().getText(R.string.falha_relacionamento_membro), Toast.LENGTH_SHORT).show();
+                    dialogProgresso.dismiss();
                 }
             }
         });
