@@ -827,7 +827,7 @@ public class RestService {
                 _restCallback.onRestResult(true);
             }
         } catch (JSONException e) {
-            Log.d("Error", "Erro ao requisitar Eventos de familia: " + e.getMessage());
+            Log.d("Error", "Erro ao requisitar Usuarios de familia: " + e.getMessage());
         }
     }
 
@@ -901,14 +901,14 @@ public class RestService {
 
                     for (int i = 0 ; i < noticiasJson.length() ; i++) {
                         JSONObject noticiaJson = noticiasJson.getJSONObject(i);
-                        Noticia noticia = new Noticia(noticiaJson.getInt("idNoticia"), noticiaJson.getString("descricao"));
+                        Noticia noticia = new Noticia(noticiaJson.getInt("idNoticia"), noticiaJson.getString("descricao"), noticiaJson.getInt("idUsuario"));
                         noticias.add(noticia);
                     }
                 }
                 else if (jsonBody instanceof JSONObject) {
                     //se for so um elemento
                     JSONObject noticiaJson = (JSONObject)jsonBody;
-                    Noticia noticia = new Noticia(noticiaJson.getInt("idNoticia"), noticiaJson.getString("descricao"));
+                    Noticia noticia = new Noticia(noticiaJson.getInt("idNoticia"), noticiaJson.getString("descricao"), noticiaJson.getInt("idUsuario"));
                     noticias.add(noticia);
                 }
 
@@ -1044,6 +1044,86 @@ public class RestService {
             }
         } catch (JSONException | ParseException e) {
             Log.d("Error", "Erro ao requisitar Comentarios de Notica de familia: " + e.getMessage());
+        }
+    }
+
+    public void CarregarUsuariosNoticiasFamiliasAsync(RestCallback restCallback) {
+
+        //seta retorno
+        _restCallback = restCallback;
+
+        for (int i = 0 ; i < getFamilias().size() ; i++)
+        {
+            Familia familia = getFamilias().get(i);
+            contadorSincronizacao = contadorSincronizacao + familia.getNoticias().size();
+            for (int j = 0 ; j < familia.getNoticias().size() ; j++) {
+                Noticia noticia = familia.getNoticias().get(j);
+                CarregarUsuariosNoticiaAsync(noticia);
+            }
+        }
+    }
+
+    private void CarregarUsuariosNoticiaAsync(Noticia noticia) {
+        try {
+            //monta url requisicao
+            String url = "usuarios/" + noticia.getIdUsuario();
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(((Activity)mCtx).getApplication(), Request.Method.GET, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 200) //ok
+                            {
+                                JSONObject bodyRetorno = jsonRestResponse.get_bodyResponse();
+                                onSucessoUsuariossNoticiaFamilia(noticia, bodyRetorno);
+                            }
+                            else //erros
+                            {
+                                onFalhaUsuariossNoticiaFamilia("Retorno HTTP não esperado.");
+                            }
+                        }
+                    },
+                    error -> onFalhaUsuariossNoticiaFamilia(error.getMessage())
+            );
+
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao requisitar usuarios de Notica de familia: " + ex.getLocalizedMessage());
+        }
+    }
+
+    private void onFalhaUsuariossNoticiaFamilia(String message) {
+        Log.d("Error", "Erro ao requisitar usuarios de Notica de familia: " + message);
+        _restCallback.onRestResult(false);
+    }
+
+    private void onSucessoUsuariossNoticiaFamilia(Noticia noticia, JSONObject bodyRetorno) {
+        try {
+            contadorSincronizacao--;
+
+            if (bodyRetorno != null)
+            {
+                JSONObject usuarioJson = (JSONObject)bodyRetorno;
+                Usuario usuario = new Usuario(usuarioJson.getInt("idUsuario"), usuarioJson.getString("nome"), usuarioJson.getString("email"));
+                noticia.setUsuarioCriador(usuario);
+            }
+
+            //se todos os requests foram executados
+            if (contadorSincronizacao == 0)
+            {
+                _restCallback.onRestResult(true);
+            }
+        } catch (JSONException e) {
+            Log.d("Error", "Erro ao requisitar usuarios de Notica de familia: " + e.getMessage());
         }
     }
 

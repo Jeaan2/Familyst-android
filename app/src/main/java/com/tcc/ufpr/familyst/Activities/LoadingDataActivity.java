@@ -51,6 +51,7 @@ public class LoadingDataActivity extends BaseActivity {
     boolean _usuariosCarregados = false;
     boolean _noticiasCarregadas = false;
     boolean _comentariosNoticiasCarregados = false;
+    boolean _usuariosNoticiasCarregados = false;
     boolean _videosCarregados = false;
     boolean _albunsCarregados = false;
     boolean _fotosAlbunsCarregadas = false;;
@@ -174,6 +175,16 @@ public class LoadingDataActivity extends BaseActivity {
                 public void onRestResult(boolean success) {
                     if (success){
                         _comentariosNoticiasCarregados = true;
+                        CarregarFamiliasUsuarioAsync();
+                    }
+                }
+            });
+        else if (!_usuariosNoticiasCarregados)
+            RestService.getInstance(this).CarregarUsuariosNoticiasFamiliasAsync(new RestCallback(){
+                @Override
+                public void onRestResult(boolean success) {
+                    if (success){
+                        _usuariosNoticiasCarregados = true;
                         CarregarFamiliasUsuarioAsync();
                     }
                 }

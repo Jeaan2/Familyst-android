@@ -77,9 +77,31 @@ public class NewsFragment extends Fragment {
             @Override
             public void onRestResult(boolean success) {
                 if (success){
-                    Toast.makeText(getActivity(),getResources().getText(R.string.sucesso_atualizar_noticias), Toast.LENGTH_SHORT).show();
-                    listaNoticiasCardView = carregarNoticias();
-                    noticiasAdapter.setListaNoticia(listaNoticiasCardView);
+                    RestService.getInstance(getActivity()).CarregarComentariosNoticiasFamiliasAsync(new RestCallback(){
+                        @Override
+                        public void onRestResult(boolean success) {
+                            if (success){
+                                RestService.getInstance(getActivity()).CarregarUsuariosNoticiasFamiliasAsync(new RestCallback(){
+                                    @Override
+                                    public void onRestResult(boolean success) {
+                                        if (success){
+                                            Toast.makeText(getActivity(),getResources().getText(R.string.sucesso_atualizar_noticias), Toast.LENGTH_SHORT).show();
+                                            listaNoticiasCardView = carregarNoticias();
+                                            noticiasAdapter.setListaNoticia(listaNoticiasCardView);
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_noticias), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_noticias), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
                 else
                 {

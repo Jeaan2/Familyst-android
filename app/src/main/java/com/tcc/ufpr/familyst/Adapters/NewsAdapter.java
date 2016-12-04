@@ -39,6 +39,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
         //TODO Adicionar restante das informações de noticia
         String descricao = noticia.getDescricao();
         newsViewHolder.vDescricao.setText(descricao);
+        newsViewHolder.setNoticia(noticia);
     }
 
     public void setListaNoticia(ArrayList<Noticia> listaNoticias) {
@@ -61,7 +62,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
         protected TextView vDescricao;
         protected View view;
         private Context contexto;
-
+        private Noticia noticia;
 
 
         public NewsViewHolder(View itemView, final Context context) {
@@ -72,14 +73,22 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context.getApplicationContext(), "Clicou no cardview", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(context.getApplicationContext(), NoticiaActivity.class);
+                    intent.putExtra("idNoticia", getNoticia().getIdNoticia());
                     context.startActivity(intent);
                 }
             });
 
 
             vDescricao = (TextView) itemView.findViewById(R.id.txt_descricao_noticia);
+        }
+
+        public void setNoticia(Noticia noticia) {
+            this.noticia = noticia;
+        }
+
+        public Noticia getNoticia() {
+            return noticia;
         }
     }
 }
