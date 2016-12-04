@@ -180,6 +180,7 @@ public class EventosFragment extends Fragment {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(getContext(), "Long click!", Toast.LENGTH_LONG).show();
                 return true;
+                //TODO abrir tela de Cadastro com extras: idEvento e bool indicando edicao
 
             }
         });

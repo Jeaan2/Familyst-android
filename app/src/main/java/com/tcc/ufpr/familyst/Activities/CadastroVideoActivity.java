@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.tcc.ufpr.familyst.Interfaces.RestCallback;
@@ -16,6 +17,8 @@ public class CadastroVideoActivity extends BaseActivity {
     private EditText txtDescricao;
     private EditText txtLink;
     private Button  btnCadastrar;
+    private ImageButton btnRemoverVideo;
+    private boolean isEdicao = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +28,21 @@ public class CadastroVideoActivity extends BaseActivity {
         txtLink = (EditText) findViewById(R.id.txt_link_video_cadastro);
 
         btnCadastrar = (Button) findViewById(R.id.btn_cadastrar_video);
+        btnRemoverVideo = (ImageButton) findViewById(R.id.btn_remover_video);
+        btnRemoverVideo.setVisibility(View.GONE);
+
+        if(isEdicao)
+        {
+            btnRemoverVideo.setVisibility(View.VISIBLE);
+            //TODO procedimentos para edicao de video
+        }
+        
+        btnRemoverVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //// TODO: 04/12/2016 procedimentos para remocao de video 
+            }
+        });
         btnCadastrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

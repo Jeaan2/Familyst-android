@@ -82,6 +82,7 @@ public class GaleriasFragment extends Fragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(getContext(), "Long click!", Toast.LENGTH_LONG).show();
+                //TODO abrir tela de Cadastro com extras: idEvento e bool indicando edicao
                 return true;
 
             }

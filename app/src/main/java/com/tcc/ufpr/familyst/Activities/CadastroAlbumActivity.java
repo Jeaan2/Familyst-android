@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tcc.ufpr.familyst.Interfaces.RestCallback;
@@ -15,7 +17,11 @@ public class CadastroAlbumActivity extends BaseActivity {
 
     private EditText nomeAlbum;
     private EditText descricaoAlbum;
+    private TextView cabecalhoAlbum;
     private Button btnCadastrarAlbum;
+    private ImageButton btnRemoverAlbum;
+
+    private boolean isEdicao = false; //TODO mudar para false
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +30,24 @@ public class CadastroAlbumActivity extends BaseActivity {
 
         nomeAlbum = (EditText) findViewById(R.id.txt_nome_album_cadastro);
         descricaoAlbum = (EditText) findViewById(R.id.txt_descricao_album_cadastro);
+        cabecalhoAlbum = (TextView) findViewById(R.id.txt_cadastro_album_cabecalho);
         btnCadastrarAlbum = (Button) findViewById(R.id.btn_cadastrar_album);
+        btnRemoverAlbum = (ImageButton) findViewById(R.id.btn_remover_album);
+        btnRemoverAlbum.setVisibility(View.GONE);
+
+        if(isEdicao)
+        {
+            //TODO procedimentos para edicao de album
+            btnRemoverAlbum.setVisibility(View.VISIBLE);
+            cabecalhoAlbum.setText("Edite o Album selecionado:");
+        }
+        btnRemoverAlbum.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO procedimentos para remoção de album
+
+            }
+        });
 
         btnCadastrarAlbum.setOnClickListener(new View.OnClickListener() {
             @Override

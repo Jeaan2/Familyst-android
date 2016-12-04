@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.tcc.ufpr.familyst.FamilystApplication;
@@ -23,6 +24,8 @@ public class CadastroMembroActivity extends AppCompatActivity {
 
     EditText emailMembro;
     Button btnCadastrarMembro;
+    ImageButton btnRemoverMembro;
+    private boolean isEdicao = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +33,23 @@ public class CadastroMembroActivity extends AppCompatActivity {
 
         emailMembro = (EditText) findViewById(R.id.txt_email_membro_cadastro);
         btnCadastrarMembro = (Button) findViewById(R.id.btn_cadastrar_membro);
+        btnRemoverMembro = (ImageButton) findViewById(R.id.btn_remover_membro);
+        btnRemoverMembro.setVisibility(View.GONE);
+
+
+        if(isEdicao)
+        {
+            btnRemoverMembro.setVisibility(View.VISIBLE);
+            //// TODO: 04/12/2016 procedimentos para edicao de membro
+        }
+        btnRemoverMembro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //// TODO: 04/12/2016 procedimentos para remocao de membro
+            }
+        });
+
+
 
         btnCadastrarMembro.setOnClickListener(new View.OnClickListener() {
             @Override

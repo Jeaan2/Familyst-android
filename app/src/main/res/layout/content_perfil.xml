@@ -56,85 +56,11 @@
 
         <include layout="@layout/item_divider" />
 
-        <RelativeLayout
+
+        <ListView
+            android:id="@+id/listview_familias_perfil"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:padding="@dimen/activity_horizontal_margin">
-
-            <ImageView
-                android:id="@+id/ic_familia1_perfil"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:src="@drawable/ic_location_on_black" />
-
-            <TextView
-                android:id="@+id/txt_familia1_perfil"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_toEndOf="@id/ic_familia1_perfil"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="Família 1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="#212121" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/txt_familia1_perfil"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_marginTop="8dp"
-                android:layout_toEndOf="@id/ic_familia1_perfil"
-                android:text="Rua das Laranjeiras, 30"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="#727272" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:padding="@dimen/activity_horizontal_margin">
-
-            <ImageView
-                android:id="@+id/ic_familia2_perfil"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:src="@drawable/ic_location_on_black" />
-
-            <TextView
-                android:id="@+id/txt_familia2_perfil"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_toEndOf="@id/ic_familia2_perfil"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="Família 2"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="#212121" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/txt_familia2_perfil"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_marginTop="8dp"
-                android:layout_toEndOf="@id/ic_familia2_perfil"
-                android:text="Rua das Acácias, 30"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="#727272" />
-
-        </RelativeLayout>
+            android:layout_height="wrap_content"></ListView>
 
         <include layout="@layout/item_divider" />
 
@@ -145,15 +71,21 @@
             android:padding="@dimen/activity_horizontal_margin">
 
             <Button
+                android:id="@+id/btn_editar_perfil"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:textColor="@color/cor_branco"
                 android:layout_marginBottom="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="@dimen/activity_horizontal_margin"
                 android:text="Editar contato" />
 
             <Button
+                android:id="@+id/btn_remover_conta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/cor_vermelho"
+                android:textColor="@color/cor_branco"
                 android:layout_marginBottom="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="@dimen/activity_horizontal_margin"
                 android:text="Remover minha conta" />

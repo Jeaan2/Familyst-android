@@ -27,6 +27,8 @@ public class CadastroActivity extends BaseActivity {
     EditText txtEmail;
     EditText txtSenha;
     Button btnConfirmar;
+
+    private  boolean isEdicao;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +39,10 @@ public class CadastroActivity extends BaseActivity {
         txtSenha = (EditText) findViewById(R.id.txt_senha_cadastro);
         btnConfirmar = (Button) findViewById(R.id.btn_cadastrar);
         btnConfirmar.setOnClickListener((v) -> CadastrarUsuario());
+        
+        if(isEdicao){
+            //// TODO: 04/12/2016 procedimentos para edicao de cadastro 
+        }
 
     }
 
