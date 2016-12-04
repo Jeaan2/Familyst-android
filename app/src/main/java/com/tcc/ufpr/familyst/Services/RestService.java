@@ -2012,5 +2012,49 @@ public class RestService {
             Log.d("Error", "Erro ao enviar email de senha: " + ex.getLocalizedMessage());
         }
     }
+
+    public void EnviarComentario(String descricao, Noticia _noticia, RestCallback restCallback) {
+        try {
+            //seta retorno
+            _restCallback = restCallback;
+
+            //monta url requisicao
+            String url = "comentarios";
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+            postBody.put("descricao", descricao);
+            postBody.put("idNoticia", _noticia.getIdNoticia());
+            postBody.put("idUsuario", getUsuarioAtual().getIdUsuario());
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(((Activity)mCtx).getApplication(), Request.Method.POST, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 201) //created
+                            {
+                                _restCallback.onRestResult(true);
+                            }
+                            else //erros
+                            {
+                                _restCallback.onRestResult(false);
+                            }
+                        }
+                    },
+                    error ->  _restCallback.onRestResult(false)
+            );
+
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao enviar comentario: " + ex.getLocalizedMessage());
+        }
+
+    }
 }
 

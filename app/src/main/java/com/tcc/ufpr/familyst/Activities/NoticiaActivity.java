@@ -44,13 +44,40 @@ public class NoticiaActivity extends AppCompatActivity {
         txtCriadorNoticia.setText(_noticia.getUsuarioCriador().getNome());
         lvComentariosNoticia = (ListView) findViewById(R.id.listview_comentarios_noticia);
         txtNoticiaAberta = (TextView) findViewById(R.id.txt_noticia_aberta);
+        edtComentarioEnviar = (EditText) findViewById(R.id.txt_comentario_enviar);
         txtNoticiaAberta.setText(_noticia.getDescricao());
         btnEnviarComentario = (ImageButton) findViewById(R.id.btn_enviar_comentario);
         btnEnviarComentario.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Envia comentário para o REST
-                //Adiciona objeto Comentário na listView
+                RestService.getInstance(NoticiaActivity.this).EnviarComentario( edtComentarioEnviar.getText().toString(), _noticia, new RestCallback(){
+                    @Override
+                    public void onRestResult(boolean success) {
+                        if (success){
+                            Toast.makeText(getApplicationContext(),getResources().getText(R.string.sucesso_cadastro_comentario), Toast.LENGTH_SHORT).show();
+                            //TODO chamar progressdialog
+                            RestService.getInstance(NoticiaActivity.this).CarregarComentariosNoticiasFamiliasAsync(new RestCallback(){
+                                @Override
+                                public void onRestResult(boolean success) {
+                                    if (success){
+                                        Toast.makeText(NoticiaActivity.this,getResources().getText(R.string.sucesso_atualizar_comentarios), Toast.LENGTH_SHORT).show();
+                                        CarregarListaComentarios();
+                                        edtComentarioEnviar.setText("");
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(NoticiaActivity.this,getResources().getText(R.string.falha_atualizar_comentarios), Toast.LENGTH_SHORT).show();
+                                    }
+                                    //TODO dismiss progressdialog
+                                }
+                            });
+                        }
+                        else
+                        {
+                            Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_cadastro_comentario), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
 
