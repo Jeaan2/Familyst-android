@@ -1,6 +1,7 @@
 package com.tcc.ufpr.familyst.Fragments;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.tcc.ufpr.familyst.Activities.CadastroAlbumActivity;
+import com.tcc.ufpr.familyst.Activities.LoginActivity;
 import com.tcc.ufpr.familyst.Adapters.TipoEventoAdapter;
 import com.tcc.ufpr.familyst.Adapters.TipoItemAdapter;
 import com.tcc.ufpr.familyst.FamilystApplication;
@@ -69,6 +71,9 @@ public class CadastroEventoFragment extends Fragment {
                 ItensCadastroEventoFragment f = (ItensCadastroEventoFragment)getFragmentManager().findFragmentByTag(tag);
                 ArrayList<Item> itensAdicionados = f._itensAdicionados;
                 String hahahahaha = "aff"; //so pra debug
+
+                final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Enviando evento.");
+                dialogProgresso.setCancelable(false);
 
                 RestService.getInstance(getActivity()).EnviarEvento(
                         nomeEvento.getText().toString(),

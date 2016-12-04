@@ -1,6 +1,7 @@
 package com.tcc.ufpr.familyst.Fragments;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tcc.ufpr.familyst.Activities.LoginActivity;
 import com.tcc.ufpr.familyst.Adapters.ComentarioAdapter;
 import com.tcc.ufpr.familyst.Adapters.ItemEventoAdapter;
 import com.tcc.ufpr.familyst.FamilystApplication;
@@ -103,6 +105,8 @@ public class EventoFragment extends Fragment {
         super.onStart();
 
         //TODO chamar progressdialog
+        final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Atualizando comentários.");
+        dialogProgresso.setCancelable(false);
         RestService.getInstance(getActivity()).CarregarComentariosEventosFamiliasAsync(new RestCallback(){
             @Override
             public void onRestResult(boolean success) {
@@ -115,6 +119,7 @@ public class EventoFragment extends Fragment {
                     Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_comentarios), Toast.LENGTH_SHORT).show();
                 }
                 //TODO dismiss progressdialog
+                dialogProgresso.dismiss();
             }
         });
     }

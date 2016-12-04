@@ -1,6 +1,7 @@
 package com.tcc.ufpr.familyst.Fragments;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.tcc.ufpr.familyst.Activities.CadastroNoticiaActivity;
+import com.tcc.ufpr.familyst.Activities.LoginActivity;
 import com.tcc.ufpr.familyst.Adapters.NewsAdapter;
 import com.tcc.ufpr.familyst.FamilystApplication;
 import com.tcc.ufpr.familyst.Interfaces.RestCallback;
@@ -73,6 +75,9 @@ public class NewsFragment extends Fragment {
         super.onStart();
 
         //TODO chamar progressdialog
+        final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Atualizando Notícias");
+        dialogProgresso.setCancelable(false);
+
         RestService.getInstance(getActivity()).CarregarNoticiasFamiliasAsync(new RestCallback(){
             @Override
             public void onRestResult(boolean success) {
@@ -108,6 +113,7 @@ public class NewsFragment extends Fragment {
                     Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_noticias), Toast.LENGTH_SHORT).show();
                 }
                 //TODO dismiss progressdialog
+                dialogProgresso.dismiss();
             }
         });
     }

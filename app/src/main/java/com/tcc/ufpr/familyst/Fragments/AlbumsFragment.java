@@ -1,6 +1,7 @@
 package com.tcc.ufpr.familyst.Fragments;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.tcc.ufpr.familyst.Activities.AlbumActivity;
 import com.tcc.ufpr.familyst.Activities.CadastroAlbumActivity;
+import com.tcc.ufpr.familyst.Activities.LoginActivity;
 import com.tcc.ufpr.familyst.Adapters.AlbumAdapter;
 import com.tcc.ufpr.familyst.FamilystApplication;
 import com.tcc.ufpr.familyst.Interfaces.RestCallback;
@@ -69,12 +71,14 @@ public class AlbumsFragment extends Fragment {
     public void onStart(){
         super.onStart();
 
+        final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Carregando Albuns...");
+        dialogProgresso.setCancelable(false);
+
         //TODO chamar progressdialog
         RestService.getInstance(getActivity()).CarregarAlbunsFamiliasAsync(new RestCallback(){
             @Override
             public void onRestResult(boolean success) {
                 if (success){
-                    Toast.makeText(getActivity(),getResources().getText(R.string.sucesso_atualizar_albums), Toast.LENGTH_SHORT).show();
                     CarregarListaAlbuns();
                 }
                 else
@@ -82,6 +86,7 @@ public class AlbumsFragment extends Fragment {
                     Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_albums), Toast.LENGTH_SHORT).show();
                 }
                 //TODO dismiss progressdialog
+                dialogProgresso.dismiss();
             }
         });
     }

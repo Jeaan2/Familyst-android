@@ -59,8 +59,6 @@ public class ComentariosFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "SERA MALUCO", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
             }
         });
 

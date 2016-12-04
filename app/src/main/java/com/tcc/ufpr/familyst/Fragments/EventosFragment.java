@@ -1,6 +1,7 @@
 package com.tcc.ufpr.familyst.Fragments;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +15,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.tcc.ufpr.familyst.Activities.AlbumActivity;
+import com.tcc.ufpr.familyst.Activities.LoginActivity;
 import com.tcc.ufpr.familyst.Activities.TabHostEventosActivity;
 import com.tcc.ufpr.familyst.Adapters.AlbumAdapter;
 import com.tcc.ufpr.familyst.Adapters.EventoAdapter;
@@ -67,6 +69,10 @@ public class EventosFragment extends Fragment {
         super.onStart();
 
         //TODO chamar progressdialog
+
+        final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Atualizando Eventos");
+        dialogProgresso.setCancelable(false);
+
         RestService.getInstance(getActivity()).CarregarEventosFamiliasAsync(new RestCallback(){
             @Override
             public void onRestResult(boolean success) {
@@ -93,10 +99,12 @@ public class EventosFragment extends Fragment {
                                                                             if (success){
                                                                                 Toast.makeText(getActivity(),getResources().getText(R.string.sucesso_atualizar_eventos), Toast.LENGTH_SHORT).show();
                                                                                 CarregarListaEventos();
+                                                                                dialogProgresso.dismiss();
                                                                             }
                                                                             else
                                                                             {
                                                                                 Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_eventos), Toast.LENGTH_SHORT).show();
+                                                                                dialogProgresso.dismiss();
                                                                             }
                                                                         }
                                                                     });
@@ -104,6 +112,7 @@ public class EventosFragment extends Fragment {
                                                                 else
                                                                 {
                                                                     Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_eventos), Toast.LENGTH_SHORT).show();
+                                                                    dialogProgresso.dismiss();
                                                                 }
                                                             }
                                                         });
@@ -111,6 +120,7 @@ public class EventosFragment extends Fragment {
                                                     else
                                                     {
                                                         Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_eventos), Toast.LENGTH_SHORT).show();
+                                                        dialogProgresso.dismiss();
                                                     }
                                                 }
                                             });
@@ -118,6 +128,7 @@ public class EventosFragment extends Fragment {
                                         else
                                         {
                                             Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_eventos), Toast.LENGTH_SHORT).show();
+                                            dialogProgresso.dismiss();
                                         }
                                     }
                                 });
@@ -125,6 +136,7 @@ public class EventosFragment extends Fragment {
                             else
                             {
                                 Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_eventos), Toast.LENGTH_SHORT).show();
+                                dialogProgresso.dismiss();
                             }
                         }
                     });
@@ -134,6 +146,7 @@ public class EventosFragment extends Fragment {
                     Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_eventos), Toast.LENGTH_SHORT).show();
                 }
                 //TODO dismiss progressdialog
+
             }
         });
     }

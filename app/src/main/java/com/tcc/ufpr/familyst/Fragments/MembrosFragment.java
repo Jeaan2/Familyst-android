@@ -1,6 +1,7 @@
 package com.tcc.ufpr.familyst.Fragments;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +15,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.tcc.ufpr.familyst.Activities.CadastroMembroActivity;
+import com.tcc.ufpr.familyst.Activities.LoginActivity;
 import com.tcc.ufpr.familyst.Activities.TabHostEventosActivity;
 import com.tcc.ufpr.familyst.Adapters.UsuarioAdapter;
 import com.tcc.ufpr.familyst.FamilystApplication;
@@ -93,6 +95,10 @@ public class MembrosFragment extends Fragment {
         super.onStart();
 
         //TODO chamar progressdialog
+
+        final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Atualizando Membros");
+        dialogProgresso.setCancelable(false);
+
         RestService.getInstance(getActivity()).CarregarUsuariosFamiliasAsync(new RestCallback(){
             @Override
             public void onRestResult(boolean success) {
@@ -105,6 +111,7 @@ public class MembrosFragment extends Fragment {
                     Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_membros), Toast.LENGTH_SHORT).show();
                 }
                 //TODO dismiss progressdialog
+                dialogProgresso.dismiss();
             }
         });
     }
