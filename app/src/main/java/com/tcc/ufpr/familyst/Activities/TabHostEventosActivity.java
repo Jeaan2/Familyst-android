@@ -9,6 +9,7 @@ import android.widget.TabHost;
 
 import com.tcc.ufpr.familyst.Adapters.ViewPagerAdapter;
 import com.tcc.ufpr.familyst.Fragments.CadastroEventoFragment;
+import com.tcc.ufpr.familyst.Fragments.EventoFragment;
 import com.tcc.ufpr.familyst.Fragments.ItensCadastroEventoFragment;
 import com.tcc.ufpr.familyst.Fragments.MembrosFragment;
 import com.tcc.ufpr.familyst.R;
@@ -24,12 +25,28 @@ public class TabHostEventosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_host_eventos);
 
+        int idEvento = getIntent().getIntExtra("idEvento", 0);
+
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
 
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.addFragments(new CadastroEventoFragment(), "Evento");
-        viewPagerAdapter.addFragments(new ItensCadastroEventoFragment(), "Itens");
+
+        CadastroEventoFragment cadastroEventoFragment = new CadastroEventoFragment();
+        Bundle data = new Bundle();
+        data.putInt("idEvento", idEvento);
+        data.putBoolean("isEdicao", true);
+        cadastroEventoFragment.setArguments(data);
+
+        viewPagerAdapter.addFragments(cadastroEventoFragment, "Evento");
+
+        ItensCadastroEventoFragment itensCadastroEventoFragment = new ItensCadastroEventoFragment();
+        data = new Bundle();
+        data.putInt("idEvento", idEvento);
+        data.putBoolean("isEdicao", true);
+        itensCadastroEventoFragment.setArguments(data);
+
+        viewPagerAdapter.addFragments(itensCadastroEventoFragment, "Itens");
 
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);

@@ -47,6 +47,8 @@
     <string name="falha_cadastro_evento">Falha ao enviar evento!</string>
     <string name="sucesso_atualizar_eventos">Eventos atualizados.</string>
     <string name="falha_atualizar_eventos">Falha ao atualizar eventos.</string>
+    <string name="falha_editar_evento">Falha ao editar evento.</string>
+    <string name="falha_remover_evento">Falha ao remover evento.</string>
     <!-- strings de output Membros -->
     <string name="sucesso_cadastro_membro">Membro cadastrado com sucesso!</string>
     <string name="falha_cadastro_membro">Falha ao cadastrado membro!</string>
