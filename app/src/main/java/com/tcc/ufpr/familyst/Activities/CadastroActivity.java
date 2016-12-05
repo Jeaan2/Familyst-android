@@ -41,7 +41,7 @@ public class CadastroActivity extends BaseActivity {
         btnConfirmar.setOnClickListener((v) -> CadastrarUsuario());
         
         if(isEdicao){
-            //// TODO: 04/12/2016 procedimentos para edicao de cadastro 
+            //// TODO: 04/12/2016 procedimentos para edicao de cadastro
         }
 
     }
