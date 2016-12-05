@@ -83,15 +83,13 @@ public class CadastroVideoActivity extends BaseActivity {
                         @Override
                         public void onRestResult(boolean success) {
                             if (success){
-                                Toast.makeText(getApplicationContext(),getResources().getText(R.string.sucesso_cadastro_video), Toast.LENGTH_SHORT).show();
-                                dialogProgresso.dismiss();
                                 finish();
                             }
                             else
                             {
                                 Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_cadastro_video), Toast.LENGTH_SHORT).show();
-                                dialogProgresso.dismiss();
                             }
+                            dialogProgresso.dismiss();
                         }
                     });
                 }
@@ -109,9 +107,9 @@ public class CadastroVideoActivity extends BaseActivity {
                             {
                                 Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_editar_video), Toast.LENGTH_SHORT).show();
                             }
+                            dialogProgresso.dismiss();
                         }
                     });
-                    dialogProgresso.dismiss();
                 }
             }
         });

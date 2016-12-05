@@ -14,8 +14,10 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.tcc.ufpr.familyst.Adapters.FamiliaAdapter;
+import com.tcc.ufpr.familyst.Adapters.ItemEventoAdapter;
 import com.tcc.ufpr.familyst.Adapters.TipoItemAdapter;
 import com.tcc.ufpr.familyst.FamilystApplication;
+import com.tcc.ufpr.familyst.Model.Evento;
 import com.tcc.ufpr.familyst.Model.Familia;
 import com.tcc.ufpr.familyst.Model.Item;
 import com.tcc.ufpr.familyst.Model.TipoItem;
@@ -34,11 +36,11 @@ public class ItensCadastroEventoFragment extends Fragment {
     private Button addItem;
     private ListView listItens;
     public ArrayList<Item> _itensAdicionados;
+    private boolean isEdicao;
+    private Evento _evento;
 
     public ItensCadastroEventoFragment() {
-        // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,11 +55,18 @@ public class ItensCadastroEventoFragment extends Fragment {
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    int idTipoItem = ((TipoItem)spnTipoItem.getSelectedItem()).getIdTipoItem();
-                    int quantidade = Integer.valueOf(txtQuantidadeItem.getText().toString());
 
-                    Item item = new Item(-1, quantidade, idTipoItem);
-                    _itensAdicionados.add(item);
+                TipoItem tipoItem = (TipoItem) spnTipoItem.getSelectedItem();
+                int idTipoItem = tipoItem.getIdTipoItem();
+                int quantidade = Integer.valueOf(txtQuantidadeItem.getText().toString());
+
+                Item item = new Item(-1, quantidade, idTipoItem);
+                item.setTipoItem(tipoItem);
+                _itensAdicionados.add(item);
+
+                ItemEventoAdapter adapter = new ItemEventoAdapter(getActivity(),
+                        R.layout.item_lista_itensevento, _itensAdicionados);
+                listItens.setAdapter(adapter);
             }
         });
 
@@ -78,7 +87,32 @@ public class ItensCadastroEventoFragment extends Fragment {
             }
         });
 
+        isEdicao = getArguments().getBoolean("isEdicao", false);
+        if(isEdicao) {
+            int idEvento = getArguments().getInt("idEvento");
+            _evento = carregarEvento(idEvento);
+
+            for ( int i = 0 ; i < _evento.getItensEvento().size() ; i++) {
+                Item item = _evento.getItensEvento().get(i);
+                _itensAdicionados.add(item);
+            }
+            ItemEventoAdapter adapter2 = new ItemEventoAdapter(getActivity(),
+                    R.layout.item_lista_itensevento, _itensAdicionados);
+            listItens.setAdapter(adapter2);
+        }
+
         return  rootView;
     }
 
+    private Evento carregarEvento(int idEvento) {
+        FamilystApplication familystApplication = ((FamilystApplication)getActivity().getApplication());
+        ArrayList<Evento> eventos = familystApplication.getFamiliaAtual().getEventos();
+        for (int i = 0 ; i < eventos.size() ; i++)
+        {
+            Evento evento = eventos.get(i);
+            if (evento.getIdEvento() == idEvento)
+                return evento;
+        }
+        return null;
+    }
 }

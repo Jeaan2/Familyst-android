@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.tcc.ufpr.familyst.Activities.AlbumActivity;
+import com.tcc.ufpr.familyst.Activities.CadastroVideoActivity;
 import com.tcc.ufpr.familyst.Activities.LoginActivity;
 import com.tcc.ufpr.familyst.Activities.TabHostEventosActivity;
 import com.tcc.ufpr.familyst.Adapters.AlbumAdapter;
@@ -23,6 +24,7 @@ import com.tcc.ufpr.familyst.FamilystApplication;
 import com.tcc.ufpr.familyst.Interfaces.RestCallback;
 import com.tcc.ufpr.familyst.Model.Album;
 import com.tcc.ufpr.familyst.Model.Evento;
+import com.tcc.ufpr.familyst.Model.Video;
 import com.tcc.ufpr.familyst.R;
 import com.tcc.ufpr.familyst.Services.RestService;
 
@@ -178,9 +180,15 @@ public class EventosFragment extends Fragment {
         listViewProximosEventos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(), "Long click!", Toast.LENGTH_LONG).show();
+
+                int idEvento = ((Evento)parent.getItemAtPosition(position)).getIdEvento();
+
+                Intent intent = new Intent(getContext(), TabHostEventosActivity.class);
+                intent.putExtra("idEvento", idEvento);
+                intent.putExtra("isEdicao", true);
+                startActivity(intent);
+
                 return true;
-                //TODO abrir tela de Cadastro com extras: idEvento e bool indicando edicao
 
             }
         });
