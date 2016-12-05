@@ -15,10 +15,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.tcc.ufpr.familyst.Activities.CadastroAlbumActivity;
 import com.tcc.ufpr.familyst.Activities.CadastroVideoActivity;
 import com.tcc.ufpr.familyst.Adapters.VideoAdapter;
 import com.tcc.ufpr.familyst.FamilystApplication;
 import com.tcc.ufpr.familyst.Interfaces.RestCallback;
+import com.tcc.ufpr.familyst.Model.Album;
 import com.tcc.ufpr.familyst.Model.Noticia;
 import com.tcc.ufpr.familyst.Model.Video;
 import com.tcc.ufpr.familyst.R;
@@ -58,10 +60,7 @@ public class GaleriaFragment extends Fragment {
             }
         });
 
-        CarregarListaVideos();
-
         return rootView;
-
     }
 
     @Override
@@ -98,6 +97,21 @@ public class GaleriaFragment extends Fragment {
                 //TODO bindar link do video para abrir no youtube
                 Video video = (Video) parent.getItemAtPosition(position);
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(video.getLink())));
+            }
+        });
+        listViewVideos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Video video = (Video) parent.getItemAtPosition(position);
+
+                Intent intent = new Intent(getContext(), CadastroVideoActivity.class);
+                intent.putExtra("idVideo", video.getIdVideo());
+                intent.putExtra("isEdicao", true);
+                startActivity(intent);
+
+                return true;
+
             }
         });
     }

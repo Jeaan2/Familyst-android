@@ -9,7 +9,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tcc.ufpr.familyst.FamilystApplication;
 import com.tcc.ufpr.familyst.Interfaces.RestCallback;
+import com.tcc.ufpr.familyst.Model.Album;
+import com.tcc.ufpr.familyst.Model.Familia;
 import com.tcc.ufpr.familyst.R;
 import com.tcc.ufpr.familyst.Services.RestService;
 
@@ -20,8 +23,8 @@ public class CadastroAlbumActivity extends BaseActivity {
     private TextView cabecalhoAlbum;
     private Button btnCadastrarAlbum;
     private ImageButton btnRemoverAlbum;
-
-    private boolean isEdicao = false; //TODO mudar para false
+    private Album album;
+    private boolean isEdicao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,17 +38,36 @@ public class CadastroAlbumActivity extends BaseActivity {
         btnRemoverAlbum = (ImageButton) findViewById(R.id.btn_remover_album);
         btnRemoverAlbum.setVisibility(View.GONE);
 
+        isEdicao = getIntent().getBooleanExtra("isEdicao", false);
         if(isEdicao)
         {
-            //TODO procedimentos para edicao de album
+            album = carregarAlbum(getIntent().getExtras().getInt("idAlbum"));
+            nomeAlbum.setText(album.getNome());
+            descricaoAlbum.setText(album.getDescricao());
+
+            btnCadastrarAlbum.setText("Salvar");
             btnRemoverAlbum.setVisibility(View.VISIBLE);
             cabecalhoAlbum.setText("Edite o Album selecionado:");
         }
         btnRemoverAlbum.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO procedimentos para remoção de album
 
+                final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroAlbumActivity.this, "Aguarde", "Excluindo Album.");
+                dialogProgresso.setCancelable(false);
+                RestService.getInstance(CadastroAlbumActivity.this).RemoverAlbum( album.getIdAlbum(), new RestCallback(){
+                    @Override
+                    public void onRestResult(boolean success) {
+                        if (success){
+                            finish();
+                        }
+                        else
+                        {
+                            Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_remover_album), Toast.LENGTH_SHORT).show();
+                        }
+                        dialogProgresso.dismiss();
+                    }
+                });
             }
         });
 
@@ -53,25 +75,58 @@ public class CadastroAlbumActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
-                final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroAlbumActivity.this, "Aguarde", "Cadastrando Album.");
-                dialogProgresso.setCancelable(false);
-                RestService.getInstance(CadastroAlbumActivity.this).EnviarAlbum( nomeAlbum.getText().toString(), descricaoAlbum.getText().toString(), new RestCallback(){
-                    @Override
-                    public void onRestResult(boolean success) {
-                        if (success){
-                            //Toast.makeText(getApplicationContext(),getResources().getText(R.string.sucesso_cadastro_album), Toast.LENGTH_SHORT).show();
-                            dialogProgresso.dismiss();
-                            finish();
+                if (!isEdicao)
+                {
+                    final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroAlbumActivity.this, "Aguarde", "Cadastrando Album.");
+                    dialogProgresso.setCancelable(false);
+                    RestService.getInstance(CadastroAlbumActivity.this).EnviarAlbum( nomeAlbum.getText().toString(), descricaoAlbum.getText().toString(), new RestCallback(){
+                        @Override
+                        public void onRestResult(boolean success) {
+                            if (success){
+                                dialogProgresso.dismiss();
+                                finish();
+                            }
+                            else
+                            {
+                                Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_cadastro_album), Toast.LENGTH_SHORT).show();
+                            }
                         }
-                        else
-                        {
-                            Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_cadastro_album), Toast.LENGTH_SHORT).show();
+                    });
+                    dialogProgresso.dismiss();
+                }
+                else {
+                    final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroAlbumActivity.this, "Aguarde", "Editando Album.");
+                    dialogProgresso.setCancelable(false);
+                    RestService.getInstance(CadastroAlbumActivity.this).EditarAlbum( nomeAlbum.getText().toString(), descricaoAlbum.getText().toString(), album.getIdAlbum(), new RestCallback(){
+                        @Override
+                        public void onRestResult(boolean success) {
+                            if (success){
+                                dialogProgresso.dismiss();
+                                finish();
+                            }
+                            else
+                            {
+                                Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_editar_album), Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
-
-                dialogProgresso.dismiss();
+                    });
+                    dialogProgresso.dismiss();
+                }
             }
         });
+    }
+
+    private Album carregarAlbum(int idAlbum) {
+        FamilystApplication familystApplication = ((FamilystApplication)getApplication());
+        Familia familiaSelecionada = familystApplication.getFamiliaAtual();
+
+        //acha album por id (Melhor implementacao seria Map<Int,Album> ao inves de Arraylist... para todas as nossas listas)
+        for (int i = 0 ; i < familiaSelecionada.getAlbuns().size() ; i++) {
+            Album albumFor = familiaSelecionada.getAlbuns().get(i);
+            if (albumFor.getIdAlbum() == idAlbum){
+                return albumFor;
+            }
+        }
+        return null;
     }
 }

@@ -14,13 +14,16 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.tcc.ufpr.familyst.Activities.CadastroAlbumActivity;
 import com.tcc.ufpr.familyst.Activities.CadastroMembroActivity;
+import com.tcc.ufpr.familyst.Activities.CadastroVideoActivity;
 import com.tcc.ufpr.familyst.Activities.LoginActivity;
 import com.tcc.ufpr.familyst.Activities.TabHostEventosActivity;
 import com.tcc.ufpr.familyst.Adapters.UsuarioAdapter;
 import com.tcc.ufpr.familyst.FamilystApplication;
 import com.tcc.ufpr.familyst.Interfaces.RestCallback;
 import com.tcc.ufpr.familyst.Model.Usuario;
+import com.tcc.ufpr.familyst.Model.Video;
 import com.tcc.ufpr.familyst.R;
 import com.tcc.ufpr.familyst.Services.RestService;
 
@@ -37,7 +40,6 @@ public class MembrosFragment extends Fragment {
     public MembrosFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,10 +78,25 @@ public class MembrosFragment extends Fragment {
         listViewMembros.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(), "Long click!", Toast.LENGTH_LONG).show();
-                //TODO abrir tela de Cadastro com extras: idEvento e bool indicando edicao
-                return true;
+                Usuario usuario = (Usuario) parent.getItemAtPosition(position);
 
+                final ProgressDialog dialogProgresso = ProgressDialog.show(getActivity(), "Aguarde", "Excluindo membro.");
+                dialogProgresso.setCancelable(false);
+                RestService.getInstance(getActivity()).RemoverMembro( usuario.getIdUsuario(), new RestCallback(){
+                    @Override
+                    public void onRestResult(boolean success) {
+                        if (success){
+                            onStart();
+                        }
+                        else
+                        {
+                            Toast.makeText(getActivity(),getResources().getText(R.string.falha_remover_membro), Toast.LENGTH_SHORT).show();
+                        }
+                        dialogProgresso.dismiss();
+                    }
+                });
+
+                return true;
             }
         });
     }

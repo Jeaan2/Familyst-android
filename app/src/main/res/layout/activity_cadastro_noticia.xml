@@ -5,16 +5,32 @@
     android:layout_height="match_parent"
     android:layout_margin="20dp">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Digite uma notícia, ela aparecerá para todos os membros de sua família."
-        android:textSize="18dp"
-        android:textStyle="bold"
-        android:id="@+id/txt_cadastro_noticia_cabecalho"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center_horizontal" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Digite uma notícia, ela aparecerá para todos os membros de sua família."
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:id="@+id/txt_cadastro_cabecalho"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center_horizontal" />
+
+        <ImageButton
+            android:id="@+id/btn_remover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_delete"
+            android:tint="@color/cor_branco"
+            android:background="@color/cor_vermelho"/>
+    </LinearLayout>
 
     <EditText
         android:layout_width="match_parent"

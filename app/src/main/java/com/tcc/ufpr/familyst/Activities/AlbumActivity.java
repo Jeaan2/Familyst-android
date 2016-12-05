@@ -1,5 +1,6 @@
 package com.tcc.ufpr.familyst.Activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -12,11 +13,13 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.tcc.ufpr.familyst.Adapters.GridViewAdapter;
 import com.tcc.ufpr.familyst.FamilystApplication;
+import com.tcc.ufpr.familyst.Interfaces.RestCallback;
 import com.tcc.ufpr.familyst.Model.Album;
 import com.tcc.ufpr.familyst.Model.Evento;
 import com.tcc.ufpr.familyst.Model.Familia;
@@ -44,32 +47,25 @@ public class AlbumActivity extends BaseActivity{
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album);
+        gridView = (GridView) findViewById(R.id.gridView);
 
-        int idAlbum = getIntent().getExtras().getInt("idAlbum");
-
-        FamilystApplication familystApplication = ((FamilystApplication)getApplication());
-        Familia familiaSelecionada = familystApplication.getFamiliaAtual();
-
-        //acha album por id (Melhor implementacao seria Map<Int,Album> ao inves de Arraylist... para todas as nossas listas)
-        for (int i = 0 ; i < familiaSelecionada.getAlbuns().size() ; i++) {
-            Album albumFor = familiaSelecionada.getAlbuns().get(i);
-            if (albumFor.getIdAlbum() == idAlbum){
-                album = albumFor;
-                break;
-            }
-        }
+        album = carregarAlbum(getIntent().getExtras().getInt("idAlbum"));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_album);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(),CadastroFotoActivity.class);
+                intent.putExtra("idAlbum", album.getIdAlbum());
                 startActivity(intent);
             }
         });
 
-        gridView = (GridView) findViewById(R.id.gridView);
-        gridAdapter = new GridViewAdapter(this, R.layout.item_gridview_album, getDados());
+        carregarListaFotos();
+    }
+
+    private void carregarListaFotos() {
+        gridAdapter = new GridViewAdapter(this, R.layout.item_gridview_album, carregarFotos());
         gridView.setAdapter(gridAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -78,81 +74,55 @@ public class AlbumActivity extends BaseActivity{
 
                 //Criar Intent
                 Intent intent = new Intent(getApplicationContext(), DetalheFotoActivity.class);
-                intent.putExtra("descricao", foto.getDescricao());
-                //intent.putExtra("imagem", foto.getImagem());
-
+                intent.putExtra("idFoto", foto.getIdImagem());
                 startActivity(intent);
             }
         });
     }
 
+    @Override
+    public void onStart(){
+        super.onStart();
+
+        // chamar progressdialog
+        final ProgressDialog dialogProgresso = ProgressDialog.show(this, "Aguarde", "Atualizando Fotos.");
+        dialogProgresso.setCancelable(false);
+        RestService.getInstance(this).CarregarFotosAlbunsFamiliasAsync(new RestCallback(){
+            @Override
+            public void onRestResult(boolean success) {
+                if (success){
+                    Toast.makeText(AlbumActivity.this,getResources().getText(R.string.sucesso_atualizar_fotos), Toast.LENGTH_SHORT).show();
+                    carregarListaFotos();
+                }
+                else
+                {
+                    Toast.makeText(AlbumActivity.this,getResources().getText(R.string.falha_atualizar_fotos), Toast.LENGTH_SHORT).show();
+                }
+                // dismiss progressdialog
+                dialogProgresso.dismiss();
+            }
+        });
+    }
+
     //preparando dados escrotos para a gridView
-    private ArrayList<Foto> getDados(){
-        /*final ArrayList<Foto> imagemItens = new ArrayList<>();
-        //TypedArray imgs = getResources().obtainTypedArray(R.array.image_ids);
-        TypedArray imgs = getResources().obtainTypedArray(R.array.image_new_ids);
-        for (int i = 0; i < imgs.length(); i++)
-        {
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), imgs.getResourceId(i, -1));
-            //imagemItens.add(new Foto(1, bitmap, new Date(1, 1, 1)));
-            enviarfoto(bitmap);
-        }
-
-        return imagemItens;*/
-
+    private ArrayList<Foto> carregarFotos(){
         ArrayList<Foto> fotos = album.getFotos();
         if (fotos == null)
             return new ArrayList<>();
-
         return fotos;
     }
 
-    private void enviarfoto(Bitmap bitmap)
-    {
-        try {
+    private Album carregarAlbum(int idAlbum) {
+        FamilystApplication familystApplication = ((FamilystApplication)getApplication());
+        Familia familiaSelecionada = familystApplication.getFamiliaAtual();
 
-            //monta url requisicao
-            String url = "fotos";
-
-            //monta headers adicionais
-            Map headers = new ArrayMap();
-
-            //monta body
-            JSONObject postBody = new JSONObject();
-            postBody.put("descricao", "foto de teste");
-            postBody.put("dados", encodeBitmap(bitmap));
-            postBody.put("idAlbum", 4);
-
-            //monta requisicao
-            JsonRestRequest jsonRequest = new JsonRestRequest(getApplication(), Request.Method.POST, true, url, headers, postBody,
-                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
-                        @Override
-                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
-                            if (jsonRestResponse.get_httpStatusCode() == 200) //ok
-                            {
-                                JSONObject bodyRetorno = jsonRestResponse.get_bodyResponse();
-                            } else //erros
-                            {
-                                onFalhaAccessToken("Retorno HTTP não esperado.");
-                            }
-                        }
-                    },
-                    error -> onFalhaAccessToken(error.getMessage())
-            );
-
-            RestService.getInstance(this).addToRequestQueue(jsonRequest);
-        }catch (Exception ex)
-        {}
-    }
-
-    private void onFalhaAccessToken(String message) {
-        int i = 0;
-    }
-
-    private String encodeBitmap(Bitmap bitmap){
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-        byte[] byteArray = byteArrayOutputStream .toByteArray();
-        return Base64.encodeToString(byteArray, Base64.DEFAULT);
+        //acha album por id (Melhor implementacao seria Map<Int,Album> ao inves de Arraylist... para todas as nossas listas)
+        for (int i = 0 ; i < familiaSelecionada.getAlbuns().size() ; i++) {
+            Album albumFor = familiaSelecionada.getAlbuns().get(i);
+            if (albumFor.getIdAlbum() == idAlbum){
+                return albumFor;
+            }
+        }
+        return null;
     }
 }

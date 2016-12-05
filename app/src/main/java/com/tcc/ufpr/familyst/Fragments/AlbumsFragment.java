@@ -60,8 +60,6 @@ public class AlbumsFragment extends Fragment {
             }
         });
 
-        CarregarListaAlbuns();
-
         return rootView;
     }
 
@@ -77,7 +75,19 @@ public class AlbumsFragment extends Fragment {
             @Override
             public void onRestResult(boolean success) {
                 if (success){
-                    CarregarListaAlbuns();
+                    RestService.getInstance(getActivity()).CarregarFotosAlbunsFamiliasAsync(new RestCallback(){
+                        @Override
+                        public void onRestResult(boolean success) {
+                            if (success){
+                                carregarListaAlbuns();
+                            }
+                            else
+                            {
+                                Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_albums), Toast.LENGTH_SHORT).show();
+                            }
+                            dialogProgresso.dismiss();
+                        }
+                    });
                 }
                 else
                 {
@@ -90,7 +100,7 @@ public class AlbumsFragment extends Fragment {
         });
     }
 
-    private void CarregarListaAlbuns() {
+    private void carregarListaAlbuns() {
 
         AlbumAdapter adapter = new AlbumAdapter(getContext(),
                 R.layout.item_lista_albuns, carregarAlbuns());
@@ -116,8 +126,15 @@ public class AlbumsFragment extends Fragment {
         listViewAlbums.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(), "Long click!", Toast.LENGTH_LONG).show();
+
+                Album album = (Album) parent.getItemAtPosition(position);
+
                 //TODO abrir tela de Cadastro com extras: idEvento e bool indicando edicao
+                Intent intent = new Intent(getContext(), CadastroAlbumActivity.class);
+                intent.putExtra("idAlbum", album.getIdAlbum());
+                intent.putExtra("isEdicao", true);
+                startActivity(intent);
+
                 return true;
 
             }

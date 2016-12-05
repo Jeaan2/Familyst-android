@@ -2,7 +2,9 @@ package com.tcc.ufpr.familyst.Services;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v4.util.ArrayMap;
+import android.util.Base64;
 import android.util.Log;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -29,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1314,7 +1317,7 @@ public class RestService {
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                         Date dataAlbum = sdf.parse(dateStr);
 
-                        Album album = new Album(albumJson.getInt("idAlbum"), albumJson.getString("nome"), dataAlbum);
+                        Album album = new Album(albumJson.getInt("idAlbum"), albumJson.getString("nome"), dataAlbum, albumJson.getString("descricao"));
                         albuns.add(album);
                     }
                 }
@@ -1327,7 +1330,7 @@ public class RestService {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                     Date dataAlbum = sdf.parse(dateStr);
 
-                    Album album = new Album(albumJson.getInt("idAlbum"), albumJson.getString("nome"), dataAlbum);
+                    Album album = new Album(albumJson.getInt("idAlbum"), albumJson.getString("nome"), dataAlbum, albumJson.getString("descricao"));
                     albuns.add(album);
                 }
 
@@ -2055,6 +2058,384 @@ public class RestService {
             Log.d("Error", "Erro ao enviar comentario: " + ex.getLocalizedMessage());
         }
 
+    }
+
+    public void EnviarComentarioEvento(String descricao, Evento evento, RestCallback restCallback) {
+        try {
+            //seta retorno
+            _restCallback = restCallback;
+
+            //monta url requisicao
+            String url = "comentarios";
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+            postBody.put("descricao", descricao);
+            postBody.put("idEvento", evento.getIdEvento());
+            postBody.put("idUsuario", getUsuarioAtual().getIdUsuario());
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(((Activity)mCtx).getApplication(), Request.Method.POST, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 201) //created
+                            {
+                                _restCallback.onRestResult(true);
+                            }
+                            else //erros
+                            {
+                                _restCallback.onRestResult(false);
+                            }
+                        }
+                    },
+                    error ->  _restCallback.onRestResult(false)
+            );
+
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao enviar comentario: " + ex.getLocalizedMessage());
+        }
+    }
+
+    public void EnviarFoto(String descricao, Bitmap bitmapImage, Album album, RestCallback restCallback) {
+        try {
+            //seta retorno
+            _restCallback = restCallback;
+
+            //monta url requisicao
+            String url = "fotos";
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+            postBody.put("descricao", descricao);
+            postBody.put("dados", encodeBitmap(bitmapImage));
+            postBody.put("idAlbum", album.getIdAlbum());
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(((Activity)mCtx).getApplication(), Request.Method.POST, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 201) //created
+                            {
+                                _restCallback.onRestResult(true);
+                            }
+                            else //erros
+                            {
+                                _restCallback.onRestResult(false);
+                            }
+                        }
+                    },
+                    error ->  _restCallback.onRestResult(false)
+            );
+
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao enviar foto: " + ex.getLocalizedMessage());
+        }
+    }
+
+    private String encodeBitmap(Bitmap bitmap){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream .toByteArray();
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
+    }
+
+    public void EditarAlbum(String nome, String descricao, int idAlbum, RestCallback restCallback) {
+        try {
+            //seta retorno
+            _restCallback = restCallback;
+
+            //monta url requisicao
+            String url = "albuns/" + idAlbum;
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+            postBody.put("nome", nome);
+            postBody.put("descricao", descricao);
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(((Activity)mCtx).getApplication(), Request.Method.PUT, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 200) //OK
+                            {
+                                _restCallback.onRestResult(true);
+                            }
+                            else //erros
+                            {
+                                _restCallback.onRestResult(false);
+                            }
+                        }
+                    },
+                    error ->  _restCallback.onRestResult(false)
+            );
+
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao editar album: " + ex.getLocalizedMessage());
+        }
+    }
+
+    public void RemoverAlbum(int idAlbum, RestCallback restCallback) {
+        try {
+            //seta retorno
+            _restCallback = restCallback;
+
+            //monta url requisicao
+            String url = "albuns/" + idAlbum;
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(((Activity)mCtx).getApplication(), Request.Method.DELETE, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 200) //OK
+                            {
+                                _restCallback.onRestResult(true);
+                            }
+                            else //erros
+                            {
+                                _restCallback.onRestResult(false);
+                            }
+                        }
+                    },
+                    error ->  _restCallback.onRestResult(false)
+            );
+
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao excluir album: " + ex.getLocalizedMessage());
+        }
+    }
+
+    public void EditarNoticia(String descricao, int idNoticia, RestCallback restCallback) {
+        try {
+            //seta retorno
+            _restCallback = restCallback;
+
+            //monta url requisicao
+            String url = "noticias/" + idNoticia;
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+            postBody.put("descricao", descricao);
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(((Activity)mCtx).getApplication(), Request.Method.PUT, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 200) //OK
+                            {
+                                _restCallback.onRestResult(true);
+                            }
+                            else //erros
+                            {
+                                _restCallback.onRestResult(false);
+                            }
+                        }
+                    },
+                    error ->  _restCallback.onRestResult(false)
+            );
+
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao editar noticia: " + ex.getLocalizedMessage());
+        }
+    }
+
+    public void RemoverNoticia(int idNoticia, RestCallback restCallback) {
+        try {
+            //seta retorno
+            _restCallback = restCallback;
+
+            //monta url requisicao
+            String url = "noticias/" + idNoticia;
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(((Activity)mCtx).getApplication(), Request.Method.DELETE, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 200) //OK
+                            {
+                                _restCallback.onRestResult(true);
+                            }
+                            else //erros
+                            {
+                                _restCallback.onRestResult(false);
+                            }
+                        }
+                    },
+                    error ->  _restCallback.onRestResult(false)
+            );
+
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao excluir noticia: " + ex.getLocalizedMessage());
+        }
+    }
+
+    public void EditarVideo(String descricao, String link, int idVideo, RestCallback restCallback) {
+        try {
+            //seta retorno
+            _restCallback = restCallback;
+
+            //monta url requisicao
+            String url = "videos/" + idVideo;
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+            postBody.put("descricao", descricao);
+            postBody.put("link", link);
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(((Activity)mCtx).getApplication(), Request.Method.PUT, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 200) //OK
+                            {
+                                _restCallback.onRestResult(true);
+                            }
+                            else //erros
+                            {
+                                _restCallback.onRestResult(false);
+                            }
+                        }
+                    },
+                    error ->  _restCallback.onRestResult(false)
+            );
+
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao editar video: " + ex.getLocalizedMessage());
+        }
+    }
+
+    public void RemoverVideo(int idVideo, RestCallback restCallback) {
+        try {
+            //seta retorno
+            _restCallback = restCallback;
+
+            //monta url requisicao
+            String url = "videos/" + idVideo;
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(((Activity)mCtx).getApplication(), Request.Method.DELETE, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 200) //OK
+                            {
+                                _restCallback.onRestResult(true);
+                            }
+                            else //erros
+                            {
+                                _restCallback.onRestResult(false);
+                            }
+                        }
+                    },
+                    error ->  _restCallback.onRestResult(false)
+            );
+
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao excluir video: " + ex.getLocalizedMessage());
+        }
+    }
+
+    public void RemoverMembro(int idUsuario, RestCallback restCallback) {
+        try {
+            //seta retorno
+            _restCallback = restCallback;
+
+            //monta url requisicao
+            String url = "familias/" + getFamiliaAtual().getIdFamilia() + "/usuarios/" + idUsuario;
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(((Activity)mCtx).getApplication(), Request.Method.DELETE, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 200) //OK
+                            {
+                                _restCallback.onRestResult(true);
+                            }
+                            else //erros
+                            {
+                                _restCallback.onRestResult(false);
+                            }
+                        }
+                    },
+                    error ->  _restCallback.onRestResult(false)
+            );
+
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao excluir membro da familia: " + ex.getLocalizedMessage());
+        }
     }
 }
 

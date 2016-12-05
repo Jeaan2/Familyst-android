@@ -66,7 +66,7 @@ public class NoticiaActivity extends AppCompatActivity {
                                 public void onRestResult(boolean success) {
                                     if (success){
                                         Toast.makeText(NoticiaActivity.this,getResources().getText(R.string.sucesso_atualizar_comentarios), Toast.LENGTH_SHORT).show();
-                                        CarregarListaComentarios();
+                                        carregarListaComentarios();
                                         edtComentarioEnviar.setText("");
 
                                     }
@@ -88,7 +88,7 @@ public class NoticiaActivity extends AppCompatActivity {
             }
         });
 
-        CarregarListaComentarios();
+        carregarListaComentarios();
     }
 
     private void carregarNoticia(int idNoticia) {
@@ -106,7 +106,7 @@ public class NoticiaActivity extends AppCompatActivity {
         }
     }
 
-    private void CarregarListaComentarios() {
+    private void carregarListaComentarios() {
 
         ComentarioAdapter adapter = new ComentarioAdapter(this,
                 R.layout.item_lista_comentarios, _noticia.getComentarios());
@@ -134,7 +134,7 @@ public class NoticiaActivity extends AppCompatActivity {
             public void onRestResult(boolean success) {
                 if (success){
                     Toast.makeText(NoticiaActivity.this,getResources().getText(R.string.sucesso_atualizar_comentarios), Toast.LENGTH_SHORT).show();
-                    CarregarListaComentarios();
+                    carregarListaComentarios();
                 }
                 else
                 {

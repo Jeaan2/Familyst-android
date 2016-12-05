@@ -1,20 +1,35 @@
 package com.tcc.ufpr.familyst.Activities;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.provider.MediaStore;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.tcc.ufpr.familyst.FamilystApplication;
+import com.tcc.ufpr.familyst.Interfaces.RestCallback;
+import com.tcc.ufpr.familyst.Model.Album;
+import com.tcc.ufpr.familyst.Model.Familia;
 import com.tcc.ufpr.familyst.R;
+import com.tcc.ufpr.familyst.Services.JsonRestRequest;
+import com.tcc.ufpr.familyst.Services.RestService;
 
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Map;
 
 public class CadastroFotoActivity extends AppCompatActivity {
 
@@ -23,6 +38,8 @@ public class CadastroFotoActivity extends AppCompatActivity {
     Button btnSalvarFoto;
     ImageView imgSelecionada;
     EditText txtDescricaoFoto;
+    Bitmap bitmapImage;
+    Album album;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -39,8 +56,8 @@ public class CadastroFotoActivity extends AppCompatActivity {
                 {
                     try
                     {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                        imgSelecionada.setImageBitmap(bitmap);
+                        bitmapImage = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                        imgSelecionada.setImageBitmap(bitmapImage);
                     } catch (IOException e)
                     {
                         e.printStackTrace();
@@ -58,12 +75,13 @@ public class CadastroFotoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro_foto);
 
+        album = carregarAlbum(getIntent().getExtras().getInt("idAlbum"));
+
         btnTirarFoto = (Button) findViewById(R.id.btn_tirar_foto);
         btnEscolherFoto = (Button) findViewById(R.id.btn_foto_galeria);
         btnSalvarFoto = (Button) findViewById(R.id.btn_cadastrar_foto);
         txtDescricaoFoto = (EditText) findViewById(R.id.txt_descricao_foto_cadastro);
         imgSelecionada = (ImageView) findViewById(R.id.img_cadastro_foto);
-
         btnTirarFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,9 +90,6 @@ public class CadastroFotoActivity extends AppCompatActivity {
                 startActivityForResult(intent, 0);
             }
         });
-
-
-
         btnEscolherFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,13 +99,41 @@ public class CadastroFotoActivity extends AppCompatActivity {
                 startActivityForResult(Intent.createChooser(intentGaleria, "Selecione a foto"), 1);
             }
         });
-
-
         btnSalvarFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO procedimentos de salvamento de foto
+                final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroFotoActivity.this, "Aguarde", "Cadastrando Foto.");
+                dialogProgresso.setCancelable(false);
+                RestService.getInstance(CadastroFotoActivity.this).EnviarFoto( txtDescricaoFoto.getText().toString(), bitmapImage, album, new RestCallback(){
+                    @Override
+                    public void onRestResult(boolean success) {
+                        if (success){
+                            Toast.makeText(getApplicationContext(),getResources().getText(R.string.sucesso_cadastro_foto), Toast.LENGTH_SHORT).show();
+                            dialogProgresso.dismiss();
+                            finish();
+                        }
+                        else
+                        {
+                            Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_cadastro_foto), Toast.LENGTH_SHORT).show();
+                            dialogProgresso.dismiss();
+                        }
+                    }
+                });
             }
         });
+    }
+
+    private Album carregarAlbum(int idAlbum) {
+        FamilystApplication familystApplication = ((FamilystApplication)getApplication());
+        Familia familiaSelecionada = familystApplication.getFamiliaAtual();
+
+        //acha album por id (Melhor implementacao seria Map<Int,Album> ao inves de Arraylist... para todas as nossas listas)
+        for (int i = 0 ; i < familiaSelecionada.getAlbuns().size() ; i++) {
+            Album albumFor = familiaSelecionada.getAlbuns().get(i);
+            if (albumFor.getIdAlbum() == idAlbum){
+                return albumFor;
+            }
+        }
+        return null;
     }
 }

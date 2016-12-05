@@ -10,11 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tcc.ufpr.familyst.Activities.LoginActivity;
+import com.tcc.ufpr.familyst.Activities.NoticiaActivity;
 import com.tcc.ufpr.familyst.Adapters.ComentarioAdapter;
 import com.tcc.ufpr.familyst.Adapters.ItemEventoAdapter;
 import com.tcc.ufpr.familyst.FamilystApplication;
@@ -41,6 +44,8 @@ public class EventoFragment extends Fragment {
     TextView textViewLocalEvento;
     Button btnConfirmarPresenca;
     TextView txtConfirmarPresenca;
+    ImageButton btnEnviarComentario;
+    EditText edtComentarioEnviar;
     Evento evento;
 
     public EventoFragment() {
@@ -60,8 +65,6 @@ public class EventoFragment extends Fragment {
         btnConfirmarPresenca = (Button) rootView.findViewById(R.id.btn_confirmar_presenca);
         txtConfirmarPresenca = (TextView) rootView.findViewById(R.id.txt_presenca_confirmada);
         txtConfirmarPresenca.setVisibility(View.GONE);
-
-
         btnConfirmarPresenca.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,6 +72,47 @@ public class EventoFragment extends Fragment {
                 //enviar confirmacao de presenca!
                 btnConfirmarPresenca.setVisibility(View.GONE);
                 txtConfirmarPresenca.setVisibility(View.VISIBLE);
+            }
+        });
+        edtComentarioEnviar = (EditText) rootView.findViewById(R.id.txt_comentario_enviar);
+        btnEnviarComentario = (ImageButton) rootView.findViewById(R.id.btn_enviar_comentario);
+        btnEnviarComentario.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RestService.getInstance(getActivity()).EnviarComentarioEvento( edtComentarioEnviar.getText().toString(), evento, new RestCallback(){
+                    @Override
+                    public void onRestResult(boolean success) {
+                        if (success){
+                            Toast.makeText(getActivity(),getResources().getText(R.string.sucesso_cadastro_comentario), Toast.LENGTH_SHORT).show();
+
+                            // chamar progressdialog
+                            final ProgressDialog dialogProgresso = ProgressDialog.show(getActivity(), "Aguarde", "Atualizando Comentários");
+                            dialogProgresso.setCancelable(false);
+
+                            RestService.getInstance(getActivity()).CarregarComentariosEventosFamiliasAsync(new RestCallback(){
+                                @Override
+                                public void onRestResult(boolean success) {
+                                    if (success){
+                                        Toast.makeText(getActivity(),getResources().getText(R.string.sucesso_atualizar_comentarios), Toast.LENGTH_SHORT).show();
+                                        CarregarListaComentarios();
+                                        edtComentarioEnviar.setText("");
+
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_comentarios), Toast.LENGTH_SHORT).show();
+                                    }
+                                    // dismiss progressdialog
+                                    dialogProgresso.dismiss();
+                                }
+                            });
+                        }
+                        else
+                        {
+                            Toast.makeText(getActivity(),getResources().getText(R.string.falha_cadastro_comentario), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
 

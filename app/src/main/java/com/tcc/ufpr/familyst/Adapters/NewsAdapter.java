@@ -6,10 +6,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tcc.ufpr.familyst.Activities.CadastroAlbumActivity;
+import com.tcc.ufpr.familyst.Activities.CadastroNoticiaActivity;
 import com.tcc.ufpr.familyst.Activities.NoticiaActivity;
+import com.tcc.ufpr.familyst.Model.Album;
 import com.tcc.ufpr.familyst.Model.Noticia;
 import com.tcc.ufpr.familyst.R;
 
@@ -38,7 +42,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
 
         //TODO Adicionar restante das informações de noticia
         String descricao = noticia.getDescricao();
+        String comentarios = noticia.getComentarios() == null ? "0 Comentarios" : noticia.getComentarios().size() + " Comentarios";
         newsViewHolder.vDescricao.setText(descricao);
+        newsViewHolder.vNumComentarios.setText(comentarios);
         newsViewHolder.setNoticia(noticia);
     }
 
@@ -60,6 +66,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
     public static class NewsViewHolder extends RecyclerView.ViewHolder{
 
         protected TextView vDescricao;
+        protected TextView vNumComentarios;
         protected View view;
         private Context contexto;
         private Noticia noticia;
@@ -78,9 +85,24 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
                     context.startActivity(intent);
                 }
             });
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
 
+                    Noticia noticia = (Noticia) getNoticia();
+
+                    //TODO abrir tela de Cadastro com extras: idEvento e bool indicando edicao
+                    Intent intent = new Intent(context.getApplicationContext(), CadastroNoticiaActivity.class);
+                    intent.putExtra("idNoticia", noticia.getIdNoticia());
+                    intent.putExtra("isEdicao", true);
+                    context.startActivity(intent);
+
+                    return false;
+                }
+            });
 
             vDescricao = (TextView) itemView.findViewById(R.id.txt_descricao_noticia);
+            vNumComentarios = (TextView) itemView.findViewById(R.id.txt_comentarios);
         }
 
         public void setNoticia(Noticia noticia) {

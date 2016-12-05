@@ -30,20 +30,21 @@ import java.util.ArrayList;
  * A simple {@link Fragment} subclass.
  */
 public class NewsFragment extends Fragment {
+
     private NewsAdapter noticiasAdapter;
     private ArrayList<Noticia> listaNoticiasCardView = new ArrayList<>();
+    private RecyclerView recList;
 
     public NewsFragment() {
-        // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
         View rootView = inflater.inflate(R.layout.fragment_news, container, false);
+        recList = (RecyclerView) rootView.findViewById(R.id.cardlist_news);
+        recList.setHasFixedSize(true);
+        recList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -57,17 +58,16 @@ public class NewsFragment extends Fragment {
             }
         });
 
-        RecyclerView recList = (RecyclerView) rootView.findViewById(R.id.cardlist_news);
-        recList.setHasFixedSize(true);
+        return rootView;
+    }
 
-        recList.setLayoutManager(new LinearLayoutManager(getActivity()));
+    private void carregarListaNoticias() {
+
         noticiasAdapter = new NewsAdapter(getActivity());
         recList.setAdapter(noticiasAdapter);
-
         listaNoticiasCardView = carregarNoticias();
         noticiasAdapter.setListaNoticia(listaNoticiasCardView);
 
-        return rootView;
     }
 
     @Override
@@ -90,20 +90,20 @@ public class NewsFragment extends Fragment {
                                     @Override
                                     public void onRestResult(boolean success) {
                                         if (success){
-                                            Toast.makeText(getActivity(),getResources().getText(R.string.sucesso_atualizar_noticias), Toast.LENGTH_SHORT).show();
-                                            listaNoticiasCardView = carregarNoticias();
-                                            noticiasAdapter.setListaNoticia(listaNoticiasCardView);
+                                            carregarListaNoticias();
                                         }
                                         else
                                         {
                                             Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_noticias), Toast.LENGTH_SHORT).show();
                                         }
+                                        dialogProgresso.dismiss();
                                     }
                                 });
                             }
                             else
                             {
                                 Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_noticias), Toast.LENGTH_SHORT).show();
+                                dialogProgresso.dismiss();
                             }
                         }
                     });
@@ -111,9 +111,8 @@ public class NewsFragment extends Fragment {
                 else
                 {
                     Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_noticias), Toast.LENGTH_SHORT).show();
+                    dialogProgresso.dismiss();
                 }
-                //TODO dismiss progressdialog
-                dialogProgresso.dismiss();
             }
         });
     }
