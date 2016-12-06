@@ -1,6 +1,8 @@
 package com.tcc.ufpr.familyst.Activities;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -53,21 +55,38 @@ public class CadastroAlbumActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
-                final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroAlbumActivity.this, "Aguarde", "Excluindo Album.");
-                dialogProgresso.setCancelable(false);
-                RestService.getInstance(CadastroAlbumActivity.this).RemoverAlbum( album.getIdAlbum(), new RestCallback(){
-                    @Override
-                    public void onRestResult(boolean success) {
-                        if (success){
-                            finish();
-                        }
-                        else
-                        {
-                            Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_remover_album), Toast.LENGTH_SHORT).show();
-                        }
-                        dialogProgresso.dismiss();
-                    }
-                });
+                new AlertDialog.Builder(CadastroAlbumActivity.this)
+                        .setTitle("Alerta!")
+                        .setMessage("Deseja remover o album selecionado?")
+                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroAlbumActivity.this, "Aguarde", "Excluindo Album.");
+                                dialogProgresso.setCancelable(false);
+                                RestService.getInstance(CadastroAlbumActivity.this).RemoverAlbum( album.getIdAlbum(), new RestCallback(){
+                                    @Override
+                                    public void onRestResult(boolean success) {
+                                        if (success){
+                                            finish();
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_remover_album), Toast.LENGTH_SHORT).show();
+                                        }
+                                        dialogProgresso.dismiss();
+                                    }
+                                });
+
+                                dialog.dismiss();
+                            }
+                        }).show();
+
             }
         });
 

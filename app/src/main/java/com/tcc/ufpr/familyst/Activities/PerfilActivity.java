@@ -1,5 +1,8 @@
 package com.tcc.ufpr.familyst.Activities;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -62,6 +65,25 @@ public class PerfilActivity extends BaseActivity {
             public void onClick(View v) {
                 //TODO procedimentos para remover perfil
                 //AlertDialog?
+
+                new AlertDialog.Builder(PerfilActivity.this)
+                        .setTitle("Alerta!")
+                        .setMessage("Deseja remover o video selecionado?")
+                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                final ProgressDialog dialogProgresso = ProgressDialog.show(PerfilActivity.this, "Aguarde", "Excluindo item.");
+                                dialogProgresso.setCancelable(false);
+
+                                dialog.dismiss();
+                            }
+                        }).show();
             }
         });
 

@@ -1,7 +1,9 @@
 package com.tcc.ufpr.familyst.Fragments;
 
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -80,21 +82,40 @@ public class MembrosFragment extends Fragment {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Usuario usuario = (Usuario) parent.getItemAtPosition(position);
 
-                final ProgressDialog dialogProgresso = ProgressDialog.show(getActivity(), "Aguarde", "Excluindo membro.");
-                dialogProgresso.setCancelable(false);
-                RestService.getInstance(getActivity()).RemoverMembro( usuario.getIdUsuario(), new RestCallback(){
-                    @Override
-                    public void onRestResult(boolean success) {
-                        if (success){
-                            onStart();
-                        }
-                        else
-                        {
-                            Toast.makeText(getActivity(),getResources().getText(R.string.falha_remover_membro), Toast.LENGTH_SHORT).show();
-                        }
-                        dialogProgresso.dismiss();
-                    }
-                });
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Alerta!")
+                        .setMessage("Deseja Remover o Membro selecionado?")
+                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                final ProgressDialog dialogProgresso = ProgressDialog.show(getActivity(), "Aguarde", "Excluindo membro.");
+                                dialogProgresso.setCancelable(false);
+                                RestService.getInstance(getActivity()).RemoverMembro( usuario.getIdUsuario(), new RestCallback(){
+                                    @Override
+                                    public void onRestResult(boolean success) {
+                                        if (success){
+                                            onStart();
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(getActivity(),getResources().getText(R.string.falha_remover_membro), Toast.LENGTH_SHORT).show();
+                                        }
+                                        dialogProgresso.dismiss();
+                                    }
+                                });
+
+                                dialog.dismiss();
+                            }
+                        }).show();
+
+
 
                 return true;
             }

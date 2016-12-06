@@ -142,7 +142,6 @@ public class MainActivity extends AppCompatActivity
 
             MenuItem item = _menu.findItem(R.id.spinner);
             Spinner spinner = (Spinner) MenuItemCompat.getActionView(item);
-            spinner.setVisibility(View.GONE);
             spinner.setAdapter(adapter); // set the adapter to provide layout of rows and content
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -186,16 +185,6 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_remove) {
-            Toast.makeText(this, "Clicou remover", Toast.LENGTH_LONG).show();
-            return true;
-        }
-        else if (id == R.id.action_edit) {
-            Toast.makeText(this, "Clicou editar", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-
-
 
         return super.onOptionsItemSelected(item);
     }

@@ -1,6 +1,8 @@
 package com.tcc.ufpr.familyst.Activities;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -54,22 +56,40 @@ public class CadastroVideoActivity extends BaseActivity {
         btnRemoverVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroVideoActivity.this, "Aguarde", "Excluindo item.");
-                dialogProgresso.setCancelable(false);
-                RestService.getInstance(CadastroVideoActivity.this).RemoverVideo( video.getIdVideo(), new RestCallback(){
-                    @Override
-                    public void onRestResult(boolean success) {
-                        if (success){
-                            dialogProgresso.dismiss();
-                            finish();
-                        }
-                        else
-                        {
-                            Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_remover_video), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-                dialogProgresso.dismiss();
+
+                new AlertDialog.Builder(CadastroVideoActivity.this)
+                        .setTitle("Alerta!")
+                        .setMessage("Deseja remover o video selecionado?")
+                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroVideoActivity.this, "Aguarde", "Excluindo item.");
+                                dialogProgresso.setCancelable(false);
+                                RestService.getInstance(CadastroVideoActivity.this).RemoverVideo( video.getIdVideo(), new RestCallback(){
+                                    @Override
+                                    public void onRestResult(boolean success) {
+                                        if (success){
+                                            dialogProgresso.dismiss();
+                                            finish();
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_remover_video), Toast.LENGTH_SHORT).show();
+                                        }
+                                        dialogProgresso.dismiss();
+                                    }
+                                });
+                                dialog.dismiss();
+                            }
+                        }).show();
+
+
             }
         });
         btnCadastrar.setOnClickListener(new View.OnClickListener() {

@@ -1,6 +1,8 @@
 package com.tcc.ufpr.familyst.Activities;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -54,23 +56,38 @@ public class CadastroNoticiaActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
-                    final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroNoticiaActivity.this, "Aguarde", "Excluindo item.");
-                    dialogProgresso.setCancelable(false);
-                    RestService.getInstance(CadastroNoticiaActivity.this).RemoverNoticia( noticia.getIdNoticia(), new RestCallback(){
-                        @Override
-                        public void onRestResult(boolean success) {
-                            if (success){
-                                dialogProgresso.dismiss();
-                                finish();
+                new AlertDialog.Builder(CadastroNoticiaActivity.this)
+                        .setTitle("Alerta")
+                        .setMessage("Deseja remover a noticia selecionada?")
+                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
                             }
-                            else
-                            {
-                                Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_remover_noticia), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                    dialogProgresso.dismiss();
+                        })
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
+                                final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroNoticiaActivity.this, "Aguarde", "Excluindo item.");
+                                dialogProgresso.setCancelable(false);
+                                RestService.getInstance(CadastroNoticiaActivity.this).RemoverNoticia( noticia.getIdNoticia(), new RestCallback(){
+                                    @Override
+                                    public void onRestResult(boolean success) {
+                                        if (success){
+                                            dialogProgresso.dismiss();
+                                            finish();
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_remover_noticia), Toast.LENGTH_SHORT).show();
+                                        }
+                                        dialogProgresso.dismiss();
+                                    }
+                                });
+                                dialog.dismiss();
+                            }
+                        }).show();
             }
         });
 

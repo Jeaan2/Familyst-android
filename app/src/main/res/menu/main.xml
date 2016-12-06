@@ -9,16 +9,4 @@
         android:background="#ff00"
         app:showAsAction="always" />
 
-    <item
-        android:id="@+id/action_remove"
-        android:icon="@drawable/ic_delete"
-        android:title="Remover"
-        app:showAsAction="always"/>
-
-    <item
-        android:id="@+id/action_edit"
-        android:icon="@drawable/ic_edit"
-        android:title="Editar"
-        app:showAsAction="always"/>
-
 </menu>
