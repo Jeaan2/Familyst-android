@@ -136,7 +136,7 @@ public class RestService {
                 JSONArray familias = bodyRetorno.getJSONArray("familia");
                 for (int i = 0 ; i < familias.length() ; i++) {
                     JSONObject familiaJson = familias.getJSONObject(i);
-                    Familia familia = new Familia(familiaJson.getInt("idFamilia"), familiaJson.getString("nome"), familiaJson.getInt("idGaleria"));
+                    Familia familia = new Familia(familiaJson.getInt("idFamilia"), familiaJson.getString("nome"), familiaJson.getInt("idGaleria"), familiaJson.getString("descricao"), familiaJson.getString("local"));
                     _familias.add(familia);
                 }
             }
@@ -2670,6 +2670,132 @@ public class RestService {
         }
         catch (Exception ex){
             Log.d("Error", "Erro ao editar usuario: " + ex.getLocalizedMessage());
+        }
+    }
+
+    public void EnviarFamilia(String nome, String descricao, String local, RestCallback restCallback) {
+        try {
+            //seta retorno
+            _restCallback = restCallback;
+
+            //monta url requisicao
+            String url = "familias";
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+            postBody.put("nome", nome);
+            postBody.put("descricao", descricao);
+            postBody.put("local", local);
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(((Activity)mCtx).getApplication(), Request.Method.POST, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 201) //created
+                            {
+                                _restCallback.onRestResult(true);
+                            }
+                            else //erros
+                            {
+                                _restCallback.onRestResult(false);
+                            }
+                        }
+                    },
+                    error ->  _restCallback.onRestResult(false)
+            );
+
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao enviar familia: " + ex.getLocalizedMessage());
+        }
+    }
+
+    public void EditarFamilia(String nome, String descricao, String local, int idFamilia, RestCallback restCallback) {
+        try {
+            //seta retorno
+            _restCallback = restCallback;
+
+            //monta url requisicao
+            String url = "familias/" + idFamilia;
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+            postBody.put("nome", nome);
+            postBody.put("descricao", descricao);
+            postBody.put("local", local);
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(((Activity)mCtx).getApplication(), Request.Method.PUT, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 200) //OK
+                            {
+                                _restCallback.onRestResult(true);
+                            }
+                            else //erros
+                            {
+                                _restCallback.onRestResult(false);
+                            }
+                        }
+                    },
+                    error ->  _restCallback.onRestResult(false)
+            );
+
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao editar familia: " + ex.getLocalizedMessage());
+        }
+    }
+
+    public void RemoverFamilia(int idFamilia, RestCallback restCallback) {
+        try {
+            //seta retorno
+            _restCallback = restCallback;
+
+            //monta url requisicao
+            String url = "familias/" + idFamilia;
+
+            //monta headers adicionais
+            Map headers = new ArrayMap();
+
+            //monta body
+            JSONObject postBody = new JSONObject();
+
+            //monta requisicao
+            JsonRestRequest jsonRequest = new JsonRestRequest(((Activity)mCtx).getApplication(), Request.Method.DELETE, true, url, headers, postBody,
+                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                        @Override
+                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                            if (jsonRestResponse.get_httpStatusCode() == 200) //OK
+                            {
+                                _restCallback.onRestResult(true);
+                            }
+                            else //erros
+                            {
+                                _restCallback.onRestResult(false);
+                            }
+                        }
+                    },
+                    error ->  _restCallback.onRestResult(false)
+            );
+
+            //envia requisicao
+            addToRequestQueue(jsonRequest);
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao excluir familia: " + ex.getLocalizedMessage());
         }
     }
 

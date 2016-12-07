@@ -22,6 +22,7 @@ import com.tcc.ufpr.familyst.Adapters.FamiliaAdapter;
 import com.tcc.ufpr.familyst.Adapters.FamiliaPerfilAdapter;
 import com.tcc.ufpr.familyst.FamilystApplication;
 import com.tcc.ufpr.familyst.Interfaces.RestCallback;
+import com.tcc.ufpr.familyst.Model.Album;
 import com.tcc.ufpr.familyst.Model.Familia;
 import com.tcc.ufpr.familyst.Model.Usuario;
 import com.tcc.ufpr.familyst.R;
@@ -147,18 +148,26 @@ public class PerfilActivity extends BaseActivity {
         listViewFamiliasPerfil.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(), "Long click!", Toast.LENGTH_LONG).show();
-                //TODO abrir tela de familia com extras: idEvento e bool indicando edicao
+                Familia familia = (Familia) parent.getItemAtPosition(position);
+                Intent intent = new Intent(getApplicationContext(), CadastroFamiliaActivity.class);
+                intent.putExtra("idFamilia", familia.getIdFamilia());
+                intent.putExtra("isEdicao", true);
+                startActivity(intent);
+
                 return true;
             }
         });
+        if (((FamilystApplication)getApplication()).getFamiliaAtual() == null) {
+            ArrayList<Familia> familias = ((FamilystApplication) getApplication()).get_usuarioLogado().getFamilias();
+            ((FamilystApplication) getApplication()).setIdFamiliaSelecionada(familias.get(0).getIdFamilia());
+        }
     }
 
     private ArrayList<Familia> carregarFamilias() {
         ArrayList<Familia> familias = ((FamilystApplication)getApplication()).get_usuarioLogado().getFamilias();
         if (familias.isEmpty())
         {
-            Familia familiaNenhuma = new Familia(-1,"Nenhuma Familia", -1);
+            Familia familiaNenhuma = new Familia(-1,"Nenhuma Familia", -1,"","");
             ArrayList<Familia> familiasVazio = new ArrayList<>();
             familiasVazio.add(familiaNenhuma);
             return familiasVazio;

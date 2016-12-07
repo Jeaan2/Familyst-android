@@ -23,11 +23,13 @@ public class Familia {
     private ArrayList<Album> albuns;
     private ArrayList<Video> videos;
 
-    public Familia (int idFamilia, String nome, int idGaleria)
+    public Familia (int idFamilia, String nome, int idGaleria, String descricao, String local)
     {
         this.idFamilia = idFamilia;
         this.nome = nome;
         this.idGaleria = idGaleria;
+        this.descricao = descricao;
+        this.local = local;
     }
 
     public int getIdGaleria() {

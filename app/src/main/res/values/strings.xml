@@ -23,6 +23,9 @@
 
     <!-- strings de output Familias -->
     <string name="falha_atualizar_familias">Falha ao atualizar famílias.</string>
+    <string name="falha_cadastro_familia">Falha ao enviar família!</string>
+    <string name="falha_remover_familia">Falha ao excluir família.</string>
+    <string name="falha_editar_familia">Falha ao editar família.</string>
 
     <!-- strings de output Usuarios -->
     <string name="falha_remover_usuario">Falha ao excluir usuário.</string>

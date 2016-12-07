@@ -54,7 +54,6 @@ public class CadastroAlbumActivity extends BaseActivity {
         btnRemoverAlbum.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 new AlertDialog.Builder(CadastroAlbumActivity.this)
                         .setTitle("Alerta!")
                         .setMessage("Deseja remover o album selecionado?")
@@ -86,7 +85,6 @@ public class CadastroAlbumActivity extends BaseActivity {
                                 dialog.dismiss();
                             }
                         }).show();
-
             }
         });
 

@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity
         }
         else{
             CarregarPerfilUser();
+            AtualizarMenuFamilias();
         }
     }
 
@@ -133,38 +134,40 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void AtualizarMenuFamilias() {
+        try {
+            ArrayList<Familia> familias = ((FamilystApplication) getApplication()).get_usuarioLogado().getFamilias();
+            if (familias.isEmpty()) {
+                Familia familiaNenhuma = new Familia(-1, "Nenhuma Familia", -1, "", "");
+                ArrayList<Familia> familiasVazio = new ArrayList<>();
+                familiasVazio.add(familiaNenhuma);
+                FamiliaAdapter adapter = new FamiliaAdapter(this,
+                        R.layout.item_lista_familias, familiasVazio);
+                MenuItem item = _menu.findItem(R.id.spinner);
+                Spinner spinner = (Spinner) MenuItemCompat.getActionView(item);
+                spinner.setAdapter(adapter); // set the adapter to provide layout of rows and content
+            } else {
+                FamiliaAdapter adapter = new FamiliaAdapter(this,
+                        R.layout.item_lista_familias, familias);
 
-        ArrayList<Familia> familias = ((FamilystApplication)getApplication()).get_usuarioLogado().getFamilias();
-        if (familias.isEmpty())
-        {
-            Familia familiaNenhuma = new Familia(-1,"Nenhuma Familia", -1);
-            ArrayList<Familia> familiasVazio = new ArrayList<>();
-            familiasVazio.add(familiaNenhuma);
-            FamiliaAdapter adapter = new FamiliaAdapter(this,
-                    R.layout.item_lista_familias, familiasVazio);
-            MenuItem item = _menu.findItem(R.id.spinner);
-            Spinner spinner = (Spinner) MenuItemCompat.getActionView(item);
-            spinner.setAdapter(adapter); // set the adapter to provide layout of rows and content
+                MenuItem item = _menu.findItem(R.id.spinner);
+                Spinner spinner = (Spinner) MenuItemCompat.getActionView(item);
+                spinner.setAdapter(adapter); // set the adapter to provide layout of rows and content
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        Familia familiaSelecionada = (Familia) parent.getItemAtPosition(position);
+                        ((FamilystApplication) getApplication()).setIdFamiliaSelecionada(familiaSelecionada.getIdFamilia());
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                    }
+                });
+            }
         }
-        else
+        catch(Exception ex)
         {
-            FamiliaAdapter adapter = new FamiliaAdapter(this,
-                    R.layout.item_lista_familias, familias);
-
-            MenuItem item = _menu.findItem(R.id.spinner);
-            Spinner spinner = (Spinner) MenuItemCompat.getActionView(item);
-            spinner.setAdapter(adapter); // set the adapter to provide layout of rows and content
-            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    Familia familiaSelecionada = (Familia) parent.getItemAtPosition(position);
-                    ((FamilystApplication)getApplication()).setIdFamiliaSelecionada(familiaSelecionada.getIdFamilia());
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-                }
-            });
+            //ignore
         }
     }
 
