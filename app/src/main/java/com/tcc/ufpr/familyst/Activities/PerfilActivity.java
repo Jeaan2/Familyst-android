@@ -7,17 +7,25 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tcc.ufpr.familyst.Activities.BaseActivity;
+import com.tcc.ufpr.familyst.Adapters.FamiliaAdapter;
 import com.tcc.ufpr.familyst.Adapters.FamiliaPerfilAdapter;
+import com.tcc.ufpr.familyst.FamilystApplication;
+import com.tcc.ufpr.familyst.Interfaces.RestCallback;
 import com.tcc.ufpr.familyst.Model.Familia;
+import com.tcc.ufpr.familyst.Model.Usuario;
 import com.tcc.ufpr.familyst.R;
+import com.tcc.ufpr.familyst.Services.RestService;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -29,13 +37,17 @@ public class PerfilActivity extends BaseActivity {
     TextView txtEmailPerfil;
     ListView listViewFamiliasPerfil;
     TextView txtNomeUsuarioPerfil;
-
-
+    Usuario _usuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
+
+        btnEditarPerfil = (Button) findViewById(R.id.btn_editar_perfil);
+        btnRemoverPerfil = (Button) findViewById(R.id.btn_remover_conta);
+        txtEmailPerfil = (TextView) findViewById(R.id.txt_email_perfil);
+        txtNomeUsuarioPerfil = (TextView) findViewById(R.id.txt_nome_perfil);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_perfil);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -46,29 +58,22 @@ public class PerfilActivity extends BaseActivity {
             }
         });
 
-        btnEditarPerfil = (Button) findViewById(R.id.btn_editar_perfil);
-        btnRemoverPerfil = (Button) findViewById(R.id.btn_remover_conta);
-        txtEmailPerfil = (TextView) findViewById(R.id.txt_email_perfil);
-        txtNomeUsuarioPerfil = (TextView) findViewById(R.id.txt_nome_perfil);
-
         btnEditarPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO procedimentos para editar perfil
-                //abre tela de cadastro com os dados já carregados
-                //Flag de edição de dados na tela de cadastro
+                Intent intent = new Intent(getApplicationContext(), CadastroActivity.class);
+                intent.putExtra("idUsuario", _usuario.getIdUsuario());
+                intent.putExtra("isEdicao", true);
+                startActivity(intent);
             }
         });
 
         btnRemoverPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO procedimentos para remover perfil
-                //AlertDialog?
-
                 new AlertDialog.Builder(PerfilActivity.this)
                         .setTitle("Alerta!")
-                        .setMessage("Deseja remover o video selecionado?")
+                        .setMessage("Deseja excluir sua conta do Familyst?")
                         .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -78,24 +83,67 @@ public class PerfilActivity extends BaseActivity {
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                final ProgressDialog dialogProgresso = ProgressDialog.show(PerfilActivity.this, "Aguarde", "Excluindo item.");
+                                final ProgressDialog dialogProgresso = ProgressDialog.show(PerfilActivity.this, "Aguarde", "Excluindo conta.");
                                 dialogProgresso.setCancelable(false);
 
-                                dialog.dismiss();
+                                RestService.getInstance(PerfilActivity.this).RemoverUsuario( _usuario.getIdUsuario(), new RestCallback(){
+                                    @Override
+                                    public void onRestResult(boolean success) {
+                                        if (success){
+                                            ((FamilystApplication)getApplication()).setLogout(true);
+                                            dialog.dismiss();
+                                            dialogProgresso.dismiss();
+                                            PerfilActivity.this.finish();
+                                        }
+                                        else
+                                        {
+                                            dialogProgresso.dismiss();
+                                            Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_remover_usuario), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
                             }
                         }).show();
             }
         });
+    }
 
-        ArrayList<Familia> familias = new ArrayList<>(); //placeholder
+    private Usuario carregarUsuario() {
+        FamilystApplication familystApplication = (FamilystApplication) getApplication();
+        return familystApplication.get_usuarioLogado();
+    }
 
+    @Override
+    public void onStart(){
+        super.onStart();
+
+        _usuario = carregarUsuario();
+        txtEmailPerfil.setText(_usuario.getEmail());
+        txtNomeUsuarioPerfil.setText(_usuario.getNome());
+
+        // chamar progressdialog
+        final ProgressDialog dialogProgresso = ProgressDialog.show(this, "Aguarde", "Atualizando Familias.");
+        dialogProgresso.setCancelable(false);
+        RestService.getInstance(this).CarregarFamiliasAsync(new RestCallback(){
+            @Override
+            public void onRestResult(boolean success) {
+                if (success){
+                    carregarListaFamilias();
+                }
+                else
+                {
+                    Toast.makeText(PerfilActivity.this,getResources().getText(R.string.falha_atualizar_familias), Toast.LENGTH_SHORT).show();
+                }
+                dialogProgresso.dismiss();
+            }
+        });
+    }
+
+    private void carregarListaFamilias() {
         listViewFamiliasPerfil = (ListView) findViewById(R.id.listview_familias_perfil);
-
-        FamiliaPerfilAdapter adapter = new FamiliaPerfilAdapter(getApplicationContext(),
-                R.layout.item_familia_perfil, familias);
-
+        FamiliaPerfilAdapter adapter = new FamiliaPerfilAdapter(this,
+                R.layout.item_familia_perfil, carregarFamilias());
         listViewFamiliasPerfil.setAdapter(adapter);
-
         listViewFamiliasPerfil.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -104,6 +152,18 @@ public class PerfilActivity extends BaseActivity {
                 return true;
             }
         });
+    }
+
+    private ArrayList<Familia> carregarFamilias() {
+        ArrayList<Familia> familias = ((FamilystApplication)getApplication()).get_usuarioLogado().getFamilias();
+        if (familias.isEmpty())
+        {
+            Familia familiaNenhuma = new Familia(-1,"Nenhuma Familia", -1);
+            ArrayList<Familia> familiasVazio = new ArrayList<>();
+            familiasVazio.add(familiaNenhuma);
+            return familiasVazio;
+        }
+        return familias;
     }
 
 }

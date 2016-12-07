@@ -4,15 +4,21 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.tcc.ufpr.familyst.FamilystApplication;
+import com.tcc.ufpr.familyst.Interfaces.RestCallback;
+import com.tcc.ufpr.familyst.Model.Usuario;
 import com.tcc.ufpr.familyst.R;
 import com.tcc.ufpr.familyst.Services.JsonRestRequest;
 import com.tcc.ufpr.familyst.Services.RestService;
@@ -27,8 +33,10 @@ public class CadastroActivity extends BaseActivity {
     EditText txtEmail;
     EditText txtSenha;
     Button btnConfirmar;
+    TextView cabecalho;
+    Usuario _usuario;
+    boolean isEdicao;
 
-    private  boolean isEdicao;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,18 +45,61 @@ public class CadastroActivity extends BaseActivity {
         txtNome = (EditText) findViewById(R.id.txt_nome_cadastro);
         txtEmail = (EditText) findViewById(R.id.txt_email_cadastro);
         txtSenha = (EditText) findViewById(R.id.txt_senha_cadastro);
+        cabecalho = (TextView) findViewById(R.id.txt_cadastro_cabecalho);
         btnConfirmar = (Button) findViewById(R.id.btn_cadastrar);
-        btnConfirmar.setOnClickListener((v) -> CadastrarUsuario());
-        
-        if(isEdicao){
-            //// TODO: 04/12/2016 procedimentos para edicao de cadastro
+
+        isEdicao = getIntent().getBooleanExtra("isEdicao", false);
+        if(isEdicao) {
+            _usuario = carregarUsuario();
+            txtNome.setText(_usuario.getNome());
+            txtEmail.setText(_usuario.getEmail());
+            txtEmail.setEnabled(false);
+            txtSenha.setText("*******");
+            txtSenha.setEnabled(false);
+            btnConfirmar.setText("Salvar");
+            cabecalho.setText("Edite seus dados:");
+            btnConfirmar.setOnClickListener((v) -> EditarUsuario());
+        }
+        else
+        {
+            btnConfirmar.setOnClickListener((v) -> CadastrarUsuario());
         }
 
     }
 
+    private Usuario carregarUsuario() {
+        FamilystApplication familystApplication = (FamilystApplication) getApplication();
+        return familystApplication.get_usuarioLogado();
+    }
+
+    private void EditarUsuario() {
+        try {
+            final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroActivity.this, "Aguarde", "Editando usuario.");
+            dialogProgresso.setCancelable(false);
+            RestService.getInstance(CadastroActivity.this).EditarUsuario(txtNome.getText().toString(), _usuario.getIdUsuario(), new RestCallback(){
+                @Override
+                public void onRestResult(boolean success) {
+                    if (success){
+                        _usuario.setNome(txtNome.getText().toString());
+                        SharedPreferences prefs = ((FamilystApplication)getApplication()).getSharedPreferences();
+                        prefs.edit().putString("nomeUsuario", txtNome.getText().toString()).apply();
+                        finish();
+                    }
+                    else
+                    {
+                        Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_editar_usuario), Toast.LENGTH_SHORT).show();
+                    }
+                    dialogProgresso.dismiss();
+                }
+            });
+        }
+        catch (Exception ex){
+            Log.d("Error", "Erro ao editar usuario: " + ex.getLocalizedMessage());
+        }
+    }
+
     private void CadastrarUsuario() {
         try {
-
             //monta url requisicao
             String url = "usuarios";
 

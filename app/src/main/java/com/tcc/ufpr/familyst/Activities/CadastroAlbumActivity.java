@@ -109,9 +109,9 @@ public class CadastroAlbumActivity extends BaseActivity {
                             {
                                 Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_cadastro_album), Toast.LENGTH_SHORT).show();
                             }
+                            dialogProgresso.dismiss();
                         }
                     });
-                    dialogProgresso.dismiss();
                 }
                 else {
                     final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroAlbumActivity.this, "Aguarde", "Editando Album.");
@@ -127,9 +127,9 @@ public class CadastroAlbumActivity extends BaseActivity {
                             {
                                 Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_editar_album), Toast.LENGTH_SHORT).show();
                             }
+                            dialogProgresso.dismiss();
                         }
                     });
-                    dialogProgresso.dismiss();
                 }
             }
         });

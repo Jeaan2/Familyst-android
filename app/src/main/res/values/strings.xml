@@ -21,6 +21,13 @@
     <string name="title_activity_tab_host_eventos">TabHostEventosActivity</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
+    <!-- strings de output Familias -->
+    <string name="falha_atualizar_familias">Falha ao atualizar famílias.</string>
+
+    <!-- strings de output Usuarios -->
+    <string name="falha_remover_usuario">Falha ao excluir usuário.</string>
+    <string name="falha_editar_usuario">Falha ao editar usuário.</string>
+
     <!-- strings de output Noticias -->
     <string name="sucesso_cadastro_noticia">Notícia enviada com sucesso!</string>
     <string name="falha_cadastro_noticia">Falha ao enviar notícia!</string>

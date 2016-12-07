@@ -102,8 +102,19 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
+    }
 
-        CarregarPerfilUser();
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (((FamilystApplication)getApplication()).getLogout()) {
+            ((FamilystApplication)getApplication()).setLogout(false);
+            sair();
+        }
+        else{
+            CarregarPerfilUser();
+        }
     }
 
     private void CarregarPerfilUser() {
@@ -229,16 +240,20 @@ public class MainActivity extends AppCompatActivity
             fragmentTransaction.commit();
 
         } else if (id == R.id.nav_logout) {
-            ((FamilystApplication)getApplication()).setLoginAutomatico(false);
-            ((FamilystApplication)getApplication()).clearData();
-            Intent intent = new Intent();
-            intent.setClass(this, LoginActivity.class);
-            startActivity(intent);
-            finish();
+            sair();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void sair() {
+        ((FamilystApplication)getApplication()).setLoginAutomatico(false);
+        ((FamilystApplication)getApplication()).clearData();
+        Intent intent = new Intent();
+        intent.setClass(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

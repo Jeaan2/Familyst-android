@@ -26,6 +26,7 @@ public class FamilystApplication extends Application {
     private int idFamiliaAtual = 1;
     private ArrayList<TipoItem> tiposItens;
     private ArrayList<TipoEvento> tiposEventos;
+    private boolean logout;
 
     //metodos
     public String get_accessToken() {
@@ -100,7 +101,7 @@ public class FamilystApplication extends Application {
         return false;
     }
 
-    private SharedPreferences getSharedPreferences()
+    public SharedPreferences getSharedPreferences()
     {
         return getSharedPreferences("ufpr.tcc.familyst", Context.MODE_PRIVATE);
     }
@@ -119,5 +120,13 @@ public class FamilystApplication extends Application {
 
     public ArrayList<TipoEvento> getTiposEventos() {
         return tiposEventos;
+    }
+
+    public void setLogout(boolean logout) {
+        this.logout = logout;
+    }
+
+    public boolean getLogout() {
+        return logout;
     }
 }

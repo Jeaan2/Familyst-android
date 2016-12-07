@@ -74,47 +74,48 @@ public class NewsFragment extends Fragment {
     public void onStart(){
         super.onStart();
 
-        //TODO chamar progressdialog
-        final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Atualizando Noticias");
-        dialogProgresso.setCancelable(false);
+        try {
 
-        RestService.getInstance(getActivity()).CarregarNoticiasFamiliasAsync(new RestCallback(){
-            @Override
-            public void onRestResult(boolean success) {
-                if (success){
-                    RestService.getInstance(getActivity()).CarregarComentariosNoticiasFamiliasAsync(new RestCallback(){
-                        @Override
-                        public void onRestResult(boolean success) {
-                            if (success){
-                                RestService.getInstance(getActivity()).CarregarUsuariosNoticiasFamiliasAsync(new RestCallback(){
-                                    @Override
-                                    public void onRestResult(boolean success) {
-                                        if (success){
-                                            carregarListaNoticias();
+            //TODO chamar progressdialog
+            final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Atualizando Noticias");
+            dialogProgresso.setCancelable(false);
+
+            RestService.getInstance(getActivity()).CarregarNoticiasFamiliasAsync(new RestCallback() {
+                @Override
+                public void onRestResult(boolean success) {
+                    if (success) {
+                        RestService.getInstance(getActivity()).CarregarComentariosNoticiasFamiliasAsync(new RestCallback() {
+                            @Override
+                            public void onRestResult(boolean success) {
+                                if (success) {
+                                    RestService.getInstance(getActivity()).CarregarUsuariosNoticiasFamiliasAsync(new RestCallback() {
+                                        @Override
+                                        public void onRestResult(boolean success) {
+                                            if (success) {
+                                                carregarListaNoticias();
+                                            } else {
+                                                Toast.makeText(getActivity(), getResources().getText(R.string.falha_atualizar_noticias), Toast.LENGTH_SHORT).show();
+                                            }
+                                            dialogProgresso.dismiss();
                                         }
-                                        else
-                                        {
-                                            Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_noticias), Toast.LENGTH_SHORT).show();
-                                        }
-                                        dialogProgresso.dismiss();
-                                    }
-                                });
+                                    });
+                                } else {
+                                    Toast.makeText(getActivity(), getResources().getText(R.string.falha_atualizar_noticias), Toast.LENGTH_SHORT).show();
+                                    dialogProgresso.dismiss();
+                                }
                             }
-                            else
-                            {
-                                Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_noticias), Toast.LENGTH_SHORT).show();
-                                dialogProgresso.dismiss();
-                            }
-                        }
-                    });
+                        });
+                    } else {
+                        Toast.makeText(getActivity(), getResources().getText(R.string.falha_atualizar_noticias), Toast.LENGTH_SHORT).show();
+                        dialogProgresso.dismiss();
+                    }
                 }
-                else
-                {
-                    Toast.makeText(getActivity(),getResources().getText(R.string.falha_atualizar_noticias), Toast.LENGTH_SHORT).show();
-                    dialogProgresso.dismiss();
-                }
-            }
-        });
+            });
+        }
+        catch (Exception ex)
+        {
+            //ignore
+        }
     }
 
     private ArrayList<Noticia> carregarNoticias() {
