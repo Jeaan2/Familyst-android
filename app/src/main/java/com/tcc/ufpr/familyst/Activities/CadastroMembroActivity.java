@@ -52,40 +52,43 @@ public class CadastroMembroActivity extends AppCompatActivity {
 
 
         btnCadastrarMembro.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View v) {
-                //Verifica se o usuário já existe na familia
-                boolean membroFamilia = false;
-                ArrayList<Usuario> membrosFamilia = getMembrosFamilia();
-                for (int i = 0; i< membrosFamilia.size() ; i++)
-                {
-                    Usuario membro = membrosFamilia.get(i);
-                    if (membro.getEmail().equals(emailMembro.getText().toString()))
-                    {
-                        membroFamilia = true;
-                        break;
-                    }
-                }
-                if (membroFamilia){
-                    Toast.makeText(getApplicationContext(), getResources().getText(R.string.falha_relacionamento_membro_ja_pertencente), Toast.LENGTH_SHORT).show();
-                    return;
-                }
 
-                //ve se o usuario do email ja foi cadastrado na plataforma
-                RestService.getInstance(CadastroMembroActivity.this).ReceberUsuario( emailMembro.getText().toString(), new RestObjectReceiveCallback(){
-                    @Override
-                    public void onRestResult(Object response) {
-                        if (response != null)
-                        {
-                            Usuario usuario = (Usuario) response;
-                            relacionarUsuarioFamilia(usuario, getFamiliaAtual());
-                        }
-                        else
-                        {
-                            Toast.makeText(getApplicationContext(), getResources().getText(R.string.falha_relacionamento_membro_inexistente), Toast.LENGTH_SHORT).show();
+                if (emailMembro.getText().toString().length() <= 0) {
+                    emailMembro.setError("Este campo deve ser preenchido.");
+
+                } else {
+                    //Verifica se o usuário já existe na familia
+                    boolean membroFamilia = false;
+                    ArrayList<Usuario> membrosFamilia = getMembrosFamilia();
+                    for (int i = 0; i < membrosFamilia.size(); i++) {
+                        Usuario membro = membrosFamilia.get(i);
+                        if (membro.getEmail().equals(emailMembro.getText().toString())) {
+                            membroFamilia = true;
+                            break;
                         }
                     }
-                });
+                    if (membroFamilia) {
+                        Toast.makeText(getApplicationContext(), getResources().getText(R.string.falha_relacionamento_membro_ja_pertencente), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    //ve se o usuario do email ja foi cadastrado na plataforma
+                    RestService.getInstance(CadastroMembroActivity.this).ReceberUsuario(emailMembro.getText().toString(), new RestObjectReceiveCallback() {
+                        @Override
+                        public void onRestResult(Object response) {
+                            if (response != null) {
+                                Usuario usuario = (Usuario) response;
+                                relacionarUsuarioFamilia(usuario, getFamiliaAtual());
+                            } else {
+                                Toast.makeText(getApplicationContext(), getResources().getText(R.string.falha_relacionamento_membro_inexistente), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
             }
         });
     }

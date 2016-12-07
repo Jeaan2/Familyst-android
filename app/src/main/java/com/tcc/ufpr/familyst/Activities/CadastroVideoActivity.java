@@ -95,41 +95,44 @@ public class CadastroVideoActivity extends BaseActivity {
         btnCadastrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isEdicao)
-                {
-                    final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroVideoActivity.this, "Aguarde", "Cadastrando item.");
-                    dialogProgresso.setCancelable(false);
-                    RestService.getInstance(CadastroVideoActivity.this).EnviarVideo( txtDescricao.getText().toString(), txtLink.getText().toString(), new RestCallback(){
-                        @Override
-                        public void onRestResult(boolean success) {
-                            if (success){
-                                finish();
-                            }
-                            else
-                            {
-                                Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_cadastro_video), Toast.LENGTH_SHORT).show();
-                            }
-                            dialogProgresso.dismiss();
-                        }
-                    });
+
+                if (txtDescricao.getText().toString().length() <= 0) {
+                    txtDescricao.setError("Este campo deve ser preenchido.");
+
                 }
-                else {
-                    final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroVideoActivity.this, "Aguarde", "Editando item.");
-                    dialogProgresso.setCancelable(false);
-                    RestService.getInstance(CadastroVideoActivity.this).EditarVideo( txtDescricao.getText().toString(), txtLink.getText().toString(), video.getIdVideo(), new RestCallback(){
-                        @Override
-                        public void onRestResult(boolean success) {
-                            if (success){
+                if (txtLink.getText().toString().length() <= 0) {
+                    txtLink.setError("Este campo deve ser preenchido.");
+                } else {
+                    if (!isEdicao) {
+                        final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroVideoActivity.this, "Aguarde", "Cadastrando item.");
+                        dialogProgresso.setCancelable(false);
+                        RestService.getInstance(CadastroVideoActivity.this).EnviarVideo(txtDescricao.getText().toString(), txtLink.getText().toString(), new RestCallback() {
+                            @Override
+                            public void onRestResult(boolean success) {
+                                if (success) {
+                                    finish();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), getResources().getText(R.string.falha_cadastro_video), Toast.LENGTH_SHORT).show();
+                                }
                                 dialogProgresso.dismiss();
-                                finish();
                             }
-                            else
-                            {
-                                Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_editar_video), Toast.LENGTH_SHORT).show();
+                        });
+                    } else {
+                        final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroVideoActivity.this, "Aguarde", "Editando item.");
+                        dialogProgresso.setCancelable(false);
+                        RestService.getInstance(CadastroVideoActivity.this).EditarVideo(txtDescricao.getText().toString(), txtLink.getText().toString(), video.getIdVideo(), new RestCallback() {
+                            @Override
+                            public void onRestResult(boolean success) {
+                                if (success) {
+                                    dialogProgresso.dismiss();
+                                    finish();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), getResources().getText(R.string.falha_editar_video), Toast.LENGTH_SHORT).show();
+                                }
+                                dialogProgresso.dismiss();
                             }
-                            dialogProgresso.dismiss();
-                        }
-                    });
+                        });
+                    }
                 }
             }
         });

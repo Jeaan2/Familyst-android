@@ -13,6 +13,7 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -40,6 +41,8 @@ public class AlbumActivity extends BaseActivity{
 
     private GridView gridView;
     private GridViewAdapter gridAdapter;
+    private TextView txtNomeAlbum;
+    private TextView txtDescricaoAlbum;
     private Album album;
 
     @Override
@@ -48,8 +51,13 @@ public class AlbumActivity extends BaseActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album);
         gridView = (GridView) findViewById(R.id.gridView);
+        txtNomeAlbum = (TextView) findViewById(R.id.txt_nome_album);
+        txtDescricaoAlbum = (TextView) findViewById(R.id.txt_descricao_album);
 
         album = carregarAlbum(getIntent().getExtras().getInt("idAlbum"));
+
+        txtNomeAlbum.setText(album.getNome());
+        txtDescricaoAlbum.setText(album.getDescricao());
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_album);
         fab.setOnClickListener(new View.OnClickListener() {

@@ -121,50 +121,59 @@ public class CadastroEventoFragment extends Fragment {
                 //Persiste objeto
                 //sucesso
 
-                //HACK SINIIIIIIISTRO VEI ahahhahaha
-                String tag = "android:switcher:" + R.id.viewPager + ":" + 1;
-                ItensCadastroEventoFragment f = (ItensCadastroEventoFragment)getFragmentManager().findFragmentByTag(tag);
-                ArrayList<Item> itensAdicionados = f._itensAdicionados;
-                String hahahahaha = "aff"; //so pra debug
+                if (nomeEvento.getText().toString().length() <= 0) {
+                    nomeEvento.setError("Este campo deve ser preenchido.");
 
-                if (!isEdicao) {
-                    final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Cadastrando evento.");
-                    dialogProgresso.setCancelable(false);
-
-                    RestService.getInstance(getActivity()).EnviarEvento(
-                            nomeEvento.getText().toString(),
-                            descricaoEvento.getText().toString(),
-                            localEvento.getText().toString(),
-                            ((TipoEvento) spnTipoEvento.getSelectedItem()).getIdTipoEvento(),
-                            itensAdicionados,
-                            new RestCallback() {
-                                @Override
-                                public void onRestResult(boolean success) {
-                                    if (success) {
-                                        getActivity().finish();
-                                    } else {
-                                        Toast.makeText(getContext(), getResources().getText(R.string.falha_cadastro_evento), Toast.LENGTH_SHORT).show();
-                                    }
-                                    dialogProgresso.dismiss();
-                                }
-                            });
                 }
-                else {
-                    final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Editando item.");
-                    dialogProgresso.setCancelable(false);
-                    RestService.getInstance(getContext()).EditarEvento( nomeEvento.getText().toString(), descricaoEvento.getText().toString(),localEvento.getText().toString(), ((TipoEvento) spnTipoEvento.getSelectedItem()).getIdTipoEvento(), _evento.getIdEvento(), new RestCallback(){
-                        @Override
-                        public void onRestResult(boolean success) {
-                            if (success){
-                                getActivity().finish();
+                if (descricaoEvento.getText().toString().length() <= 0) {
+                    descricaoEvento.setError("Este campo deve ser preenchido.");
+
+                }
+                if (localEvento.getText().toString().length() <= 0) {
+                    localEvento.setError("Este campo deve ser preenchido.");
+                } else {
+                    //HACK SINIIIIIIISTRO VEI ahahhahaha
+                    String tag = "android:switcher:" + R.id.viewPager + ":" + 1;
+                    ItensCadastroEventoFragment f = (ItensCadastroEventoFragment) getFragmentManager().findFragmentByTag(tag);
+                    ArrayList<Item> itensAdicionados = f._itensAdicionados;
+                    String hahahahaha = "aff"; //so pra debug
+
+                    if (!isEdicao) {
+                        final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Cadastrando evento.");
+                        dialogProgresso.setCancelable(false);
+
+                        RestService.getInstance(getActivity()).EnviarEvento(
+                                nomeEvento.getText().toString(),
+                                descricaoEvento.getText().toString(),
+                                localEvento.getText().toString(),
+                                ((TipoEvento) spnTipoEvento.getSelectedItem()).getIdTipoEvento(),
+                                itensAdicionados,
+                                new RestCallback() {
+                                    @Override
+                                    public void onRestResult(boolean success) {
+                                        if (success) {
+                                            getActivity().finish();
+                                        } else {
+                                            Toast.makeText(getContext(), getResources().getText(R.string.falha_cadastro_evento), Toast.LENGTH_SHORT).show();
+                                        }
+                                        dialogProgresso.dismiss();
+                                    }
+                                });
+                    } else {
+                        final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Editando item.");
+                        dialogProgresso.setCancelable(false);
+                        RestService.getInstance(getContext()).EditarEvento(nomeEvento.getText().toString(), descricaoEvento.getText().toString(), localEvento.getText().toString(), ((TipoEvento) spnTipoEvento.getSelectedItem()).getIdTipoEvento(), _evento.getIdEvento(), new RestCallback() {
+                            @Override
+                            public void onRestResult(boolean success) {
+                                if (success) {
+                                    getActivity().finish();
+                                } else {
+                                    Toast.makeText(getContext(), getResources().getText(R.string.falha_editar_evento), Toast.LENGTH_SHORT).show();
+                                }
+                                dialogProgresso.dismiss();
                             }
-                            else
-                            {
-                                Toast.makeText(getContext(),getResources().getText(R.string.falha_editar_evento), Toast.LENGTH_SHORT).show();
-                            }
-                            dialogProgresso.dismiss();
-                        }
-                    });
+                        });
+                    }
                 }
             }
         });

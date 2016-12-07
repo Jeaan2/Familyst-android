@@ -94,44 +94,43 @@ public class CadastroNoticiaActivity extends BaseActivity {
         btnEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isEdicao)
-                {
-                    final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroNoticiaActivity.this, "Aguarde", "Cadastrando item.");
-                    dialogProgresso.setCancelable(false);
-                    RestService.getInstance(CadastroNoticiaActivity.this).EnviarNoticia( descricao.getText().toString(), new RestCallback(){
-                        @Override
-                        public void onRestResult(boolean success) {
-                            if (success){
-                                Toast.makeText(getApplicationContext(),getResources().getText(R.string.sucesso_cadastro_noticia), Toast.LENGTH_SHORT).show();
-                                dialogProgresso.dismiss();
-                                finish();
+
+                if (descricao.getText().toString().length() <= 0) {
+                    descricao.setError("Este campo deve ser preenchido.");
+
+                } else {
+                    if (!isEdicao) {
+                        final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroNoticiaActivity.this, "Aguarde", "Cadastrando item.");
+                        dialogProgresso.setCancelable(false);
+                        RestService.getInstance(CadastroNoticiaActivity.this).EnviarNoticia(descricao.getText().toString(), new RestCallback() {
+                            @Override
+                            public void onRestResult(boolean success) {
+                                if (success) {
+                                    Toast.makeText(getApplicationContext(), getResources().getText(R.string.sucesso_cadastro_noticia), Toast.LENGTH_SHORT).show();
+                                    dialogProgresso.dismiss();
+                                    finish();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), getResources().getText(R.string.falha_cadastro_noticia), Toast.LENGTH_SHORT).show();
+                                    dialogProgresso.dismiss();
+                                }
                             }
-                            else
-                            {
-                                Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_cadastro_noticia), Toast.LENGTH_SHORT).show();
-                                dialogProgresso.dismiss();
+                        });
+                    } else {
+                        final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroNoticiaActivity.this, "Aguarde", "Editando item.");
+                        dialogProgresso.setCancelable(false);
+                        RestService.getInstance(CadastroNoticiaActivity.this).EditarNoticia(descricao.getText().toString(), noticia.getIdNoticia(), new RestCallback() {
+                            @Override
+                            public void onRestResult(boolean success) {
+                                if (success) {
+                                    dialogProgresso.dismiss();
+                                    finish();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), getResources().getText(R.string.falha_editar_noticia), Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }
-                    });
-                }
-                else
-                {
-                    final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroNoticiaActivity.this, "Aguarde", "Editando item.");
-                    dialogProgresso.setCancelable(false);
-                    RestService.getInstance(CadastroNoticiaActivity.this).EditarNoticia( descricao.getText().toString(), noticia.getIdNoticia(), new RestCallback(){
-                        @Override
-                        public void onRestResult(boolean success) {
-                            if (success){
-                                dialogProgresso.dismiss();
-                                finish();
-                            }
-                            else
-                            {
-                                Toast.makeText(getApplicationContext(),getResources().getText(R.string.falha_editar_noticia), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                    dialogProgresso.dismiss();
+                        });
+                        dialogProgresso.dismiss();
+                    }
                 }
             }
         });

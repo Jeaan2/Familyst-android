@@ -56,17 +56,21 @@ public class ItensCadastroEventoFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                TipoItem tipoItem = (TipoItem) spnTipoItem.getSelectedItem();
-                int idTipoItem = tipoItem.getIdTipoItem();
-                int quantidade = Integer.valueOf(txtQuantidadeItem.getText().toString());
+                if (txtQuantidadeItem.getText().toString().length() <= 0) {
+                    txtQuantidadeItem.setError("Este campo deve ser preenchido.");
+                } else {
+                    TipoItem tipoItem = (TipoItem) spnTipoItem.getSelectedItem();
+                    int idTipoItem = tipoItem.getIdTipoItem();
+                    int quantidade = Integer.valueOf(txtQuantidadeItem.getText().toString());
 
-                Item item = new Item(-1, quantidade, idTipoItem);
-                item.setTipoItem(tipoItem);
-                _itensAdicionados.add(item);
+                    Item item = new Item(-1, quantidade, idTipoItem);
+                    item.setTipoItem(tipoItem);
+                    _itensAdicionados.add(item);
 
-                ItemEventoAdapter adapter = new ItemEventoAdapter(getActivity(),
-                        R.layout.item_lista_itensevento, _itensAdicionados);
-                listItens.setAdapter(adapter);
+                    ItemEventoAdapter adapter = new ItemEventoAdapter(getActivity(),
+                            R.layout.item_lista_itensevento, _itensAdicionados);
+                    listItens.setAdapter(adapter);
+                }
             }
         });
 

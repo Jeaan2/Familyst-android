@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:columnWidth="100dp"
+        android:layout_below="@+id/txt_descricao_album"
         android:drawSelectorOnTop="true"
         android:gravity="center"
         android:numColumns="auto_fit"
@@ -31,5 +32,29 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Descricao album"
+        android:textSize="15dp"
+        android:layout_weight="4"
+        android:id="@+id/txt_descricao_album"
+        android:layout_gravity="center"
+        android:layout_below="@+id/txt_nome_album"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Album de fotos da terezinha"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:layout_weight="4"
+        android:id="@+id/txt_nome_album"
+        android:layout_marginTop="13dp"
+        android:layout_gravity="center"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

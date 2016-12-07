@@ -62,7 +62,7 @@ public class CadastroActivity extends BaseActivity {
         }
         else
         {
-            btnConfirmar.setOnClickListener((v) -> CadastrarUsuario());
+           btnConfirmar.setOnClickListener((v) -> CadastrarUsuario());
         }
 
     }
@@ -99,49 +99,59 @@ public class CadastroActivity extends BaseActivity {
     }
 
     private void CadastrarUsuario() {
-        try {
-            //monta url requisicao
-            String url = "usuarios";
 
-            //monta headers adicionais
-            Map headers = new ArrayMap();
-
-            //monta body
-            JSONObject postBody = new JSONObject();
-            postBody.put("nome", txtNome.getText());
-            postBody.put("email", txtEmail.getText());
-            postBody.put("senha", txtSenha.getText());
-
-            //abre dialog
-            final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroActivity.this, "Aguarde", "Cadastrando Usuario.");
-            dialogProgresso.setCancelable(false);
-
-            //monta requisicao
-            JsonRestRequest jsonRequest = new JsonRestRequest(getApplication(), Request.Method.POST, false, url, headers, postBody,
-                    new Response.Listener<JsonRestRequest.JsonRestResponse>() {
-                        @Override
-                        public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
-                            if (jsonRestResponse.get_httpStatusCode() == 201) //created
-                            {
-                                String localizacaoRecurso = jsonRestResponse.get_headers().get("Location").toString();
-                                int idRecursoCriado = Integer.parseInt(localizacaoRecurso.substring(localizacaoRecurso.lastIndexOf('/') + 1));
-                                onSucessoCadastro(idRecursoCriado);
-                                dialogProgresso.dismiss();
-                            }
-                            else //erros
-                            {
-                                onFalhaCadastro("Retorno HTTP não esperado.");
-                            }
-                        }
-                    },
-                    error -> onFalhaCadastro(error.getMessage())
-            );
-
-            //envia requisicao
-            RestService.getInstance(this).addToRequestQueue(jsonRequest);
+        if(txtNome.getText().toString().length() <= 0) {
+            txtNome.setError("Este campo deve ser preenchido.");
         }
-        catch (Exception ex){
-            Log.d("Error", "Erro ao cadastrar usuario: " + ex.getLocalizedMessage());
+        if (txtEmail.getText().toString().length() <= 0) {
+            txtEmail.setError("Este campo deve ser preenchido.");
+        }
+        if(txtSenha.getText().toString().length() <= 0) {
+            txtSenha.setError("Este campo deve ser preenchido.");
+        }
+        else {
+            try {
+                //monta url requisicao
+                String url = "usuarios";
+
+                //monta headers adicionais
+                Map headers = new ArrayMap();
+
+                //monta body
+                JSONObject postBody = new JSONObject();
+                postBody.put("nome", txtNome.getText());
+                postBody.put("email", txtEmail.getText());
+                postBody.put("senha", txtSenha.getText());
+
+                //abre dialog
+                final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroActivity.this, "Aguarde", "Cadastrando Usuario.");
+                dialogProgresso.setCancelable(false);
+
+                //monta requisicao
+                JsonRestRequest jsonRequest = new JsonRestRequest(getApplication(), Request.Method.POST, false, url, headers, postBody,
+                        new Response.Listener<JsonRestRequest.JsonRestResponse>() {
+                            @Override
+                            public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
+                                if (jsonRestResponse.get_httpStatusCode() == 201) //created
+                                {
+                                    String localizacaoRecurso = jsonRestResponse.get_headers().get("Location").toString();
+                                    int idRecursoCriado = Integer.parseInt(localizacaoRecurso.substring(localizacaoRecurso.lastIndexOf('/') + 1));
+                                    onSucessoCadastro(idRecursoCriado);
+                                    dialogProgresso.dismiss();
+                                } else //erros
+                                {
+                                    onFalhaCadastro("Retorno HTTP não esperado.");
+                                }
+                            }
+                        },
+                        error -> onFalhaCadastro(error.getMessage())
+                );
+
+                //envia requisicao
+                RestService.getInstance(this).addToRequestQueue(jsonRequest);
+            } catch (Exception ex) {
+                Log.d("Error", "Erro ao cadastrar usuario: " + ex.getLocalizedMessage());
+            }
         }
     }
 

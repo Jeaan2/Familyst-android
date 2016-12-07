@@ -99,6 +99,20 @@ public class CadastroFamiliaActivity extends BaseActivity {
         btnCadastrarFamilia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if(nomeFamilia.getText().toString().length() <= 0) {
+                    nomeFamilia.setError("Este campo deve ser preenchido.");
+                }
+                if (descricaoFamilia.getText().toString().length() <= 0) {
+                    descricaoFamilia.setError("Este campo deve ser preenchido.");
+                }
+                if(localFamilia.getText().toString().length() <= 0) {
+                    localFamilia.setError("Este campo deve ser preenchido.");
+                }
+                else
+                {
+
+
                 if (!isEdicao)
                 {
                     final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroFamiliaActivity.this, "Aguarde", "Cadastrando familia.");
@@ -137,7 +151,10 @@ public class CadastroFamiliaActivity extends BaseActivity {
                     });
                 }
             }
+            }
         });
+
+
 
     }
 

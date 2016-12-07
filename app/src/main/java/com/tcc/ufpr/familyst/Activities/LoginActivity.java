@@ -58,7 +58,15 @@ public class LoginActivity extends BaseActivity{
             @Override
             public void onClick(View v) {
 
+                if(txtEmail.getText().toString().length() <= 0) {
+                    txtEmail.setError("Este campo deve ser preenchido.");
+                }
+                if (txtSenha.getText().toString().length() <= 0) {
+                    txtSenha.setError("Este campo deve ser preenchido.");
+                } else
+                {
                     efetuarLogin();
+                }
             }
         });
 
@@ -103,6 +111,7 @@ public class LoginActivity extends BaseActivity{
                         public void onResponse(JsonRestRequest.JsonRestResponse jsonRestResponse) {
                             if (jsonRestResponse.get_httpStatusCode() == 200) //ok
                             {
+                                dialogProgresso.dismiss();
                                 JSONObject bodyRetorno = jsonRestResponse.get_bodyResponse();
                                 try {
                                     idUsuario = Integer.parseInt(bodyRetorno.getString("idUsuario"));
@@ -116,7 +125,6 @@ public class LoginActivity extends BaseActivity{
                             }
                             else //erros
                             {
-                                dialogProgresso.dismiss();
                                 onFalhaAccessToken("Retorno HTTP não esperado.");
                             }
                         }
@@ -124,6 +132,8 @@ public class LoginActivity extends BaseActivity{
                     error -> onFalhaAccessToken(error.getMessage())
 
             );
+
+            dialogProgresso.dismiss();
 
             RestService.getInstance(this).addToRequestQueue(jsonRequest);
         }
@@ -143,9 +153,20 @@ public class LoginActivity extends BaseActivity{
     }
 
     private void onFalhaAccessToken(String msgError) {
-        runOnUiThread(()->{
-            Toast.makeText(this, "Falha ao efetuar login: " + msgError, Toast.LENGTH_SHORT).show();
-        });
+
+        new AlertDialog.Builder(LoginActivity.this)
+                .setTitle("Falha ao efetuar login")
+                .setMessage("Verifique seus dados e tente novamente.")
+                .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+
+//        runOnUiThread(()->{
+//            Toast.makeText(this, "Falha ao efetuar login: " + msgError, Toast.LENGTH_SHORT).show();
+//        });
     }
 
     private void onSucessoAccessToken() {
@@ -221,8 +242,19 @@ public class LoginActivity extends BaseActivity{
 
 
     private void onFalhaUsuario(String msgError) {
-        runOnUiThread(()->{
-            Toast.makeText(this, "Falha ao efetuar login: " + msgError, Toast.LENGTH_SHORT).show();
-        });
+
+        new AlertDialog.Builder(LoginActivity.this)
+                .setTitle("Falha ao efetuar login")
+                .setMessage("Verifique seus dados e tente novamente.")
+                .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+
+//        runOnUiThread(()->{
+//            Toast.makeText(this, "Falha ao efetuar login: " + msgError, Toast.LENGTH_SHORT).show();
+//        });
     }
 }

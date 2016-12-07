@@ -92,6 +92,15 @@ public class CadastroAlbumActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
+                if(nomeAlbum.getText().toString().length() <= 0) {
+                    nomeAlbum.setError("Este campo deve ser preenchido.");
+                }
+                if (descricaoAlbum.getText().toString().length() <= 0) {
+                    descricaoAlbum.setError("Este campo deve ser preenchido.");
+                }
+                else {
+
+
                 if (!isEdicao)
                 {
                     final ProgressDialog dialogProgresso = ProgressDialog.show(CadastroAlbumActivity.this, "Aguarde", "Cadastrando Album.");
@@ -129,6 +138,7 @@ public class CadastroAlbumActivity extends BaseActivity {
                         }
                     });
                 }
+            }
             }
         });
     }

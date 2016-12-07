@@ -11,12 +11,11 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="265dp"
             android:layout_height="wrap_content"
             android:text="Informe o email do membro de sua família!"
             android:textSize="18dp"
             android:textStyle="bold"
-            android:layout_weight="5"
             android:id="@+id/txt_cadastro_membro_cabecalho"
             android:layout_marginBottom="20dp"
             android:layout_marginTop="20dp"

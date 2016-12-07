@@ -59,6 +59,7 @@ public class EventosFragment extends Fragment {
                         .setAction("Action", null).show();
 
                 Intent intent = new Intent(getContext(), TabHostEventosActivity.class);
+                intent.putExtra("isEdicao", false);
                 startActivity(intent);
             }
         });
