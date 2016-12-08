@@ -64,9 +64,9 @@ public class NewsFragment extends Fragment {
     private void carregarListaNoticias() {
 
         noticiasAdapter = new NewsAdapter(getActivity());
-        recList.setAdapter(noticiasAdapter);
         listaNoticiasCardView = carregarNoticias();
         noticiasAdapter.setListaNoticia(listaNoticiasCardView);
+        recList.setAdapter(noticiasAdapter);
 
     }
 

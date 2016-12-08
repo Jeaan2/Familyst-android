@@ -58,14 +58,13 @@ public class NoticiaActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(),getResources().getText(R.string.sucesso_cadastro_comentario), Toast.LENGTH_SHORT).show();
 
                             // chamar progressdialog
-                            final ProgressDialog dialogProgresso = ProgressDialog.show(NoticiaActivity.this, "Aguarde", "Atualizando Comentários");
+                            final ProgressDialog dialogProgresso = ProgressDialog.show(NoticiaActivity.this, "Aguarde", "Atualizando Comentarios");
                             dialogProgresso.setCancelable(false);
 
                             RestService.getInstance(NoticiaActivity.this).CarregarComentariosNoticiasFamiliasAsync(new RestCallback(){
                                 @Override
                                 public void onRestResult(boolean success) {
                                     if (success){
-                                        Toast.makeText(NoticiaActivity.this,getResources().getText(R.string.sucesso_atualizar_comentarios), Toast.LENGTH_SHORT).show();
                                         carregarListaComentarios();
                                         edtComentarioEnviar.setText("");
 
@@ -133,7 +132,6 @@ public class NoticiaActivity extends AppCompatActivity {
             @Override
             public void onRestResult(boolean success) {
                 if (success){
-                    Toast.makeText(NoticiaActivity.this,getResources().getText(R.string.sucesso_atualizar_comentarios), Toast.LENGTH_SHORT).show();
                     carregarListaComentarios();
                 }
                 else

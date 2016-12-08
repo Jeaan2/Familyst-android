@@ -99,7 +99,6 @@ public class AlbumActivity extends BaseActivity{
             @Override
             public void onRestResult(boolean success) {
                 if (success){
-                    Toast.makeText(AlbumActivity.this,getResources().getText(R.string.sucesso_atualizar_fotos), Toast.LENGTH_SHORT).show();
                     carregarListaFotos();
                 }
                 else

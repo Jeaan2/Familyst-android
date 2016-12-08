@@ -1,5 +1,6 @@
 package com.tcc.ufpr.familyst.Model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 /**
  * Created by jeaan_000 on 12/10/2016.
  */
-public class Noticia {
+public class Noticia implements Serializable {
 
     //TODO Adicionar Comentários;
     protected int idNoticia;
@@ -16,7 +17,7 @@ public class Noticia {
     protected int idUsuario;
 
     //propriedades exclusivas do client
-    protected ArrayList<Comentario> comentarios;
+    protected ArrayList<Comentario> comentarios = new ArrayList<>();
     protected Usuario _usuarioCriador;
 
     public Noticia(int idNoticia, String descricao, int idUsuario)

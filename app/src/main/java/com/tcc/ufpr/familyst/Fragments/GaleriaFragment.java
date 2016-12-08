@@ -74,7 +74,6 @@ public class GaleriaFragment extends Fragment {
             @Override
             public void onRestResult(boolean success) {
                 if (success){
-                    Toast.makeText(getActivity(),getResources().getText(R.string.sucesso_atualizar_videos), Toast.LENGTH_SHORT).show();
                     CarregarListaVideos();
                 }
                 else

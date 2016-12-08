@@ -103,7 +103,6 @@ public class LoginActivity extends BaseActivity{
             postBody.put("email", txtEmail.getText());
             postBody.put("senha", txtSenha.getText());
 
-
             //monta requisicao
             JsonRestRequest jsonRequest = new JsonRestRequest(getApplication(), Request.Method.POST, false, url, headers, postBody,
                     new Response.Listener<JsonRestRequest.JsonRestResponse>() {
@@ -119,7 +118,6 @@ public class LoginActivity extends BaseActivity{
                                     ((FamilystApplication)getApplication()).set_accessToken(accessToken);
                                     onSucessoAccessToken();
                                 } catch (JSONException e) {
-                                    dialogProgresso.dismiss();
                                     onFalhaAccessToken(e.getMessage());
                                 }
                             }
@@ -127,13 +125,16 @@ public class LoginActivity extends BaseActivity{
                             {
                                 onFalhaAccessToken("Retorno HTTP não esperado.");
                             }
+
+                            dialogProgresso.dismiss();
                         }
                     },
-                    error -> onFalhaAccessToken(error.getMessage())
+                    error -> {
+                        onFalhaAccessToken(error.getMessage());
+                        dialogProgresso.dismiss();
+                    }
 
             );
-
-            dialogProgresso.dismiss();
 
             RestService.getInstance(this).addToRequestQueue(jsonRequest);
         }

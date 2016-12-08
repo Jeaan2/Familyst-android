@@ -157,6 +157,7 @@ public class MainActivity extends AppCompatActivity
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         Familia familiaSelecionada = (Familia) parent.getItemAtPosition(position);
                         ((FamilystApplication) getApplication()).setIdFamiliaSelecionada(familiaSelecionada.getIdFamilia());
+                        CarregarPerfilUser(); //recarrega menu
                     }
 
                     @Override

@@ -60,7 +60,8 @@ public class FamilystApplication extends Application {
                 return familia;
         }
 
-        return null;
+        Familia familiaNenhuma = new Familia(-1, "Nenhuma Familia", -1, "", "");
+        return familiaNenhuma;
     }
 
     public void setIdFamiliaSelecionada(int idFamiliaSelecionada) {

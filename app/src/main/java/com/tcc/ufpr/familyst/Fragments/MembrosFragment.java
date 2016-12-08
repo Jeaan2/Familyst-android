@@ -142,7 +142,6 @@ public class MembrosFragment extends Fragment {
             @Override
             public void onRestResult(boolean success) {
                 if (success){
-                    Toast.makeText(getActivity(),getResources().getText(R.string.sucesso_atualizar_membros), Toast.LENGTH_SHORT).show();
                     carregarListaMembros();
                 }
                 else

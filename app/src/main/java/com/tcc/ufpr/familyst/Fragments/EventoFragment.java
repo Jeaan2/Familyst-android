@@ -86,14 +86,13 @@ public class EventoFragment extends Fragment {
                             Toast.makeText(getActivity(),getResources().getText(R.string.sucesso_cadastro_comentario), Toast.LENGTH_SHORT).show();
 
                             // chamar progressdialog
-                            final ProgressDialog dialogProgresso = ProgressDialog.show(getActivity(), "Aguarde", "Atualizando Comentários");
+                            final ProgressDialog dialogProgresso = ProgressDialog.show(getActivity(), "Aguarde", "Atualizando Comentarios");
                             dialogProgresso.setCancelable(false);
 
                             RestService.getInstance(getActivity()).CarregarComentariosEventosFamiliasAsync(new RestCallback(){
                                 @Override
                                 public void onRestResult(boolean success) {
                                     if (success){
-                                        Toast.makeText(getActivity(),getResources().getText(R.string.sucesso_atualizar_comentarios), Toast.LENGTH_SHORT).show();
                                         CarregarListaComentarios();
                                         edtComentarioEnviar.setText("");
 
@@ -166,13 +165,12 @@ public class EventoFragment extends Fragment {
         super.onStart();
 
         // chamar progressdialog
-        final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Atualizando comentários.");
+        final ProgressDialog dialogProgresso = ProgressDialog.show(getContext(), "Aguarde", "Atualizando comentarios.");
         dialogProgresso.setCancelable(false);
         RestService.getInstance(getActivity()).CarregarComentariosEventosFamiliasAsync(new RestCallback(){
             @Override
             public void onRestResult(boolean success) {
                 if (success){
-                    Toast.makeText(getActivity(),getResources().getText(R.string.sucesso_atualizar_comentarios), Toast.LENGTH_SHORT).show();
                     CarregarListaComentarios();
                 }
                 else

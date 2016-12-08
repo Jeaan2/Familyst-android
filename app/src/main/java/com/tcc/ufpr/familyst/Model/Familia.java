@@ -17,11 +17,11 @@ public class Familia {
 
 
     //propriedades exclusivas do client
-    private ArrayList<Evento> eventos;
-    private ArrayList<Usuario> usuarios;
-    private ArrayList<Noticia> noticias;
-    private ArrayList<Album> albuns;
-    private ArrayList<Video> videos;
+    private ArrayList<Evento> eventos = new ArrayList<>();
+    private ArrayList<Usuario> usuarios = new ArrayList<>();
+    private ArrayList<Noticia> noticias = new ArrayList<>();
+    private ArrayList<Album> albuns = new ArrayList<>();
+    private ArrayList<Video> videos = new ArrayList<>();
 
     public Familia (int idFamilia, String nome, int idGaleria, String descricao, String local)
     {

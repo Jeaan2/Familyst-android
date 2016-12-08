@@ -15,7 +15,7 @@ public class Usuario implements Serializable {
     private int idFacebook;
 
     //propriedades exclusivas do client
-    private ArrayList<Familia> familias;
+    private ArrayList<Familia> familias = new ArrayList<>();
 
     public Usuario(int idUsuario, String nome, String email) {
         this.idUsuario = idUsuario;

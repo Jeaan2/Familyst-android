@@ -100,7 +100,6 @@ public class EventosFragment extends Fragment {
                                                                         @Override
                                                                         public void onRestResult(boolean success) {
                                                                             if (success){
-                                                                                Toast.makeText(getActivity(),getResources().getText(R.string.sucesso_atualizar_eventos), Toast.LENGTH_SHORT).show();
                                                                                 CarregarListaEventos();
                                                                                 dialogProgresso.dismiss();
                                                                             }

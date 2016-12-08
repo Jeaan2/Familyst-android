@@ -26,7 +26,7 @@ import java.util.Map;
 
 public class JsonRestRequest extends JsonRequest<JsonRestRequest.JsonRestResponse> {
 
-    private static final String baseURI = "http://192.168.1.13:8084/Familyst/";
+    private static final String baseURI = "http://192.168.15.53:8084/Familyst/";
 
     private Map<String, String> headers;
     private Response.Listener listener;

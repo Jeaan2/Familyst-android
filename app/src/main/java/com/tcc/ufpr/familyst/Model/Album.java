@@ -15,7 +15,7 @@ public class Album implements Serializable{
     private String descricao;
 
     //propriedades exclusivas do client
-    private ArrayList<Foto> fotos;
+    private ArrayList<Foto> fotos = new ArrayList<>();
 
     public Album(int idAlbum, String nome, Date dataCriacao, String descricao) {
         this.idAlbum = idAlbum;

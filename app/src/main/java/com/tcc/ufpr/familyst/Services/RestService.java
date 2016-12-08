@@ -130,12 +130,23 @@ public class RestService {
 
     private void onSucessoFamilias(JSONObject bodyRetorno) {
         try {
+
             ArrayList<Familia> _familias = new ArrayList<>();
             if (bodyRetorno != null)
             {
-                JSONArray familias = bodyRetorno.getJSONArray("familia");
-                for (int i = 0 ; i < familias.length() ; i++) {
-                    JSONObject familiaJson = familias.getJSONObject(i);
+                Object jsonBody = bodyRetorno.get("familia");
+                if (jsonBody instanceof JSONArray) {
+                    // se for um vetor de elementos
+                    JSONArray familias = (JSONArray) jsonBody;
+                    for (int i = 0; i < familias.length(); i++) {
+                        JSONObject familiaJson = familias.getJSONObject(i);
+                        Familia familia = new Familia(familiaJson.getInt("idFamilia"), familiaJson.getString("nome"), familiaJson.getInt("idGaleria"), familiaJson.getString("descricao"), familiaJson.getString("local"));
+                        _familias.add(familia);
+                    }
+                }
+                else if (jsonBody instanceof JSONObject) {
+                    //se for so um elemento
+                    JSONObject familiaJson = (JSONObject) jsonBody;
                     Familia familia = new Familia(familiaJson.getInt("idFamilia"), familiaJson.getString("nome"), familiaJson.getInt("idGaleria"), familiaJson.getString("descricao"), familiaJson.getString("local"));
                     _familias.add(familia);
                 }
@@ -159,9 +170,16 @@ public class RestService {
             _restCallback = restCallback;
 
             contadorSincronizacao = getFamilias().size();
-            for (int i = 0 ; i < getFamilias().size() ; i++)
+            if (contadorSincronizacao == 0) //nao tem elementos para carregar
             {
-                CarregarEventosFamiliaAsync(getFamilias().get(i));
+                _restCallback.onRestResult(true);
+            }
+            else
+            {
+                for (int i = 0 ; i < getFamilias().size() ; i++)
+                {
+                    CarregarEventosFamiliaAsync(getFamilias().get(i));
+                }
             }
         }
         catch (Exception ex)
@@ -276,13 +294,25 @@ public class RestService {
             //seta retorno
             _restCallback = restCallback;
 
-            for (int i = 0 ; i < getFamilias().size() ; i++)
+            if (getFamilias().size() == 0) //nao tem elementos para carregar
             {
-                Familia familia = getFamilias().get(i);
-                contadorSincronizacao = contadorSincronizacao + familia.getEventos().size();
-                for (int j = 0 ; j < familia.getEventos().size() ; j++) {
-                    Evento evento = familia.getEventos().get(j);
-                    CarregarTipoEventoAsync(evento);
+                _restCallback.onRestResult(true);
+            }
+            else {
+                for (int i = 0; i < getFamilias().size(); i++) {
+                    Familia familia = getFamilias().get(i);
+
+                    if (familia.getEventos().size() == 0) //nao tem elementos para carregar
+                    {
+                        _restCallback.onRestResult(true);
+                    }
+                    else {
+                        contadorSincronizacao = contadorSincronizacao + familia.getEventos().size();
+                        for (int j = 0; j < familia.getEventos().size(); j++) {
+                            Evento evento = familia.getEventos().get(j);
+                            CarregarTipoEventoAsync(evento);
+                        }
+                    }
                 }
             }
         }
@@ -361,13 +391,25 @@ public class RestService {
             //seta retorno
             _restCallback = restCallback;
 
-            for (int i = 0 ; i < getFamilias().size() ; i++)
+            if (getFamilias().size() == 0) //nao tem elementos para carregar
             {
-                Familia familia = getFamilias().get(i);
-                contadorSincronizacao = contadorSincronizacao + familia.getEventos().size();
-                for (int j = 0 ; j < familia.getEventos().size() ; j++) {
-                    Evento evento = familia.getEventos().get(j);
-                    CarregarUsuarioEventoAsync(evento);
+                _restCallback.onRestResult(true);
+            }
+            else {
+                for (int i = 0 ; i < getFamilias().size() ; i++)
+                {
+                    Familia familia = getFamilias().get(i);
+
+                    if (familia.getEventos().size() == 0) //nao tem elementos para carregar
+                    {
+                        _restCallback.onRestResult(true);
+                    }
+                    else {
+                    contadorSincronizacao = contadorSincronizacao + familia.getEventos().size();
+                    for (int j = 0 ; j < familia.getEventos().size() ; j++) {
+                        Evento evento = familia.getEventos().get(j);
+                        CarregarUsuarioEventoAsync(evento);
+                    }}
                 }
             }
         }
@@ -446,15 +488,27 @@ public class RestService {
             //seta retorno
             _restCallback = restCallback;
 
+
+            if (getFamilias().size() == 0) //nao tem elementos para carregar
+            {
+                _restCallback.onRestResult(true);
+            }
+            else {
             for (int i = 0 ; i < getFamilias().size() ; i++)
             {
                 Familia familia = getFamilias().get(i);
+
+                if (familia.getEventos().size() == 0) //nao tem elementos para carregar
+                {
+                    _restCallback.onRestResult(true);
+                }
+                else {
                 contadorSincronizacao = contadorSincronizacao + familia.getEventos().size();
                 for (int j = 0 ; j < familia.getEventos().size() ; j++) {
                     Evento evento = familia.getEventos().get(j);
                     CarregarItensEventoAsync(evento);
-                }
-            }
+                }}
+            }}
         }
         catch (Exception ex)
         {
@@ -558,15 +612,25 @@ public class RestService {
             //seta retorno
             _restCallback = restCallback;
 
+            if (getFamilias().size() == 0) //nao tem elementos para carregar
+            {
+                _restCallback.onRestResult(true);
+            }
+            else {
             for (int i = 0 ; i < getFamilias().size() ; i++)
             {
                 Familia familia = getFamilias().get(i);
+                if (familia.getEventos().size() == 0) //nao tem elementos para carregar
+                {
+                    _restCallback.onRestResult(true);
+                }
+                else {
                 contadorSincronizacao = contadorSincronizacao + familia.getEventos().size();
                 for (int j = 0 ; j < familia.getEventos().size() ; j++) {
                     Evento evento = familia.getEventos().get(j);
                     CarregarComentariosEventoAsync(evento);
-                }
-            }
+                }}
+            }}
         }
         catch (Exception ex)
         {
@@ -680,20 +744,35 @@ public class RestService {
             //seta retorno
             _restCallback = restCallback;
 
+            if (getFamilias().size() == 0) //nao tem elementos para carregar
+            {
+                _restCallback.onRestResult(true);
+            }
+            else {
             for (int i = 0 ; i < getFamilias().size() ; i++)
             {
                 Familia familia = getFamilias().get(i);
+                if (familia.getEventos().size() == 0) //nao tem elementos para carregar
+                {
+                    _restCallback.onRestResult(true);
+                }
+                else {
                 for (int j = 0 ; j < familia.getEventos().size() ; j++)
                 {
                     Evento evento = familia.getEventos().get(j);
+                    if (evento.getItensEvento().size() == 0) //nao tem elementos para carregar
+                    {
+                        _restCallback.onRestResult(true);
+                    }
+                    else {
                     contadorSincronizacao = contadorSincronizacao + evento.getItensEvento().size();
                     for (int o = 0 ; o < evento.getItensEvento().size() ; o++)
                     {
                         Item item = evento.getItensEvento().get(o);
                         CarregarTipoItemAsync(item);
-                    }
-                }
-            }
+                    }}
+                }}
+            }}
 
         }
         catch (Exception ex)
@@ -771,11 +850,16 @@ public class RestService {
             //seta retorno
             _restCallback = restCallback;
 
+            if (getFamilias().size() == 0) //nao tem elementos para carregar
+            {
+                _restCallback.onRestResult(true);
+            }
+            else {
             contadorSincronizacao = getFamilias().size();
             for (int i = 0 ; i < getFamilias().size() ; i++)
             {
                 CarregarUsuariosFamiliaAsync(getFamilias().get(i));
-            }
+            }}
 
         }
         catch (Exception ex)
@@ -876,11 +960,16 @@ public class RestService {
             //seta retorno
             _restCallback = restCallback;
 
+            if (getFamilias().size() == 0) //nao tem elementos para carregar
+            {
+                _restCallback.onRestResult(true);
+            }
+            else {
             contadorSincronizacao = getFamilias().size();
             for (int i = 0 ; i < getFamilias().size() ; i++)
             {
                 CarregarNoticiasFamiliaAsync(getFamilias().get(i));
-            }
+            }}
 
         }
         catch (Exception ex)
@@ -981,14 +1070,24 @@ public class RestService {
             //seta retorno
             _restCallback = restCallback;
 
+            if (getFamilias().size() == 0) //nao tem elementos para carregar
+            {
+                _restCallback.onRestResult(true);
+            }
+            else {
             for (int i = 0; i < getFamilias().size(); i++) {
                 Familia familia = getFamilias().get(i);
+                if (familia.getNoticias().size() == 0) //nao tem elementos para carregar
+                {
+                    _restCallback.onRestResult(true);
+                }
+                else {
                 contadorSincronizacao = contadorSincronizacao + familia.getNoticias().size();
                 for (int j = 0; j < familia.getNoticias().size(); j++) {
                     Noticia noticia = familia.getNoticias().get(j);
                     CarregarComentariosNoticiaAsync(noticia);
-                }
-            }
+                }}
+            }}
         }
         catch (Exception ex)
         {
@@ -1102,15 +1201,25 @@ public class RestService {
             //seta retorno
             _restCallback = restCallback;
 
+            if (getFamilias().size() == 0) //nao tem elementos para carregar
+            {
+                _restCallback.onRestResult(true);
+            }
+            else {
             for (int i = 0 ; i < getFamilias().size() ; i++)
             {
                 Familia familia = getFamilias().get(i);
+                if (familia.getNoticias().size() == 0) //nao tem elementos para carregar
+                {
+                    _restCallback.onRestResult(true);
+                }
+                else {
                 contadorSincronizacao = contadorSincronizacao + familia.getNoticias().size();
                 for (int j = 0 ; j < familia.getNoticias().size() ; j++) {
                     Noticia noticia = familia.getNoticias().get(j);
                     CarregarUsuariosNoticiaAsync(noticia);
-                }
-            }
+                }}
+            }}
         }
         catch (Exception ex)
         {
@@ -1188,11 +1297,16 @@ public class RestService {
             //seta retorno
             _restCallback = restCallback;
 
+            if (getFamilias().size() == 0) //nao tem elementos para carregar
+            {
+                _restCallback.onRestResult(true);
+            }
+            else {
             contadorSincronizacao = getFamilias().size();
             for (int i = 0 ; i < getFamilias().size() ; i++)
             {
                 CarregarVideosFamiliaAsync(getFamilias().get(i));
-            }
+            }}
         }
         catch (Exception ex)
         {
@@ -1305,11 +1419,16 @@ public class RestService {
             //seta retorno
             _restCallback = restCallback;
 
+            if (getFamilias().size() == 0) //nao tem elementos para carregar
+            {
+                _restCallback.onRestResult(true);
+            }
+            else {
             contadorSincronizacao = getFamilias().size();
             for (int i = 0 ; i < getFamilias().size() ; i++)
             {
                 CarregarAlbunsFamiliaAsync(getFamilias().get(i));
-            }
+            }}
         }
         catch (Exception ex)
         {
@@ -1421,15 +1540,25 @@ public class RestService {
             //seta retorno
             _restCallback = restCallback;
 
+            if (getFamilias().size() == 0) //nao tem elementos para carregar
+            {
+                _restCallback.onRestResult(true);
+            }
+            else {
             for (int i = 0 ; i < getFamilias().size() ; i++)
             {
                 Familia familia = getFamilias().get(i);
+                if (familia.getAlbuns().size() == 0) //nao tem elementos para carregar
+                {
+                    _restCallback.onRestResult(true);
+                }
+                else {
                 contadorSincronizacao = contadorSincronizacao + familia.getAlbuns().size();
                 for (int j = 0 ; j < familia.getAlbuns().size() ; j++) {
                     Album album = familia.getAlbuns().get(j);
                     CarregarFotosAlbumAsync(album);
-                }
-            }
+                }}
+            }}
         }
         catch (Exception ex)
         {

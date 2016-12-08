@@ -1,7 +1,9 @@
 package com.tcc.ufpr.familyst.Fragments;
 
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -97,21 +99,37 @@ public class CadastroEventoFragment extends Fragment {
         btnRemover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final ProgressDialog dialogProgresso = ProgressDialog.show(getActivity(), "Aguarde", "Excluindo item.");
-                dialogProgresso.setCancelable(false);
-                RestService.getInstance(getActivity()).RemoverEvento( _evento.getIdEvento(), new RestCallback(){
-                    @Override
-                    public void onRestResult(boolean success) {
-                        if (success){
-                            getActivity().finish();
-                        }
-                        else
-                        {
-                            Toast.makeText(getActivity(),getResources().getText(R.string.falha_remover_evento), Toast.LENGTH_SHORT).show();
-                        }
-                        dialogProgresso.dismiss();
-                    }
-                });
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Alerta!")
+                        .setMessage("Deseja remover o evento selecionado?")
+                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                final ProgressDialog dialogProgresso = ProgressDialog.show(getActivity(), "Aguarde", "Excluindo item.");
+                                dialogProgresso.setCancelable(false);
+                                RestService.getInstance(getActivity()).RemoverEvento( _evento.getIdEvento(), new RestCallback(){
+                                    @Override
+                                    public void onRestResult(boolean success) {
+                                        if (success){
+                                            getActivity().finish();
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(getActivity(),getResources().getText(R.string.falha_remover_evento), Toast.LENGTH_SHORT).show();
+                                        }
+                                        dialogProgresso.dismiss();
+                                    }
+                                });
+
+                                dialog.dismiss();
+                            }
+                        }).show();
             }
         });
         btnCadastrarEvento.setOnClickListener(new View.OnClickListener() {

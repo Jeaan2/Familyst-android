@@ -19,9 +19,9 @@ public class Evento implements Serializable {
 
     //propriedades exclusivas do client
     private TipoEvento tipoEvento;
-    private ArrayList<Item> itensEvento;
+    private ArrayList<Item> itensEvento = new ArrayList<>();
     private Usuario usuarioEvento;
-    private ArrayList<Comentario> comentariosEvento;
+    private ArrayList<Comentario> comentariosEvento = new ArrayList<>();
 
     public Evento(int idEvento, String nome, String descricao, Date dataCriacao, String local, int idUsuario, int idTipoEvento) {
         this.idEvento = idEvento;

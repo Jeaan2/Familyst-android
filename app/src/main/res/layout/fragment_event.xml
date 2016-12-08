@@ -118,31 +118,31 @@
     <ListView
         android:id="@+id/list_comentarios"
         android:layout_width="match_parent"
-        android:layout_height="300dp">
+        android:layout_height="200dp">
     </ListView>
 
-        <LinearLayout
-            android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/scroll_view"
+        android:orientation="horizontal">
+
+        <EditText
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/scroll_view"
-            android:orientation="horizontal">
+            android:hint="Escreva um comentário..."
+            android:id="@+id/txt_comentario_enviar"
+            android:layout_weight="5"
+            />
 
-            <EditText
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:hint="Escreva um comentário..."
-                android:id="@+id/txt_comentario_enviar"
-                android:layout_weight="5"
-                />
-
-            <ImageButton
-                android:layout_width="60dp"
-                android:layout_height="50dp"
-                android:layout_gravity="end"
-                android:layout_weight="0.95"
-                android:id="@+id/btn_enviar_comentario"
-                android:src="@drawable/ic_enviar"/>
-        </LinearLayout>
+        <ImageButton
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_gravity="end"
+            android:layout_weight="0.95"
+            android:id="@+id/btn_enviar_comentario"
+            android:src="@drawable/ic_enviar"/>
+    </LinearLayout>
 
 </LinearLayout>
     </ScrollView>

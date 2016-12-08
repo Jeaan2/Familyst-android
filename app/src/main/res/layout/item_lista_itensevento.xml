@@ -42,6 +42,7 @@
                 android:layout_height="30dp"
                 android:layout_gravity="center"
                 android:text="Levar"
+                android:visibility="invisible"
                 android:textColor="@color/cor_branco"
                 android:background="@color/cor_padrao"/>
         </LinearLayout>
